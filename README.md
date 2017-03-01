@@ -35,6 +35,6 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 Multi-sample chromosomal BAM files were converted to individual whole genome BAM files as follows:
 
 ```
-$ split_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dmel/ -evolgen
-$ split_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dsim/ -evolgen
+$ split_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dmel/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/unmerged_bams/ -evolgen
+$ split_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dsim/ -out_dir /fastdata/bop15hjb/drosophila_data/dsim/unmerged_bams/ -evolgen
 ```
