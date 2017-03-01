@@ -15,6 +15,8 @@ bams = [bam_dir + x for x in os.listdir(bam_dir) if x.endswith('.bam')]
 evolgen = args.evolgen
 
 # split each bam
+counter = 0
 for bam in bams:
+    counter += 1
     split_cmd = "samtools split -f '%!.%*.bam' " + bam
-    q_sub([split_cmd], out=bam_dir + 'bam_split', evolgen=evolgen)
+    q_sub([split_cmd], out=bam_dir + 'bam_split_' + str(counter), evolgen=evolgen)
