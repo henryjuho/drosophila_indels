@@ -1,5 +1,5 @@
 # *Drosophila* INDEL analysis pipeline
-Henry Juho Barton
+Henry Juho Barton  
 Department of Animal and Plant Sciences, The University of Sheffield  
 
 # Introduction
@@ -13,7 +13,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 
 
 
-## Python scripts used in this pipeline
+## Scripts used in this pipeline
 
 \* Note \* that most scripts make use of the python qsub wrapper module ```qsub.py``` described here: <https://github.com/henryjuho/python_qsub_wrapper>.
 
@@ -32,7 +32,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 # Pipeline
 ## Preparing BAM files
 
-Multi-sample chromosomal BAM files were converted to individual whole genome BAM files as follows:
+Multi-sample chromosomal BAM files were converted to single sample whole genome BAM files as follows:
 
 ```
 $ split_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dmel/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/unmerged_bams/ -evolgen
