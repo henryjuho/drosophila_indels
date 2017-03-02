@@ -36,5 +36,8 @@ Multi-sample chromosomal BAM files were converted to individual whole genome BAM
 
 ```
 $ split_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dmel/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/unmerged_bams/ -evolgen
+$ merge_chromosomal_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dmel/unmerged_bams/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/individual_bams/ -evolgen
+
 $ split_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dsim/ -out_dir /fastdata/bop15hjb/drosophila_data/dsim/unmerged_bams/ -evolgen
+$ merge_chromosomal_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dsim/unmerged_bams/ -out_dir /fastdata/bop15hjb/drosophila_data/dsim/individual_bams/ -evolgen
 ```
