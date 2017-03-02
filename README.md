@@ -20,7 +20,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 
 |                            |                            |                             |                             |
 |:---------------------------|:---------------------------|:----------------------------|:----------------------------|
-| qsub.py                    | split_bams.py              |                             |                             |
+| qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   |                             |
 
 ## Reference and annotation files required for analysis
 
