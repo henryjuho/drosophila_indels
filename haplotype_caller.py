@@ -32,4 +32,4 @@ for info in bam_data:
                   '-ploidy 2 '
                   '-o ' + out_dir + sample + '.raw.snps.indels.g.vcf')
 
-    q_sub([hap_caller], out=out_dir + sample + '.hap_calling', t=24, rmem=8, mem=8, evolgen=evolgen)
+    q_sub([hap_caller], out=out_dir + sample + '.hap_calling', t=60, rmem=8, mem=8, evolgen=evolgen)
