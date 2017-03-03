@@ -26,7 +26,7 @@ ids = set([x.split('.')[0] for x in os.listdir(bam_dir) if x.endswith('.bam')])
 for fly in ids:
     whole_genome_bam = out_dir + fly + '.realigned.bam'
     list_file = out_dir + fly + '.bam_list.txt'
-    chr_list_make = 'ls ' + bam_dir + fly + '*.bam > ' + list_file
+    chr_list_make = 'ls ' + bam_dir + fly + '.*.bam > ' + list_file
     subprocess.call(chr_list_make, shell=True)
 
     merge_cmd = 'samtools merge -cpb ' + list_file + ' ' + whole_genome_bam
