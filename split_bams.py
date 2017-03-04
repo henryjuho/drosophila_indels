@@ -30,7 +30,7 @@ for bam in bams:
     for indiv in ids:
         rg_file = out_dir + indiv + '.' + bam_basename + '.rg.txt'
         new_bam = out_dir + indiv + '.' + bam_basename + '.bam'
-        rg_id_grep = 'samtools view -H ' + bam + ' | grep @RG | grep SM:' + indiv + ' | cut -f 2 | cut -d ":" -f 2'
+        rg_id_grep = 'samtools view -H ' + bam + ' | grep @RG | grep -w SM:' + indiv + ' | cut -f 2 | cut -d ":" -f 2'
         rgs = subprocess.Popen(rg_id_grep, shell=True, stdout=subprocess.PIPE).communicate()[0].split('\n')[:-1]
         with open(rg_file, 'w') as rg_txt:
             print('\n'.join(rgs), file=rg_txt)
