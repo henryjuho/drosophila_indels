@@ -20,7 +20,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 |                            |                            |                             |                             |
 |:---------------------------|:---------------------------|:----------------------------|:----------------------------|
 | qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   | haplotype_caller.py         |
-| samtools_calling.py        |                            |                             |                             |
+| samtools_calling.py        | genotypeGVCFs.py           |                             |                             |
 
 ## Reference and annotation files required for analysis
 
@@ -55,7 +55,7 @@ $ merge_chromosomal_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dmel/unm
 $ cd /fastdata/bop15hjb/drosophila_data/dmel/bams/individual_bams
 $ ls *bam | while read i; do samtools index -b $i; done
 $ ls $PWD/*bam > dmel_bam_list.txt
-$
+
 $ split_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dsim/ -out_dir /fastdata/bop15hjb/drosophila_data/dsim/unmerged_bams/ -evolgen
 $ merge_chromosomal_bams.py -bam_dir /fastdata/bop15hjb/drosophila_data/dsim/unmerged_bams/ -out_dir /fastdata/bop15hjb/drosophila_data/dsim/individual_bams/ -evolgen
 $ cd /fastdata/bop15hjb/drosophila_data/dsim/bams/individual_bams
@@ -69,6 +69,9 @@ Raw SNPs and INDELs were called using both GATK's Haplotype Caller and SAMtools 
 
 ```
 $ haplotype_caller.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -bam_dir /fastdata/bop15hjb/drosophila_data/dmel/bams/individual_bams/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/gvcf/
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/gvcf/*vcf > /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/gvcf/dmel_gvcf.list
+$ genotypeGVCFs.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf_list /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/gvcf/dmel_gvcf.list -out /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf -evolgen
+
 $ haplotype_caller.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -bam_dir /fastdata/bop15hjb/drosophila_data/dsim/bams/individual_bams/ -out_dir /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/gvcf/ -evolgen
 ```
 
