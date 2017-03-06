@@ -13,7 +13,7 @@ args = parser.parse_args()
 
 # variables
 ref = args.ref
-vcf_list = args.vcf
+vcf_list = args.vcf_list
 out = args.out
 evolgen = args.evolgen
 
