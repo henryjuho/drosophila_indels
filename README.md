@@ -11,6 +11,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * Python 2.7.2
   * SAMtools version 1.2
   * GATK version 3.7
+  * bcftools version 1.3
 
 ## Scripts used in this pipeline
 
@@ -73,6 +74,8 @@ $ ls /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/gvcf/*vcf > /fastdata/
 $ genotypeGVCFs.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf_list /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/gvcf/dmel_gvcf.list -out /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf -evolgen
 
 $ haplotype_caller.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -bam_dir /fastdata/bop15hjb/drosophila_data/dsim/bams/individual_bams/ -out_dir /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/gvcf/ -evolgen
+$ ls /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/gvcf/*vcf > /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/gvcf/dsim_gvcf.list
+$ genotypeGVCFs.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf_list /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/gvcf/dsim_gvcf.list -out /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf -evolgen
 ```
 
 SAMtools calling proceeded as follows:
