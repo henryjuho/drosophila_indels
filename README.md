@@ -82,5 +82,5 @@ SAMtools calling proceeded as follows:
 
 ```
 $ samtools_calling.py -bam_list /fastdata/bop15hjb/drosophila_data/dmel/bams/individual_bams/dmel_bam_list.txt -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -out /fastdata/bop15hjb/drosophila_data/dmel/samtools_calling/dmel_17flys -evolgen
-$ samtools_calling.py -bam_list /fastdata/bop15hjb/drosophila_data/dsim/bams/individual_bams/dsim_bam_list.txt -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -out /fastdata/bop15hjb/drosophila_data/dsim/samtools_calling/dsim_42flys -evolgen
+$ samtools_calling.py -bam_list /fastdata/bop15hjb/drosophila_data/dsim/bams/individual_bams/dsim_bam_list.txt -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -out /fastdata/bop15hjb/drosophila_data/dsim/samtools_calling/dsim_42flys -per_chr
 ```
