@@ -21,7 +21,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 |                            |                            |                             |                             |
 |:---------------------------|:---------------------------|:----------------------------|:----------------------------|
 | qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   | haplotype_caller.py         |
-| samtools_calling.py        | genotypeGVCFs.py           |                             |                             |
+| samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        |                             |
 
 ## Reference and annotation files required for analysis
 
@@ -83,4 +83,13 @@ SAMtools calling proceeded as follows:
 ```
 $ samtools_calling.py -bam_list /fastdata/bop15hjb/drosophila_data/dmel/bams/individual_bams/dmel_bam_list.txt -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -out /fastdata/bop15hjb/drosophila_data/dmel/samtools_calling/dmel_17flys -evolgen
 $ samtools_calling.py -bam_list /fastdata/bop15hjb/drosophila_data/dsim/bams/individual_bams/dsim_bam_list.txt -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -out /fastdata/bop15hjb/drosophila_data/dsim/samtools_calling/dsim_42flys -per_chr
+```
+
+## VQSR
+
+In order to run GATKs variant quality score recalibration (VQSR) a set of high confidence variants was generated through the intersection of GATK and SAMtools raw variant calls. This 'truth set' was generated as follows:
+
+```
+$ get_consensus_vcf.py -vcf_I /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf -vcf_II /fastdata/bop15hjb/drosophila_data/dmel/samtools_calling/dmel_17flys.samtools.allsites.vcf -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -out /fastdata/bop15hjb/drosophila_data/dmel/consensus/
+$ get_consensus_vcf.py -vcf_I /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf -vcf_II /fastdata/bop15hjb/drosophila_data/dsim/samtools_calling/dsim_42flys.samtools.allsites.vcf -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -out /fastdata/bop15hjb/drosophila_data/dsim/consensus/
 ```
