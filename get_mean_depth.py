@@ -12,5 +12,5 @@ args = parser.parse_args()
 vcf = args.vcf
 
 # vcftools cmd
-vcftools_cmd = 'vcftools --vcf ' + vcf + ' --out depth_stats --depth > ' + vcf.replace('.vcf', '.depth.txt')
+vcftools_cmd = 'vcftools --vcf ' + vcf + ' --out ' + vcf.replace('.vcf', '') + ' --depth'
 q_sub([vcftools_cmd], out=vcf.replace('.vcf', '.depth'))
