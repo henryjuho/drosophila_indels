@@ -24,7 +24,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   | haplotype_caller.py         |
 | samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        | get_mean_depth.py           |
 | depth_filter.py            | filter_length_biallelic.py |                             |                             |
-git add R
+
 
 ## Reference and annotation files required for analysis
 
