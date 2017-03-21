@@ -12,6 +12,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * SAMtools version 1.2
   * GATK version 3.7
   * bcftools version 1.3
+  * VCFtools version 0.1.14
 
 ## Scripts used in this pipeline
 
@@ -21,7 +22,9 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 |                            |                            |                             |                             |
 |:---------------------------|:---------------------------|:----------------------------|:----------------------------|
 | qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   | haplotype_caller.py         |
-| samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        |                             |
+| samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        | get_mean_depth.py           |
+| depth_filter.py            | filter_length_biallelic.py |                             |                             |
+git add R
 
 ## Reference and annotation files required for analysis
 
@@ -92,4 +95,31 @@ In order to run GATKs variant quality score recalibration (VQSR) a set of high c
 ```
 $ get_consensus_vcf.py -vcf_I /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf -vcf_II /fastdata/bop15hjb/drosophila_data/dmel/samtools_calling/dmel_17flys.samtools.allsites.vcf -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -out /fastdata/bop15hjb/drosophila_data/dmel/consensus/
 $ get_consensus_vcf.py -vcf_I /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf -vcf_II /fastdata/bop15hjb/drosophila_data/dsim/samtools_calling/dsim_42flys.samtools.allsites.vcf -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -out /fastdata/bop15hjb/drosophila_data/dsim/consensus/
+```
+
+Mean depth was calculated from the GATK allsites vcf using vcftools (ref) as follows:
+
+```
+$ get_mean_depth.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf
+$ cat /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/*idepth | grep -v ^I | cut -f 3 | awk '{sum+=$1} END {print sum/NR}'
+
+$ get_mean_depth.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf
+$ cat /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/*idepth | grep -v ^I | cut -f 3 | awk '{sum+=$1} END {print sum/NR}'
+```
+
+| Species           | Mean depth  |
+|:------------------|:-----------:|
+| _D. melanogaster_ | 20x         |
+| _D. simulans_     | 46x         |
+
+Consensus INDEL and SNP vcfs were then hardfiltered to remove sites with less than half or more than twice the mean depth, multiallelic sites, INDELs greater than 50bp, and sites falling within repeat regions identified by repeat masker. In addition sites were hard filtered according to the GATK best practice ("QD<2.0", "FS>200.0" and "ReadPosRankSum<-20.0" for INDELs, x for SNPs).
+
+```
+$ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.indels.vcf -mean_depth 20 -N 17
+$ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.snps.vcf -mean_depth 20 -N 17
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/consensus/*dpfiltered.vcf | while read i; do filter_length_biallelic.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa; done
+
+$ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.indels.vcf -mean_depth 46 -N 42
+$ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.vcf -mean_depth 46 -N 42
+$ ls /fastdata/bop15hjb/drosophila_data/dsim/consensus/*dpfiltered.vcf | while read i; do filter_length_biallelic.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa; done
 ```
