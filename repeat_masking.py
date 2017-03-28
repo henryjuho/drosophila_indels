@@ -11,8 +11,9 @@ args = parser.parse_args()
 
 # variables
 fa = args.fa
+evolgen = args.evolgen
 
 # cmd line
 rep_mask_cmd = ('RepeatMasker -species drosophila -xsmall ' + fa)
 
-q_sub([rep_mask_cmd], out=fa.replace('.fa', ''))
+q_sub([rep_mask_cmd], out=fa.replace('.fa', ''), evolgen=evolgen)
