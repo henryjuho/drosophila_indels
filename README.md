@@ -13,6 +13,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * GATK version 3.7
   * bcftools version 1.3
   * VCFtools version 0.1.14
+  * RepeatMasker version open-4.0.6
 
 ## Scripts used in this pipeline
 
@@ -23,7 +24,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 |:---------------------------|:---------------------------|:----------------------------|:----------------------------|
 | qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   | haplotype_caller.py         |
 | samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        | get_mean_depth.py           |
-| depth_filter.py            | filter_length_biallelic.py |                             |                             |
+| depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py      | repeat_masking.py           |
 
 
 ## Reference and annotation files required for analysis
@@ -122,4 +123,19 @@ $ ls /fastdata/bop15hjb/drosophila_data/dmel/consensus/*dpfiltered.vcf | while r
 $ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.indels.vcf -mean_depth 46 -N 42
 $ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.vcf -mean_depth 46 -N 42
 $ ls /fastdata/bop15hjb/drosophila_data/dsim/consensus/*dpfiltered.vcf | while read i; do filter_length_biallelic.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa; done
+```
+
+## Whole genome alignment
+
+Whole genome alignments were performed between _D. melanogaster_, _D. simulans_ and _D. yakuba_ using MultiZ (ref), following the UCSC pipeline (descrined here: ref).
+
+First _D. simulans_ fasta headers were truncated to come within the required 50bp max length for RepeatMasker (ref).
+
+```
+$ cat dsimV2-Mar2012.fa | rename_dsim_headers.py > dsimV2-Mar2012.rename.fa 
+```
+Genomes were softmasked using RepeatMasker in the following script:
+
+```
+$ ls /fastdata/bop15hjb/drosophila_data/wga/genomes/*fa | while read i; do repeat_masking.py -fa $i -evolgen; done
 ```
