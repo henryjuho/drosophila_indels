@@ -15,6 +15,6 @@ evolgen = args.evolgen
 out_dir = fa[:fa.rfind('/')+1]
 
 # cmd line
-rep_mask_cmd = ('RepeatMasker -species drosophila -xsmall -dir ' + out_dir + ' ' + fa)
+rep_mask_cmd = ('RepeatMasker -species drosophila -xsmall ' + fa)
 
-q_sub([rep_mask_cmd], out=fa.replace('.fa', ''), evolgen=evolgen)
+q_sub(['cd ' + out_dir, rep_mask_cmd], out=fa.replace('.fa', ''), evolgen=evolgen)
