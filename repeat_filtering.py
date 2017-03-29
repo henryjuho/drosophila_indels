@@ -30,13 +30,13 @@ SelVar_cmdline = ('java -Xmx6g -jar ~/gatk3.7/GenomeAnalysisTK.jar '
                   '-T SelectVariants '
                   '-R ' + reference + ' '
                   '-V ' + output_prefix + '.rmarked.vcf '
-                  '-o ' + output_prefix + '.rfiltered.pass.vcf '
+                  '-o ' + output_prefix + '.rfiltered.vcf '
                   '--excludeFiltered')
 
 # remove intermediate file
 rm_cmdline = 'rm ' + output_prefix + '.rmarked.vcf'
 
 # submit job
-q_sub([VarFil_cmdline, SelVar_cmdline, rm_cmdline],
+q_sub([VarFil_cmdline, SelVar_cmdline],
       out=output_prefix + '.repeatfiltering',
       mem=15, rmem=10, evolgen=args.evolgen)
