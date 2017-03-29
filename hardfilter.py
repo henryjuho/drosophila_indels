@@ -5,7 +5,7 @@ from qsub import *
 
 # command line options
 parser = argparse.ArgumentParser()
-parser.add_argument('-VCF', '--VCF_input', help='VCF file to filter', required=True)
+parser.add_argument('-vcf', '--VCF_input', help='VCF file to filter', required=True)
 parser.add_argument('-ref', '--reference', help='Reference genome', required=True)
 parser.add_argument('-mode', help='Mode to run in, SNP or INDEL', choices=['SNP', 'INDEL'], required=True)
 parser.add_argument('-evolgen', help='If specified will run on lab queue', default=False, action='store_true')
@@ -50,4 +50,4 @@ extract_passed = ('java -Xmx6g -jar ~/gatk3.7/GenomeAnalysisTK.jar '
                   '--excludeFiltered')
 
 # write qsub job
-q_sub([hard_filter, extract_passed], out=output_prefix + '.filtering ', mem=10, rmem=10, evolgen=args.evolgen)
+q_sub([hard_filter, extract_passed], out=output_prefix + '.filtering', mem=10, rmem=10, evolgen=args.evolgen)
