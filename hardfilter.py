@@ -46,7 +46,7 @@ extract_passed = ('java -Xmx6g -jar ~/gatk3.7/GenomeAnalysisTK.jar '
                   '-T SelectVariants '
                   '-R ' + ref + ' '
                   '-V ' + output_prefix + '.hmarked.vcf '
-                  '-o ' + output_prefix + '.hfiltered.pass.vcf '
+                  '-o ' + output_prefix + '.hfiltered.vcf '
                   '--excludeFiltered')
 
 # write qsub job
