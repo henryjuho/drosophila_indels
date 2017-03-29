@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-vcf', '--vcf', help='VCF with variants to filter', required=True)
 parser.add_argument('-bed', '--bed_repeats', help='BED file with repeat regions listed', required=True)
 parser.add_argument('-ref', '--reference', help='Reference genome', required=True)
+parser.add_argument('-evolgen', help='If specified will run on lab queue', default=False, action='store_true')
 args = parser.parse_args()
 
 # files
@@ -36,4 +37,6 @@ SelVar_cmdline = ('java -Xmx6g -jar ~/gatk3.7/GenomeAnalysisTK.jar '
 rm_cmdline = 'rm ' + output_prefix + '.rmarked.vcf'
 
 # submit job
-q_sub([VarFil_cmdline, SelVar_cmdline, rm_cmdline], out=output_prefix + '.repeatfiltering', mem=15, rmem=10)
+q_sub([VarFil_cmdline, SelVar_cmdline, rm_cmdline],
+      out=output_prefix + '.repeatfiltering',
+      mem=15, rmem=10, evolgen=args.evolgen)
