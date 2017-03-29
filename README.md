@@ -25,7 +25,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   | haplotype_caller.py         |
 | samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        | get_mean_depth.py           |
 | depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py      | repeat_masking.py           |
-
+| rm_out2bed.py              |                 | | |
 
 ## Reference and annotation files required for analysis
 
@@ -50,6 +50,14 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 
 
 # Data preparation pipeline
+## Reference preparation
+
+Reference chromosome order files were generate for correct position sorting for GATK as follows:
+
+```
+$ grep ^'>' dmel-all-chromosome-r5.34.fa | cut -d ' ' -f 1 | cut -d '>' -f 2 > dmel_chr_order.txt
+$ grep ^'>' dsimV2-Mar2012.fa | cut -d ' ' -f 1 | cut -d '>' -f 2 > dsim_chr_order.txt
+```
 ## Preparing BAM files
 
 Multi-sample chromosomal BAM files were converted to single sample whole genome BAM files as follows:
@@ -91,6 +99,8 @@ $ samtools_calling.py -bam_list /fastdata/bop15hjb/drosophila_data/dsim/bams/ind
 
 ## VQSR
 
+### Generating sets of 'known variants'
+
 In order to run GATKs variant quality score recalibration (VQSR) a set of high confidence variants was generated through the intersection of GATK and SAMtools raw variant calls. This 'truth set' was generated as follows:
 
 ```
@@ -113,7 +123,7 @@ $ cat /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/*idepth | gr
 | _D. melanogaster_ | 20x         |
 | _D. simulans_     | 46x         |
 
-Consensus INDEL and SNP vcfs were then hardfiltered to remove sites with less than half or more than twice the mean depth, multiallelic sites, INDELs greater than 50bp, and sites falling within repeat regions identified by repeat masker. In addition sites were hard filtered according to the GATK best practice ("QD<2.0", "FS>200.0" and "ReadPosRankSum<-20.0" for INDELs, x for SNPs).
+Consensus INDEL and SNP vcfs were then hardfiltered to remove sites with less than half or more than twice the mean depth, multiallelic sites and INDELs greater than 50bp.
 
 ```
 $ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.indels.vcf -mean_depth 20 -N 17
@@ -124,6 +134,39 @@ $ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42
 $ depth_filter.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.vcf -mean_depth 46 -N 42
 $ ls /fastdata/bop15hjb/drosophila_data/dsim/consensus/*dpfiltered.vcf | while read i; do filter_length_biallelic.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa; done
 ```
+
+Bed files of repeat positions were obtained from repeat masker outputs (see Whole genome alignment) and sites falling within repeat regions were excluded as follows: 
+
+```
+$ cd /fastdata/bop15hjb/drosophila_data/wga/genomes
+$ cat dmel-all-chromosome-r5.34.fa.out | rm_out2bed.py | bedtools sort -faidx ../../dmel_ref/dmel_chr_order.txt > dmel-all-chromosome-r5.34.fa.out.bed
+$ grep -v NODE  dsimV2-Mar2012.rename.fa.out | rm_out2bed.py | bedtools sort -faidx ../../dsim_ref/dsim_chr_order.txt > dsimV2-Mar2012.rename.fa.out.bed
+$ cd
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/consensus/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.out.bed -evolgen ; done```
+ls /fastdata/bop15hjb/drosophila_data/dsim/consensus/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed -evolgen ; done
+```
+
+Finally sites were hard filtered according to the GATK best practice (QD < 2.0, ReadPosRankSum < -20.0, FS > 200.0, SOR > 10.0 for INDELs, QD < 2.0, MQ < 40.0, FS > 60.0, SOR > 3.0, MQRankSum < -12.5, ReadPosRankSum < -8.0, for SNPs <https://software.broadinstitute.org/gatk/guide/article?id=3225>).
+
+```
+$ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.vcf -mode INDEL -evolgen
+$ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.vcf -mode SNP -evolgen
+
+$ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.vcf -mode INDEL -evolgen
+$ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.vcf -mode SNP -evolgen
+```
+
+### 'Truth set' summary
+
+| Filtering step     | _D. mel_ INDELs  | _D. sim_ INDELs | _D. mel_ SNPs  | _D. sim_ SNPs  |
+|:-------------------|:----------------:|:---------------:|:--------------:|:--------------:|
+| raw GATK           | 798107           | 2066449         | 6161265        | 17259553       |
+| raw SAMtools       | 791236           | 1734626         | 3418572        | 10805464       |
+| raw consensus      | 550354           | 1113349         | 3316428        | 10174694       |
+| depth              | 437145           | 1098950         | 2628415        | 10079794       |
+| length, allele no. | 331846           | 784782          | 2471023        | 8258471        |
+| repeats            | 286450           | 713285          | 2319409        | 7889884        |
+| hardfilters        | 286177           | 712647          | 2036210        |                |
 
 ## Whole genome alignment
 
