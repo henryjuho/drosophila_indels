@@ -10,6 +10,7 @@ parser.add_argument('-ref', help='Reference genome location', required=True)
 parser.add_argument('-truth_set', help='Truth set of known variants for VQSR', required=True)
 parser.add_argument('-mode', help='Mode to run in', choices=['SNP', 'INDEL'], required=True)
 parser.add_argument('-out', help='Output_directory', required=True)
+parser.add_argument('-evolgen', help='If specified will run on lab queue', default=False, action='store_true')
 args = parser.parse_args()
 
 # variables
@@ -56,7 +57,7 @@ for tranche in tranche_list:
                          '-recalFile ' + recal_file + ' '
                          '-mode ' + mode + ' '
                          '-o ' + tranche_out_prefix + '.vcf')
-    extract_commandline = ('java -Xmx6g -jar \$GATKHOME/GenomeAnalysisTK.jar '
+    extract_commandline = ('java -Xmx6g -jar ~/gatk3.7/GenomeAnalysisTK.jar '
                            '-T SelectVariants '
                            '-R ' + ref_genome + ' '
                            '-V ' + tranche_out_prefix + '.vcf '
@@ -68,4 +69,4 @@ for tranche in tranche_list:
     apply_commandlines_list.append(rm_commandline)
 
 # submit jobs
-q_sub([apply_commandlines_list], out=output_prefix + '.recal', mem=10, rmem=10)
+q_sub([apply_commandlines_list], out=output_prefix + '.recal', mem=10, rmem=10, evolgen=args.evolgen)
