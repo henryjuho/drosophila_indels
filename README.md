@@ -25,7 +25,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   | haplotype_caller.py         |
 | samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        | get_mean_depth.py           |
 | depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py      | repeat_masking.py           |
-| rm_out2bed.py              |                 | | |
+| rm_out2bed.py              | repeat_filtering.py        | hardfilter.py               | VQSR.py                     |
 
 ## Reference and annotation files required for analysis
 
@@ -166,8 +166,19 @@ $ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.
 | depth              | 437145           | 1098950         | 2628415        | 10079794       |
 | length, allele no. | 331846           | 784782          | 2471023        | 8258471        |
 | repeats            | 286450           | 713285          | 2319409        | 7889884        |
-| hardfilters        | 286177           | 712647          | 2036210        |                |
+| hardfilters        | 286177           | 712647          | 2036210        | 6732750        |
 
+### VQSR
+
+VQSR was performed for SNP and INDELs separately for both species as follows:
+
+```
+$ VQSR.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.gatk.raw.indels.vcf -truth_set /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode INDEL -out /fastdata/bop15hjb/drosophila_data/dmel/vqsr/ -evolgen
+$ VQSR.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.gatk.raw.snps.vcf -truth_set /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode SNP -out /fastdata/bop15hjb/drosophila_data/dmel/vqsr/ -evolgen
+
+$ VQSR.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.indels.vcf -truth_set /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode INDEL -out /fastdata/bop15hjb/drosophila_data/dsim/vqsr/ -evolgen
+$ VQSR.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.snps.vcf -truth_set /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode SNP -out /fastdata/bop15hjb/drosophila_data/dsim/vqsr/ -evolgen
+```
 ## Whole genome alignment
 
 Whole genome alignments were performed between _D. melanogaster_, _D. simulans_ and _D. yakuba_ using MultiZ (ref), following the UCSC pipeline (descrined here: ref).
