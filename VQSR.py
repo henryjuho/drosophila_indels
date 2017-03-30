@@ -69,4 +69,4 @@ for tranche in tranche_list:
     apply_commandlines_list.append(rm_commandline)
 
 # submit jobs
-q_sub([apply_commandlines_list], out=output_prefix + '.recal', mem=10, rmem=10, evolgen=args.evolgen)
+q_sub(apply_commandlines_list, out=output_prefix + '.recal', mem=10, rmem=10, evolgen=args.evolgen)
