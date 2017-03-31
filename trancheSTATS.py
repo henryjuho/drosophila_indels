@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 import subprocess
 import re
@@ -34,5 +36,7 @@ for vcf in input_vcfs:
                  str(positive_train_sites) + '\t' +
                  str(negative_train_sites) + '\t' +
                  str(novel_sites) + '\n')
+
+output.close()
 
 print('Done')
