@@ -14,6 +14,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * bcftools version 1.3
   * VCFtools version 0.1.14
   * RepeatMasker version open-4.0.6
+  * bedtools version 2.26.0
 
 ## Scripts used in this pipeline
 
@@ -26,6 +27,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        | get_mean_depth.py           |
 | depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py      | repeat_masking.py           |
 | rm_out2bed.py              | repeat_filtering.py        | hardfilter.py               | VQSR.py                     |
+| exclude_snp_in_indel.py    |       |      |     |
 
 ## Reference and annotation files required for analysis
 
@@ -146,14 +148,16 @@ $ ls /fastdata/bop15hjb/drosophila_data/dmel/consensus/*bial.vcf | while read i;
 ls /fastdata/bop15hjb/drosophila_data/dsim/consensus/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed -evolgen ; done
 ```
 
-Finally sites were hard filtered according to the GATK best practice (QD < 2.0, ReadPosRankSum < -20.0, FS > 200.0, SOR > 10.0 for INDELs, QD < 2.0, MQ < 40.0, FS > 60.0, SOR > 3.0, MQRankSum < -12.5, ReadPosRankSum < -8.0, for SNPs <https://software.broadinstitute.org/gatk/guide/article?id=3225>).
+Finally sites were hard filtered according to the GATK best practice (QD < 2.0, ReadPosRankSum < -20.0, FS > 200.0, SOR > 10.0 for INDELs, QD < 2.0, MQ < 40.0, FS > 60.0, SOR > 3.0, MQRankSum < -12.5, ReadPosRankSum < -8.0, for SNPs <https://software.broadinstitute.org/gatk/guide/article?id=3225>), additionally, SNPs falling within INDELs were removed.
 
 ```
 $ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.vcf -mode INDEL -evolgen
 $ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.vcf -mode SNP -evolgen
+$ exclude_snp_in_indel.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf
 
 $ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.vcf -mode INDEL -evolgen
 $ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.vcf -mode SNP -evolgen
+$ exclude_snp_in_indel.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf
 ```
 
 ### 'Truth set' summary
@@ -167,17 +171,20 @@ $ hardfilter.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.
 | length, allele no. | 331846           | 784782          | 2471023        | 8258471        |
 | repeats            | 286450           | 713285          | 2319409        | 7889884        |
 | hardfilters        | 286177           | 712647          | 2036210        | 6732750        |
+| no snps in indels  | -                | -               | 2017080        | 6664891        |
 
 ### VQSR
 
-VQSR was performed for SNP and INDELs separately for both species as follows:
+VQSR was performed for SNP (for SNPs, variants in INDELs were first exluded from the raw data) and INDELs separately for both species as follows:
 
 ```
-$ VQSR.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.gatk.raw.indels.vcf -truth_set /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode INDEL -out /fastdata/bop15hjb/drosophila_data/dmel/vqsr/ -evolgen
-$ VQSR.py -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.gatk.raw.snps.vcf -truth_set /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode SNP -out /fastdata/bop15hjb/drosophila_data/dmel/vqsr/ -evolgen
+$ VQSR.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.gatk.raw.indels.vcf -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -truth_set /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode INDEL -out /fastdata/bop15hjb/drosophila_data/dmel/vqsr/
+$ exclude_snp_in_indel.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.gatk.raw.snps.vcf
+$ VQSR.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.gatk.raw.snps.exsnpindel.vcf -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -truth_set /fastdata/bop15hjb/drosophila_data/dmel/consensus/dmel_17flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.exsnpindel.vcf -mode SNP -out /fastdata/bop15hjb/drosophila_data/dmel/vqsr/
 
-$ VQSR.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.indels.vcf -truth_set /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode INDEL -out /fastdata/bop15hjb/drosophila_data/dsim/vqsr/ -evolgen
-$ VQSR.py -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.snps.vcf -truth_set /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode SNP -out /fastdata/bop15hjb/drosophila_data/dsim/vqsr/ -evolgen
+$ VQSR.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.indels.vcf -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -truth_set /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.indels.dpfiltered.50bp_max.bial.rfiltered.hfiltered.vcf -mode INDEL -out /fastdata/bop15hjb/drosophila_data/dsim/vqsr/
+$ exclude_snp_in_indel.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.snps.vcf
+$ VQSR.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.snps.exsnpindel.vcf -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -truth_set /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.exsnpindel.vcf -mode SNP -out /fastdata/bop15hjb/drosophila_data/dsim/vqsr/
 ```
 ## Whole genome alignment
 
