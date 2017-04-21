@@ -20,7 +20,7 @@ truth_set = args.truth_set
 output_prefix = args.out + target_vcf[target_vcf.rfind('/')+1:].rstrip('.vcf')
 recal_file = output_prefix + '.recal'
 tranche_file = output_prefix + '.tranches'
-tranche_list = ['100.0', '99.9', '99.5', '99.0', '98.0', '90.0']
+tranche_list = ['100.0', '99.9', '99.5', '99.0', '98.0', '95.0', '90.0']
 mode = args.mode
 
 # variant recalibration
