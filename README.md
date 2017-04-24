@@ -21,13 +21,13 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 \* Note \* that most scripts make use of the python qsub wrapper module ```qsub.py``` described here: <https://github.com/henryjuho/python_qsub_wrapper>.
 
 
-|                            |                            |                             |                             |
-|:---------------------------|:---------------------------|:----------------------------|:----------------------------|
-| qsub.py                    | split_bams.py              | merge_chromosomal_bams.py   | haplotype_caller.py         |
-| samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py        | get_mean_depth.py           |
-| depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py      | repeat_masking.py           |
-| rm_out2bed.py              | repeat_filtering.py        | hardfilter.py               | VQSR.py                     |
-| exclude_snp_in_indel.py    |       |      |     |
+|                            |                            |                                |                             |
+|:---------------------------|:---------------------------|:-------------------------------|:----------------------------|
+| qsub.py                    | split_bams.py              | merge_chromosomal_bams.py      | haplotype_caller.py         |
+| samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py           | get_mean_depth.py           |
+| depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py         | repeat_masking.py           |
+| rm_out2bed.py              | repeat_filtering.py        | hardfilter.py                  | VQSR.py                     |
+| exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py |     |
 
 ## Reference and annotation files required for analysis
 
@@ -239,7 +239,14 @@ $ fasta_add_header_prefix.py -fa dyak-all-chromosome-r1.3.fa.masked -pre 'dyak.'
 ```
 
 The resulting files were teh used to generate pairwise alignments with lastz (ref), which were then chainned and netted using x and y respectively.
+
 ```
 $ wholegenome_lastz_chain_net.py -ref_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa -ref_name dmel -query_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.masked.rename.fa -query_name dsim -out /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/
 $ wholegenome_lastz_chain_net.py -ref_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa -ref_name dmel -query_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dyak-all-chromosome-r1.3.fa.masked.rename.fa -query_name dyak -out /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/
+```
+
+Single coverage was then ensured for the reference genome:
+
+```
+$ single_cov.py -dir /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/ -ref_name dmel 
 ```
