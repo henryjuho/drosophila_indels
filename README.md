@@ -144,8 +144,8 @@ $ cd /fastdata/bop15hjb/drosophila_data/wga/genomes
 $ cat dmel-all-chromosome-r5.34.fa.out | rm_out2bed.py | bedtools sort -faidx ../../dmel_ref/dmel_chr_order.txt > dmel-all-chromosome-r5.34.fa.out.bed
 $ grep -v NODE  dsimV2-Mar2012.rename.fa.out | rm_out2bed.py | bedtools sort -faidx ../../dsim_ref/dsim_chr_order.txt > dsimV2-Mar2012.rename.fa.out.bed
 $ cd
-$ ls /fastdata/bop15hjb/drosophila_data/dmel/consensus/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.out.bed -evolgen ; done```
-ls /fastdata/bop15hjb/drosophila_data/dsim/consensus/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed -evolgen ; done
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/consensus/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.out.bed -evolgen ; done
+$ ls /fastdata/bop15hjb/drosophila_data/dsim/consensus/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed -evolgen ; done
 ```
 
 Finally sites were hard filtered according to the GATK best practice (QD < 2.0, ReadPosRankSum < -20.0, FS > 200.0, SOR > 10.0 for INDELs, QD < 2.0, MQ < 40.0, FS > 60.0, SOR > 3.0, MQRankSum < -12.5, ReadPosRankSum < -8.0, for SNPs <https://software.broadinstitute.org/gatk/guide/article?id=3225>), additionally, SNPs falling within INDELs were removed.
@@ -186,9 +186,37 @@ $ VQSR.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gat
 $ exclude_snp_in_indel.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.snps.vcf
 $ VQSR.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gatk.raw.snps.exsnpindel.vcf -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -truth_set /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.consensus.raw.snps.dpfiltered.50bp_max.bial.rfiltered.hfiltered.exsnpindel.vcf -mode SNP -out /fastdata/bop15hjb/drosophila_data/dsim/vqsr/
 ```
+
+### Post VQSR filters
+
+Variants more than twice and half the mean coverage, longer than 50bp, multiallelic or located in repeat regions were then removed from the post VQSR (95% cutoff) data.
+
+```
+$ cd /fastdata/bop15hjb/drosophila_data/dmel/vqsr/
+$ ls $PWD/*t95.0.pass.vcf | while read i; do depth_filter.py -vcf $i -mean_depth 20 -N 17; done
+$ ls $PWD/*dpfiltered.vcf | while read i; do filter_length_biallelic.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa; done 
+$ ls $PWD/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.out.bed -evolgen ; done
+
+$ cd /fastdata/bop15hjb/drosophila_data/dsim/vqsr/
+$ ls $PWD/*t95.0.pass.vcf | while read i; do depth_filter.py -vcf $i -mean_depth 46 -N 42; done
+$ ls $PWD/*dpfiltered.vcf | while read i; do filter_length_biallelic.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa; done
+$ ls $PWD/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed; done
+```
+
+### VQSR summary
+
+| Filtering step     | _D. mel_ INDELs  | _D. sim_ INDELs | _D. mel_ SNPs  | _D. sim_ SNPs  |
+|:-------------------|:----------------:|:---------------:|:--------------:|:--------------:|
+| raw GATK           | 798107           | 2066449         | 6161265        | 17259553       |
+| SNPs in INDELs     | -                | -               | 3357471        |  9786903       |
+| post VQSR (95%)    | 651767           | 1576167         | 2416349        |  7703545       |
+| depth              | 538762           | 1567823         | 2098303        |  7688121       |
+| length, allele no. | 453181           | 1194893         | 2066044        |  7285990       |
+| repeats            | 401692           | 1104572         | 1989033        |  7047712       |
+
 ## Whole genome alignment
 
-Whole genome alignments were performed between _D. melanogaster_, _D. simulans_ and _D. yakuba_ using MultiZ (ref), following the UCSC pipeline (descrined here: ref).
+Whole genome alignments were performed between _D. melanogaster_, _D. simulans_ and _D. yakuba_ using MultiZ (ref), following the UCSC pipeline (described here: ref).
 
 First _D. simulans_ fasta headers were truncated to come within the required 50bp max length for RepeatMasker (ref).
 
