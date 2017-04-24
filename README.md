@@ -228,3 +228,18 @@ Genomes were softmasked using RepeatMasker in the following script:
 ```
 $ ls /fastdata/bop15hjb/drosophila_data/wga/genomes/*fa | while read i; do repeat_masking.py -fa $i -evolgen; done
 ```
+
+The resulting soft masked fasta file headers were editted to contain species information:
+
+```
+$ cd /fastdata/bop15hjb/drosophila_data/wga/genomes/
+$ fasta_add_header_prefix.py -fa dmel-all-chromosome-r5.34.fa.masked -pre 'dmel.' -truncate
+$ fasta_add_header_prefix.py -fa dsimV2-Mar2012.rename.fa.masked -pre 'dsim.' -truncate
+$ fasta_add_header_prefix.py -fa dyak-all-chromosome-r1.3.fa.masked -pre 'dyak.' -truncate
+```
+
+The resulting files were teh used to generate pairwise alignments with lastz (ref), which were then chainned and netted using x and y respectively.
+```
+$ wholegenome_lastz_chain_net.py -ref_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa -ref_name dmel -query_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.masked.rename.fa -query_name dsim -out /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/
+$ wholegenome_lastz_chain_net.py -ref_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa -ref_name dmel -query_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dyak-all-chromosome-r1.3.fa.masked.rename.fa -query_name dyak -out /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/
+```
