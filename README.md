@@ -27,7 +27,8 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py           | get_mean_depth.py           |
 | depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py         | repeat_masking.py           |
 | rm_out2bed.py              | repeat_filtering.py        | hardfilter.py                  | VQSR.py                     |
-| exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py |     |
+| exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py | single_cov.py               |
+| roast.py                   | | | |
 
 ## Reference and annotation files required for analysis
 
@@ -249,4 +250,10 @@ Single coverage was then ensured for the reference genome:
 
 ```
 $ single_cov.py -dir /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/ -ref_name dmel 
+```
+
+The multiple alignment was then created using multiz using the roast wrapper (sumit):
+
+```
+$ roast.py -maf_dir /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/single_coverage/ -ref dmel -out /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.maf -tree '"((dmel dsim) dyak)"'
 ```
