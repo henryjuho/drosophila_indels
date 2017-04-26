@@ -252,8 +252,28 @@ Single coverage was then ensured for the reference genome:
 $ single_cov.py -dir /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/ -ref_name dmel 
 ```
 
-The multiple alignment was then created using multiz using the roast wrapper (sumit):
+The multiple alignment was then created using multiz using the roast wrapper (sumit) and then converted to a whole genome alignment bed file using the WGAbed package (<https://github.com/padraicc/WGAbed>).
 
 ```
 $ roast.py -maf_dir /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/single_coverage/ -ref dmel -out /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.maf -tree '"((dmel dsim) dyak)"'
+$ cd /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/
+$ gzip dmel.dsim.dyak.maf
+ 
+$ grep '>' ../genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa | cut -d '.' -f 2 | while read i; do maf_to_bed.py -i dmel.dsim.dyak.maf.gz -r dmel -c $i | sort -k1,1 -k2,2n | gzip -c > dmel.dsim.dyak.$i.wga.bed.gz; done
+$ zcat dmel.dsim.dyak.2LHet.wga.bed.gz dmel.dsim.dyak.2L.wga.bed.gz dmel.dsim.dyak.2RHet.wga.bed.gz dmel.dsim.dyak.2R.wga.bed.gz dmel.dsim.dyak.3LHet.wga.bed.gz dmel.dsim.dyak.3L.wga.bed.gz dmel.dsim.dyak.3RHet.wga.bed.gz dmel.dsim.dyak.3R.wga.bed.gz dmel.dsim.dyak.4.wga.bed.gz dmel.dsim.dyak.dmel_mitochondrion_genome.wga.bed.gz dmel.dsim.dyak.Uextra.wga.bed.gz dmel.dsim.dyak.U.wga.bed.gz dmel.dsim.dyak.XHet.wga.bed.gz dmel.dsim.dyak.X.wga.bed.gz dmel.dsim.dyak.YHet.wga.bed.gz | bgzip -c > dmel.dsim.dyak.wga.bed.gz
+$ tabix dmel.dsim.dyak.wga.bed.gz
+
+$ grep '>' ../genomes/dsimV2-Mar2012.rename.fa.masked.rename.fa | cut -d '.' -f 2 | while read i; do maf_to_bed.py -i dmel.dsim.dyak.maf.gz -r dsim -c $i | sort -k1,1 -k2,2n | bgzip -c > dsim.dmel.dyak.$i.wga.bed.gz; done
+```
+
+## Polarisation
+
+Variants were polarised using the whole genome alignment and a parsimony approach, where either the alternate or the reference allele had to be supported by all outgroups in the the alignment.
+
+```
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub 
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub 
+
+$
+$
 ```
