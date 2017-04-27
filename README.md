@@ -32,8 +32,10 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 
 ## Reference and annotation files required for analysis
 
-  * *D. melanogaster* reference genome: 
-  * *D. simulans* reference genome:
+  * *D. melanogaster* reference genome: ``````
+  * *D. melanogaster* annotation: ``````
+  * *D. simulans* reference genome: ```dsimV2-Mar2012.fa``` available from: (<ref>)
+  * *D. simulans* annotation: ```dsim-all-r2.01.gff.gz``` available from: (<ftp://ftp.flybase.org/genomes/dsim/dsim_r2.01_FB2015_01/gff/>)
   
 ## BAM files
 
@@ -239,7 +241,7 @@ $ fasta_add_header_prefix.py -fa dsimV2-Mar2012.rename.fa.masked -pre 'dsim.' -t
 $ fasta_add_header_prefix.py -fa dyak-all-chromosome-r1.3.fa.masked -pre 'dyak.' -truncate
 ```
 
-The resulting files were then used to generate pairwise alignments with lastz (ref), which were then chainned and netted using x and y respectively.
+The resulting files were then used to generate pairwise alignments with lastz (ref), which were then chained and netted using x and y respectively.
 
 ```
 $ wholegenome_lastz_chain_net.py -ref_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa -ref_name dmel -query_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.masked.rename.fa -query_name dsim -out /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/
@@ -279,3 +281,12 @@ $ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17
 $ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub
 $ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub
 ```
+
+| Category           | _D. mel_ INDELs  | _D. sim_ INDELs | _D. mel_ SNPs  | _D. sim_ SNPs  |
+|:-------------------|:----------------:|:---------------:|:--------------:|:--------------:|
+|total               | 401692           | 1104572         | 1989033        | |
+|polarised           | **169930**       | **520235**      | **1035113**    | |
+|hotspots            | 95893            | 217824          | 136665         | |
+|low spp coverage    | 111834           | 311992          | 569893         | |
+|ambiguous           | 24035            | 54521           | 247362         | |
+|total unpolarised   | 231762           | 584337          | 953920         | |
