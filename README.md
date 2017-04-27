@@ -239,7 +239,7 @@ $ fasta_add_header_prefix.py -fa dsimV2-Mar2012.rename.fa.masked -pre 'dsim.' -t
 $ fasta_add_header_prefix.py -fa dyak-all-chromosome-r1.3.fa.masked -pre 'dyak.' -truncate
 ```
 
-The resulting files were teh used to generate pairwise alignments with lastz (ref), which were then chainned and netted using x and y respectively.
+The resulting files were then used to generate pairwise alignments with lastz (ref), which were then chainned and netted using x and y respectively.
 
 ```
 $ wholegenome_lastz_chain_net.py -ref_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa -ref_name dmel -query_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.masked.rename.fa -query_name dsim -out /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/
@@ -261,19 +261,21 @@ $ gzip dmel.dsim.dyak.maf
  
 $ grep '>' ../genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa | cut -d '.' -f 2 | while read i; do maf_to_bed.py -i dmel.dsim.dyak.maf.gz -r dmel -c $i | sort -k1,1 -k2,2n | gzip -c > dmel.dsim.dyak.$i.wga.bed.gz; done
 $ zcat dmel.dsim.dyak.2LHet.wga.bed.gz dmel.dsim.dyak.2L.wga.bed.gz dmel.dsim.dyak.2RHet.wga.bed.gz dmel.dsim.dyak.2R.wga.bed.gz dmel.dsim.dyak.3LHet.wga.bed.gz dmel.dsim.dyak.3L.wga.bed.gz dmel.dsim.dyak.3RHet.wga.bed.gz dmel.dsim.dyak.3R.wga.bed.gz dmel.dsim.dyak.4.wga.bed.gz dmel.dsim.dyak.dmel_mitochondrion_genome.wga.bed.gz dmel.dsim.dyak.Uextra.wga.bed.gz dmel.dsim.dyak.U.wga.bed.gz dmel.dsim.dyak.XHet.wga.bed.gz dmel.dsim.dyak.X.wga.bed.gz dmel.dsim.dyak.YHet.wga.bed.gz | bgzip -c > dmel.dsim.dyak.wga.bed.gz
-$ tabix dmel.dsim.dyak.wga.bed.gz
+$ tabix -pbed dmel.dsim.dyak.wga.bed.gz
 
-$ grep '>' ../genomes/dsimV2-Mar2012.rename.fa.masked.rename.fa | cut -d '.' -f 2 | while read i; do maf_to_bed.py -i dmel.dsim.dyak.maf.gz -r dsim -c $i | sort -k1,1 -k2,2n | bgzip -c > dsim.dmel.dyak.$i.wga.bed.gz; done
+$ grep '>' ../genomes/dsimV2-Mar2012.rename.fa.masked.rename.fa | cut -d '.' -f 2 | grep -v ^NODE | while read i; do maf_to_bed.py -i dmel.dsim.dyak.maf.gz -r dsim -c $i | sort -k1,1 -k2,2n | bgzip -c > dsim.dmel.dyak.$i.wga.bed.gz; done
+$ zcat dsim.dmel.dyak.2L.wga.bed.gz dsim.dmel.dyak.2R.wga.bed.gz dsim.dmel.dyak.3L.wga.bed.gz dsim.dmel.dyak.3R.wga.bed.gz dsim.dmel.dyak.4.wga.bed.gz dsim.dmel.dyak.mtDNA_siII.wga.bed.gz dsim.dmel.dyak.X.wga.bed.gz | bgzip -c > dsim.dmel.dyak.wga.bed.gz
+$ tabix -pbed dsim.dmel.dyak.wga.bed.gz
 ```
 
 ## Polarisation
 
-Variants were polarised using the whole genome alignment and a parsimony approach, where either the alternate or the reference allele had to be supported by all outgroups in the the alignment.
+Variants were polarised using the whole genome alignment and a parsimony approach, where either the alternate or the reference allele had to be supported by all outgroups in the the alignment to be considered ancestral.
 
 ```
 $ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub 
-$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub 
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub
 
-$
-$
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub
 ```
