@@ -35,8 +35,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * *D. melanogaster* reference genome: ``````
   * *D. melanogaster* annotation: ``````
   * *D. simulans* reference genome: ```dsimV2-Mar2012.fa``` available from: (<ref>)
-  * *D. simulans* annotation: ```dsim-all-r2.01.gff.gz``` available from: (<ftp://ftp.flybase.org/genomes/dsim/dsim_r2.01_FB2015_01/gff/>)
-  
+  * *D. simulans* annotation: ```dsimV2-clean.gff``` 
 ## BAM files
 
 | Region                     | _Drosophila melanogaster_   | _Drosophila simulans_     |
@@ -192,7 +191,7 @@ $ VQSR.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/consensus/dsim_42flys.gat
 
 ### Post VQSR filters
 
-Variants more than twice and half the mean coverage, longer than 50bp, multiallelic or located in repeat regions were then removed from the post VQSR (95% cutoff) data.
+Variants more than twice and half the mean coverage, longer than 50bp or multiallelic were then removed from the post VQSR (95% cutoff) data, additionally variants located in repeat regions were marked.
 
 ```
 $ cd /fastdata/bop15hjb/drosophila_data/dmel/vqsr/
@@ -215,7 +214,7 @@ $ ls $PWD/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdat
 | post VQSR (95%)    | 651767           | 1576167         | 2416349        |  7703545       |
 | depth              | 538762           | 1567823         | 2098303        |  7688121       |
 | length, allele no. | 453181           | 1194893         | 2066044        |  7285990       |
-| repeats            | 401692           | 1104572         | 1989033        |  7047712       |
+| repeats marked     | 401692           | 1104572         | 1989033        |  7047712       |
 
 ## Whole genome alignment
 
@@ -275,18 +274,18 @@ $ tabix -pbed dsim.dmel.dyak.wga.bed.gz
 Variants were polarised using the whole genome alignment and a parsimony approach, where either the alternate or the reference allele had to be supported by all outgroups in the the alignment to be considered ancestral.
 
 ```
-$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub 
-$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub
 
-$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub
-$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rfiltered.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub
+$ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.vcf -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub
 ```
 
 | Category           | _D. mel_ INDELs  | _D. sim_ INDELs | _D. mel_ SNPs  | _D. sim_ SNPs  |
 |:-------------------|:----------------:|:---------------:|:--------------:|:--------------:|
-|total               | 401692           | 1104572         | 1989033        | |
-|polarised           | **169930**       | **520235**      | **1035113**    | |
-|hotspots            | 95893            | 217824          | 136665         | |
-|low spp coverage    | 111834           | 311992          | 569893         | |
-|ambiguous           | 24035            | 54521           | 247362         | |
-|total unpolarised   | 231762           | 584337          | 953920         | |
+|total               | 453181           | 1194893         | 2066044        |         |
+|polarised           | **183617**       | **550739**      | **1058001**    | ****    |
+|hotspots            | 110409           | 238478          | 143392         |         |
+|low spp coverage    | 132674           | 347072          | 611511         |         |
+|ambiguous           | 26481            | 58604           | 253140         |         |
+|total unpolarised   | 269564           | 644154          | 1008043        |         |
