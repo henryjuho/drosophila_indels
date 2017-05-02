@@ -15,6 +15,8 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * VCFtools version 0.1.14
   * RepeatMasker version open-4.0.6
   * bedtools version 2.26.0
+  * pysam
+  * gffutils
 
 ## Scripts used in this pipeline
 
@@ -28,7 +30,8 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py         | repeat_masking.py           |
 | rm_out2bed.py              | repeat_filtering.py        | hardfilter.py                  | VQSR.py                     |
 | exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py | single_cov.py               |
-| roast.py                   | | | |
+| roast.py                   | polarise_vcf.py            | annotate_regions_all_chr.py    | vcf_region_annotater.py     |
+| catVCFs.py                 |        | | |
 
 ## Reference and annotation files required for analysis
 
@@ -292,3 +295,23 @@ $ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42
 
 
 ## Annotating genomic regions
+
+Variants were annotated as either 'CDS_non_frameshift' (all CDS SNPs, and CDS INDELs with lengths divisible by 3), 'CDS_frameshift', 'intron' or 'intergenic'.
+
+```
+$ annotate_regions_all_chr.py -gff /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-r5.34.gff.gz -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.vcf -evolgen
+$ annotate_regions_all_chr.py -gff /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-r5.34.gff.gz -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.vcf -evolgen
+
+$ annotate_regions_all_chr.py -gff /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-clean.gff.gz -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.vcf --feat_merge_gene_proxy -evolgen
+$ annotate_regions_all_chr.py -gff /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-clean.gff.gz -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.vcf --feat_merge_gene_proxy -evolgen
+```
+
+| Annotation category| _D. mel_ INDELs  | _D. sim_ INDELs | _D. mel_ SNPs  | _D. sim_ SNPs  |
+|:-------------------|:----------------:|:---------------:|:--------------:|:--------------:|
+|All                 | 453181           | 1194893         | 2066044        | 7285990        |
+|CDS_frameshift      | 1934             | 5221            | -              | -              |
+|CDS_non_frameshift  | 3744             | 7897            | 321224         | 1056151        |
+|Intron              | 228009           | 264000          | 870947         | 1352357        |
+|Intergenic          | 196042           | 871950          | 732757         | 4560035        |
+|Not annotated       | 23452            | 45825           | 141116         | 317447         |
+
