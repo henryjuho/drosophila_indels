@@ -283,9 +283,12 @@ $ polarise_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/post_vqsr/dsim_42
 
 | Category           | _D. mel_ INDELs  | _D. sim_ INDELs | _D. mel_ SNPs  | _D. sim_ SNPs  |
 |:-------------------|:----------------:|:---------------:|:--------------:|:--------------:|
-|total               | 453181           | 1194893         | 2066044        |         |
-|polarised           | **183617**       | **550739**      | **1058001**    | ****    |
-|hotspots            | 110409           | 238478          | 143392         |         |
-|low spp coverage    | 132674           | 347072          | 611511         |         |
-|ambiguous           | 26481            | 58604           | 253140         |         |
-|total unpolarised   | 269564           | 644154          | 1008043        |         |
+|total               | 453181           | 1194893         | 2066044        | 7285990        |
+|polarised           | **183617**       | **550739**      | **1058001**    | **3797732**    |
+|hotspots            | 110409           | 238478          | 143392         | 421157         |
+|low spp coverage    | 132674           | 347072          | 611511         | 2167057        |
+|ambiguous           | 26481            | 58604           | 253140         | 900044         |
+|total unpolarised   | 269564           | 644154          | 1008043        | 3488258        |
+
+
+## Annotating genomic regions
