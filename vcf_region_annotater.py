@@ -14,6 +14,9 @@ def main():
                         required=True)
     parser.add_argument('-vcf', help='VCF file to annotate variants in', required=True)
     parser.add_argument('-chr', help='Chromosome to annotate, must be consistent with GFF and VCF', required=True)
+    parser.add_argument('--feat_merge_gene_proxy', help='If specified will merge all features to get gene coords,'
+                                                        'only valid if only gene features annotated in gff',
+                        action='store_true', default=False)
     args = parser.parse_args()
 
     # variables
@@ -21,17 +24,20 @@ def main():
     chromo = args.chr
     vcf_file = args.vcf
     out_vcf = vcf_file.replace('.vcf', '.annotated.' + chromo + '.vcf')
+    gene_prox = args.feat_merge_gene_proxy
 
     # make coord sets
     introns = []
     cds = []
     genes = []
+    all_feat = []
     for line in gzip.open(gff):
         line = line.split('\t')
         if line[0] == chromo:
             gff_chromo, feature, feat_start, feat_end = line[0], line[2], int(line[3]), int(line[4])
 
             if chromo == gff_chromo:
+                all_feat += range(feat_start-1, feat_end)
                 if feature == 'gene':
                     genes += range(feat_start-1, feat_end)
                 elif feature == 'intron':
@@ -44,6 +50,7 @@ def main():
     introns = set(introns)
     cds = set(cds)
     genes = set(genes)
+    all_feat = set(all_feat)
 
     # annotation counters
     all_variants = 0
@@ -75,8 +82,12 @@ def main():
                         in_cds = True
 
                 in_intergenic = False
+                if gene_prox is False:
+                    coords = genes
+                else:
+                    coords = all_feat
                 for x in range(start, end):
-                    if x in genes:
+                    if x in coords:
                         break
                     else:
                         in_intergenic = True

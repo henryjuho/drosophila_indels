@@ -7,12 +7,16 @@ from qsub import *
 parser = argparse.ArgumentParser()
 parser.add_argument('-gff', help='GFF file to read annotations from, note squence names must match VCF', required=True)
 parser.add_argument('-vcf', help='VCF file to annotate variants in', required=True)
+parser.add_argument('--feat_merge_gene_proxy', help='If specified will merge all features to get gene coords,'
+                                                    'only valid if only gene features annotated in gff',
+                    action='store_true', default=False)
 parser.add_argument('-evolgen', help='If specified will run on evolgen', default=False, action='store_true')
 args = parser.parse_args()
 
 # variables
 gff = args.gff
 vcf = args.vcf
+gene_prox = args.feat_merge_gene_proxy
 evolgen = args.evolgen
 
 # get chromosome list
@@ -30,6 +34,8 @@ for chromo in chromo_list:
                         '-gff ' + gff + ' '
                         '-vcf ' + vcf + ' '
                         '-chr ' + chromo + ' ')
+    if gene_prox is True:
+        annotate_vcf_cmd += '--feat_merge_gene_proxy'
     out_vcf = vcf.replace('.vcf', '.annotated.' + chromo + '.vcf')
     vcf_outs.append(out_vcf)
     q_sub([annotate_vcf_cmd],
