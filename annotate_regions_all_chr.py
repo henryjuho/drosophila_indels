@@ -26,7 +26,7 @@ hold_list = []
 for chromo in chromo_list:
     chr_jid = 'annotation_' + chromo + '.sh'
     hold_list.append(chr_jid)
-    annotate_vcf_cmd = ('annotate_vcf_regions.py '
+    annotate_vcf_cmd = ('vcf_region_annotater.py '
                         '-gff ' + gff + ' '
                         '-vcf ' + vcf + ' '
                         '-chr ' + chromo + ' ')
