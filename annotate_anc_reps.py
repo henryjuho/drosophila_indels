@@ -52,6 +52,7 @@ def main():
     # adjust anno in vcf
     with open(anno_vcf, 'w') as out_vcf:
         for line in open(vcf):
+            line = line.rstrip('\n')
             if line.startswith('#'):
                 print(line, file=out_vcf)
             else:
