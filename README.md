@@ -17,6 +17,8 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * bedtools version 2.26.0
   * pysam
   * gffutils
+  * tabix
+  * bgzip
 
 ## Scripts used in this pipeline
 
@@ -31,7 +33,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | rm_out2bed.py              | repeat_filtering.py        | hardfilter.py                  | VQSR.py                     |
 | exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py | single_cov.py               |
 | roast.py                   | polarise_vcf.py            | annotate_regions_all_chr.py    | vcf_region_annotater.py     |
-| catVCFs.py                 |        | | |
+| catVCFs.py                 | annotate_anc_reps.py       | | |
 
 ## Reference and annotation files required for analysis
 
@@ -314,4 +316,22 @@ $ annotate_regions_all_chr.py -gff /fastdata/bop15hjb/drosophila_data/dsim_ref/d
 |Intron              | 228009           | 264000          | 870947         | 1352357        |
 |Intergenic          | 196042           | 871950          | 732757         | 4560035        |
 |Not annotated       | 23452            | 45825           | 141116         | 317447         |
+
+## Annotating ancestral repeats
+
+Coordinates for regions that were soft masked across all genomes in the whole genome alignment were extracted and used to annotated intergenic variants.
+
+```
+$ cd /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/
+$ zcat dmel.dsim.dyak.wga.bed.gz | ancestral_repeat_extract.py | bgzip -c > dmel_ancestral_repeats.wga.bed.gz
+$ zcat dsim.dmel.dyak.wga.bed.gz | ancestral_repeat_extract.py | bgzip -c > dsim_ancestral_repeats.wga.bed.gz
+
+$ cd /fastdata/bop15hjb/drosophila_data/
+
+$ annotate_anc_reps.py -bed wga/multiple_alignment/dmel_ancestral_repeats.wga.bed.gz -vcf dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.vcf -trim_non_anc_reps
+$ annotate_anc_reps.py -bed wga/multiple_alignment/dmel_ancestral_repeats.wga.bed.gz -vcf dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.vcf -trim_non_anc_reps
+
+$ annotate_anc_reps.py -bed wga/multiple_alignment/dsim_ancestral_repeats.wga.bed.gz -vcf dsim/post_vqsr/dsim_42flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.vcf -trim_non_anc_reps
+$ annotate_anc_reps.py -bed wga/multiple_alignment/dsim_ancestral_repeats.wga.bed.gz -vcf dsim/post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.vcf -trim_non_anc_reps
+```
 
