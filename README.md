@@ -335,3 +335,9 @@ $ annotate_anc_reps.py -bed wga/multiple_alignment/dsim_ancestral_repeats.wga.be
 $ annotate_anc_reps.py -bed wga/multiple_alignment/dsim_ancestral_repeats.wga.bed.gz -vcf dsim/post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.vcf -trim_non_anc_reps
 ```
 
+| Category           | _D. mel_ INDELs  | _D. sim_ INDELs | _D. mel_ SNPs  | _D. sim_ SNPs  |
+|:-------------------|:----------------:|:---------------:|:--------------:|:--------------:|
+| before annotation  | 453181           | 1194893         | 2066044        | 7285990        |
+| intergenic ARs     | 3993             | 14941           | 5753           | 36359          |
+| non ARs removed    | 47496            | 75380           | 71258          | 201919         |
+| after annotation   | 405685           | 1119513         | 1994786        | 7084071        |
