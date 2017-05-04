@@ -33,4 +33,7 @@ for m in mode_dict[mode]:
                    '-region {} '
                    '| sort | uniq -c | while read i; do echo " "$i; done | tr -s " " '
                    '> {}').format(vcf, m, r, new_out)
+
+        if r == 'ALL':
+            sfs_cmd.replace('-region ALL ', '')
         q_sub([sfs_cmd], out=new_out.replace('.txt', ''), evolgen=evolgen)
