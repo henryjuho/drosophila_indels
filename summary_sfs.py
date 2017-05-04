@@ -35,5 +35,5 @@ for m in mode_dict[mode]:
                    '> {}').format(vcf, m, r, new_out)
 
         if r == 'ALL':
-            sfs_cmd.replace('-region ALL ', '')
+            sfs_cmd = sfs_cmd.replace('-region ALL ', '')
         q_sub([sfs_cmd], out=new_out.replace('.txt', ''), evolgen=evolgen)
