@@ -64,12 +64,17 @@ def main():
                         continue
                     print(line, file=out_vcf)
                 else:
-                    if 'ANNO=intergenic' not in line:
+                    if 'ANNO=intergenic' in line:
+                        line = line.replace('ANNO=intergenic', 'ANNO=intergenic_ar')
+                        print(line, file=out_vcf)
+
+                    elif 'ANNO=intron' in line:
+                        line = line.replace('ANNO=intron', 'ANNO=intron_ar')
+                        print(line, file=out_vcf)
+
+                    else:
                         if trim is True:
                             continue
-                        print(line, file=out_vcf)
-                    else:
-                        line = line.replace('ANNO=intergenic', 'ANNO=intergenic_ar')
                         print(line, file=out_vcf)
 
 if __name__ == '__main__':
