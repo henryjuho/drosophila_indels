@@ -18,14 +18,16 @@ out = args.out
 spp = args.spp
 mode = args.mode
 mode_dict = {'SNP': ['snp'], 'INDEL': ['ins', 'del']}
-region_dict = {'SNP': ['ALL', 'CDS_non_frameshift', 'intron', 'intergenic', 'intergenic_ar'],
-               'INDEL': ['ALL', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'intergenic_ar']}
+region_dict = {'SNP': ['ALL', 'CDS_non_frameshift', 'intron', 'intergenic', 'ar'],
+               'INDEL': ['ALL', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'ar']}
 evolgen = args.evolgen
 
 # SFS
 for m in mode_dict[mode]:
     for r in region_dict[mode]:
         new_out = '{}{}_{}_{}.sfs.txt'.format(out, spp, m, r.replace('_', ''))
+        if r == 'ar':
+            r = 'intergenic_ar -region intron_ar'
         sfs_cmd = ('~/sfs_utils/vcf2raw_sfs.py '
                    '-vcf {} '
                    '-mode {} '
