@@ -33,7 +33,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | rm_out2bed.py              | repeat_filtering.py        | hardfilter.py                  | VQSR.py                     |
 | exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py | single_cov.py               |
 | roast.py                   | polarise_vcf.py            | annotate_regions_all_chr.py    | vcf_region_annotater.py     |
-| catVCFs.py                 | annotate_anc_reps.py       | | |
+| catVCFs.py                 | annotate_anc_reps.py       | callable_sites_from_vcf.py     | |
 
 ## Reference and annotation files required for analysis
 
@@ -338,6 +338,32 @@ $ annotate_anc_reps.py -bed wga/multiple_alignment/dsim_ancestral_repeats.wga.be
 | Category           | _D. mel_ INDELs  | _D. sim_ INDELs | _D. mel_ SNPs  | _D. sim_ SNPs  |
 |:-------------------|:----------------:|:---------------:|:--------------:|:--------------:|
 | before annotation  | 453181           | 1194893         | 2066044        | 7285990        |
-| intergenic ARs     | 3993             | 14941           | 5753           | 36359          |
-| non ARs removed    | 47496            | 75380           | 71258          | 201919         |
-| after annotation   | 405685           | 1119513         | 1994786        | 7084071        |
+| non-coding ARs     | 8153             | 18178           | 11040          | 43839          |
+| non ARs removed    | 43336            | 72143           | 65971          | 194439         |
+| after annotation   | 409845           | 1122750         | 2000073        | 7091551        |
+
+## Subsetting **D. simulans** data to MD lines
+
+The **D. simulans** data was subset to only include MD lines from the putatively ancestral range in Madagascar.
+
+```
+$ cd /fastdata/bop15hjb/drosophila_data/dsim/subsetted/
+$ bcftools_new view -O v -a -c 1 -S MD_IDs.txt  ../post_vqsr/dsim_42flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf > dsim_21flys_MD.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf
+$ bcftools_new view -O v -a -c 1 -S MD_IDs.txt ../post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf > dsim_21flys_MD.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf
+```
+
+## Generating callable sites fastas
+
+Fasta files of callable sites were created for both species using the following codes, 0 for 'N's, 1 for not callable, 2 for callable and 3 for callable ancestral repeats.
+
+```
+$ mkdir /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites
+$ bgzip /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf
+$ tabix -pvcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf.gz
+$ callable_sites_from_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf.gz -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.out.bed -ar_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel_ancestral_repeats.wga.bed.gz  -mean_depth 20 -N 17  -out /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable -sub
+
+$ mkdir /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites
+$ bgzip /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf
+$ tabix -pvcf /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf.gz 
+$ callable_sites_from_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf.gz -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed -ar_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim_ancestral_repeats.wga.bed.gz -mean_depth 46 -N 42 -out /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites/dsim.callable -sub 
+```
