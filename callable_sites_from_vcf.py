@@ -47,7 +47,7 @@ if args.sub is True:
         jid_list = []
         for chromo in chromo_list:
             output_fasta_list.append(out + '.' + chromo + '.fa')
-            jid = chromo + '.callablesites.sh'
+            jid = 'callsites_' + chromo + '.sh'
             jid_list.append(jid)
             command_line = ('./callable_sites_from_vcf.py '
                             '-vcf ' + all_sites + ' '
