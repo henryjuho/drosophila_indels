@@ -41,7 +41,7 @@ if args.sub is True:
 
         # gen chromo list and submit job for each
         grep_cmd = ('zcat ' + all_sites +
-                    ' | head -n 4000 | grep ^##contig | cut -d "," -f 1 | cut -d "=" -f 3 | grep -v ^NODE')
+                    ' | head -n 20000 | grep ^##contig | cut -d "," -f 1 | cut -d "=" -f 3 | grep -v ^NODE')
         chromo_list = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split('\n')[:-1]
         output_fasta_list = []
         jid_list = []
