@@ -10,7 +10,7 @@ import gzip
 parser = argparse.ArgumentParser()
 parser.add_argument('-vcf', help='Allsites vcf to apply filters to and get callable sites', required=True)
 parser.add_argument('-bed', '--bed_repeats', help='BED file with repeat regions listed', required=True)
-parser.add_argument('-ar_bed', '--LINE_bed', help='BED file of ancestral repeats', default='None')
+parser.add_argument('-ar_bed', '--ar_bed', help='BED file of ancestral repeats', default='None')
 parser.add_argument('-DF', '--DepthFilter',
                     help='Defines abnormal depth eg) 2 means abnormal depth is twice and half the mean depth',
                     default=2.0, type=float)
@@ -53,7 +53,7 @@ if args.sub is True:
             command_line = ('./callable_sites_from_vcf.py '
                             '-vcf ' + all_sites + ' '
                             '-bed ' + repeat_bed + ' '
-                            '-LINE_bed ' + line_bed + ' '
+                            '-ar_bed ' + line_bed + ' '
                             '-DF ' + str(filter_factor) + ' '
                             '-mean_depth ' + str(all_data_mean_depth) + ' '
                             '-N ' + str(no_indiv) + ' '
@@ -71,7 +71,7 @@ if args.sub is True:
         command_line = ('./callable_sites_from_vcf.py '
                         '-vcf ' + all_sites + ' '
                         '-bed ' + repeat_bed + ' '
-                        '-LINE_bed ' + line_bed + ' '
+                        '-ar_bed ' + line_bed + ' '
                         '-DF ' + str(filter_factor) + ' '
                         '-mean_depth ' + str(all_data_mean_depth) + ' '
                         '-N ' + str(no_indiv) + ' '
