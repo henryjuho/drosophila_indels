@@ -49,7 +49,7 @@ if args.sub is True:
             output_fasta_list.append(out + '.' + chromo + '.fa')
             jid = 'callsites_' + chromo + '.sh'
             jid_list.append(jid)
-            command_line = ('./callable_sites_from_vcf.py '
+            command_line = ('callable_sites_from_vcf.py '
                             '-vcf ' + all_sites + ' '
                             '-bed ' + repeat_bed + ' '
                             '-ar_bed ' + line_bed + ' '
@@ -67,7 +67,7 @@ if args.sub is True:
 
     else:
         # submit script for chromosome
-        command_line = ('./callable_sites_from_vcf.py '
+        command_line = ('callable_sites_from_vcf.py '
                         '-vcf ' + all_sites + ' '
                         '-bed ' + repeat_bed + ' '
                         '-ar_bed ' + line_bed + ' '
