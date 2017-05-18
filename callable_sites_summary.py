@@ -13,23 +13,23 @@ def ranges(i):
         yield b[0][1], b[-1][1]
 
 
-def gff_regions(gff_file, chromo_list):
+def gff_regions(gff_file, chromo):
 
     # dict holding region coords for each chromosome
     features = ['CDS', 'intron', 'gene', 'all_feat']
-    region_dict = {z: {y: [] for y in features} for z in chromo_list}
+    region_dict = {y: [] for y in features}
 
     # make coord sets
     for line in gzip.open(gff_file):
         line = line.split('\t')
-        if line[0] in region_dict.keys():
+        if line[0] == chromo:
             gff_chromo, feature, feat_start, feat_end = line[0], line[2], int(line[3]), int(line[4])
 
-            region_dict[gff_chromo]['all_feat'] += range(feat_start - 1, feat_end)
+            region_dict['all_feat'] += range(feat_start - 1, feat_end)
             if feature in features:
-                region_dict[gff_chromo][feature] += range(feat_start - 1, feat_end)
+                region_dict[feature] += range(feat_start - 1, feat_end)
 
-    region_dict = {k1: {k2: set(region_dict[k1][k2]) for k2 in region_dict[k1].keys()} for k1 in region_dict.keys()}
+    region_dict = {k2: set(region_dict[k2]) for k2 in region_dict.keys()}
 
     return region_dict
 
@@ -49,11 +49,11 @@ def main():
     chr_list = [x.rstrip() for x in open(args.chr_list)]
     regions = ['all', 'CDS', 'intron', 'intergenic', 'AR']
     call_data = {x: {y: 0 for y in regions} for x in ['total'] + chr_list}  # {chromo: {all: 0, CDS: 0, intron: 0 ...}}
-    region_coords = gff_regions(gff, chr_list)
 
     # get call sites for all chr and regions
     for chromo in chr_list:
         fasta_string = fa.fetch(chromo)
+        region_coords = gff_regions(gff, chromo)
         for region in regions:
             if region == 'all':
                 callable_sites = fasta_string.count('2')
@@ -62,9 +62,9 @@ def main():
             elif region == 'intergenic':
 
                 # need to reverse engineer intergenic coords
-                gene_coords = region_coords[chromo]['gene']
+                gene_coords = region_coords['gene']
                 if len(gene_coords) == 0:
-                    gene_coords = region_coords[chromo]['all_feat']
+                    gene_coords = region_coords['all_feat']
 
                 # invert
                 intergenic_coords = [i for i in range(0, len(fasta_string)) if i not in gene_coords]
