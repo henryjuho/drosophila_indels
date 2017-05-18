@@ -73,7 +73,7 @@ def main():
                 callable_sites = ''.join([fasta_string[x[0]: x[1]+1] for x in intergenic_coords]).count('2')
 
             else:
-                coords = list(ranges(sorted(list(region_coords[chromo][region]))))
+                coords = list(ranges(sorted(list(region_coords[region]))))
                 callable_sites = ''.join([fasta_string[x[0]: x[1] + 1] for x in coords]).count('2')
 
             call_data[chromo][region] += callable_sites
