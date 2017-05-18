@@ -105,7 +105,16 @@ counter = 0
 seq_count = 0
 fasta_string = '>' + chromosome
 with open(fasta_out, 'w') as out_fa:
+    prev_position = 0
     for line in VariantFile(all_sites).fetch(chromosome):
+
+        # catch missing sites in allsites (new gatk3.7 feature)
+        position = int(line.pos)
+        diff = position - prev_position
+        if diff != 1:
+            missed_bases = ''.join(['1' for i in range(0, diff-1)])
+            fasta_string += missed_bases
+        prev_position = position
 
         # add line break every 60 bases
         if counter % 60 == 0:
