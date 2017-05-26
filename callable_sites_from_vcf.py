@@ -236,13 +236,15 @@ def main():
 
     # loop through allsites for chromosome
     counter = 0
-    fasta_string = '>' + chromosome
+    fasta_string = '>' + chromosome + '\n'
     if pol != 'None':
         wga_bed = pysam.TabixFile(pol)
     else:
         wga_bed = None
 
     with open(fasta_out, 'w') as out_fa:
+        out_fa.write(fasta_string)
+        fasta_string = ''
         prev_position = 0
         for line in VariantFile(all_sites).fetch(chromosome):
 
