@@ -174,7 +174,8 @@ def main():
             # gen chromo list and submit job for each
             grep_cmd = ('zcat ' + all_sites +
                         ' | head -n 20000 | grep ^##contig | cut -d "," -f 1 | cut -d "=" -f 3 | grep -v ^NODE')
-            chromo_list = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split('\n')[:-1]
+            chromo_list = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, shell=True)\
+                .communicate()[0].split('\n')[:-1]
             output_fasta_list = []
             jid_list = []
             for chromo in chromo_list:
@@ -191,7 +192,7 @@ def main():
                                 '-chr ' + chromo + ' '
                                 '-pol ' + pol + ' '
                                 '-out ' + out)
-                q_sub([command_line], out + '.' + chromo, jid=jid, evolgen=evolgen)
+                q_sub([command_line], out + '.' + chromo, jid=jid, evolgen=evolgen, t=48)
 
             # cat job for final output
             cat_cmd = 'cat ' + ' '.join(output_fasta_list) + ' > ' + fasta_out
@@ -210,7 +211,7 @@ def main():
                             '-chr ' + chromosome + ' '
                             '-pol ' + pol + ' '
                             '-out ' + out)
-            q_sub([command_line], out, evolgen=evolgen)
+            q_sub([command_line], out, evolgen=evolgen, t=48)
             sys.exit()
 
     # catch -all specified without -sub
@@ -266,13 +267,6 @@ def main():
                     fasta_string = fasta_string[60:]
             counter += 1
 
-            # check if polarisable
-            if pol != 'None':
-                can_polarise = polarisable(line, wga_bed)[0]
-                if can_polarise is False:
-                    fasta_string += '1'
-                    continue
-
             # check for ns
             if line.ref == 'N':
                 fasta_string += '0'
@@ -290,12 +284,35 @@ def main():
 
                 # repeat filter
                 if line.pos not in repeats:
-                    fasta_string += '2'
-                    continue
+
+                    # check if polarisable
+                    if pol != 'None':
+                        can_polarise = polarisable(line, wga_bed)[0]
+                        if can_polarise is False:
+                            fasta_string += 'k'
+                            continue
+                        else:
+                            fasta_string += 'K'
+                            continue
+                    else:
+                        fasta_string += 'k'
+                        continue
 
                 else:
                     if line.pos in lines:
-                        fasta_string += '3'
+
+                        # check if polarisable
+                        if pol != 'None':
+                            can_polarise = polarisable(line, wga_bed)[0]
+                            if can_polarise is False:
+                                fasta_string += 'r'
+                                continue
+                            else:
+                                fasta_string += 'R'
+                                continue
+                        else:
+                            fasta_string += 'r'
+                            continue
                     else:
                         fasta_string += '1'
                     continue
