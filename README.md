@@ -33,7 +33,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | rm_out2bed.py              | repeat_filtering.py        | hardfilter.py                  | VQSR.py                     |
 | exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py | single_cov.py               |
 | roast.py                   | polarise_vcf.py            | annotate_regions_all_chr.py    | vcf_region_annotater.py     |
-| catVCFs.py                 | annotate_anc_reps.py       | callable_sites_from_vcf.py     | |
+| catVCFs.py                 | annotate_anc_reps.py       | callable_sites_from_vcf.py     | callable_sites_summary.py   |
 
 ## Reference and annotation files required for analysis
 
@@ -41,6 +41,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * *D. melanogaster* annotation: ``````
   * *D. simulans* reference genome: ```dsimV2-Mar2012.fa``` available from: (<ref>)
   * *D. simulans* annotation: ```dsimV2-clean.gff``` 
+
 ## BAM files
 
 | Region                     | _Drosophila melanogaster_   | _Drosophila simulans_     |
@@ -354,16 +355,27 @@ $ bcftools_new view -O v -a -c 1 -S MD_IDs.txt ../post_vqsr/dsim_42flys.gatk.raw
 
 ## Generating callable sites fastas
 
-Fasta files of callable sites were created for both species using the following codes, 0 for 'N's, 1 for not callable, 2 for callable and 3 for callable ancestral repeats.
+Fasta files of callable sites were created and summarised for both species using the following codes:
+
+| Case            | code  |
+|:----------------|:-----:|
+| N               | 0     |
+| Filtered        | 1     |
+| Pass polarised  | K     |
+| Pass unpolarised| k     |
+| AR polarised    | R     |
+| AR unpolarised  | r     |
 
 ```
 $ mkdir /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites
 $ bgzip /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf
 $ tabix -pvcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf.gz
-$ callable_sites_from_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf.gz -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.out.bed -ar_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel_ancestral_repeats.wga.bed.gz  -mean_depth 20 -N 17  -out /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable -sub
+$ callable_sites_from_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf.gz -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.out.bed -ar_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel_ancestral_repeats.wga.bed.gz  -mean_depth 20 -N 17  -out /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable -pol /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub -evolgen
+$ callable_sites_summary.py -gff /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-r5.34.gff.gz -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -chr_list /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_chr_order.txt > /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv
 
 $ mkdir /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites
 $ bgzip /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf
 $ tabix -pvcf /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf.gz 
-$ callable_sites_from_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf.gz -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed -ar_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim_ancestral_repeats.wga.bed.gz -mean_depth 46 -N 42 -out /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites/dsim.callable -sub 
+$ callable_sites_from_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf.gz -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed -ar_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim_ancestral_repeats.wga.bed.gz -mean_depth 46 -N 42 -out /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites/dsim.callable -pol /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub -evolgen
+$ callable_sites_summary.py -gff /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-clean.gff.gz -call_fa /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites/dsim.callable.ALL.fa -chr_list /fastdata/bop15hjb/drosophila_data/dsim_ref/dsim_chr_list.txt > /fastdata/bop15hjb/drosophila_data/dsim_ref/dsim.callablesites.summary.csv
 ```
