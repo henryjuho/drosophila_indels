@@ -47,8 +47,8 @@ def main():
     gff = args.gff
     fa = pysam.FastaFile(args.call_fa)
     chr_list = [x.rstrip() for x in open(args.chr_list)]
-    regions = ['all', 'CDS', 'intron', 'intergenic', 'AR']
-    call_data = {x: {y: {'all': 0, 'pol': 0} for y in regions} for x in ['total'] + chr_list}
+    regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR']
+    call_data = {x: {y: {'ALL': 0, 'POL': 0} for y in regions} for x in ['ALL'] + chr_list}
     # {chromo: {all: 0, CDS: 0, intron: 0 ...}}
 
     # get call sites for all chr and regions
@@ -56,7 +56,7 @@ def main():
         fasta_string = fa.fetch(chromo)
         region_coords = gff_regions(gff, chromo)
         for region in regions:
-            if region == 'all':
+            if region == 'ALL':
                 callable_sites_all = fasta_string.upper().count('K')
                 callable_sites_pol = fasta_string.count('K')
             elif region == 'AR':
@@ -80,17 +80,17 @@ def main():
                 callable_sites_all = ''.join([fasta_string[x] for x in coords]).upper().count('K')
                 callable_sites_pol = ''.join([fasta_string[x] for x in coords]).count('K')
 
-            call_data[chromo][region]['all'] += callable_sites_all
-            call_data[chromo][region]['pol'] += callable_sites_pol
+            call_data[chromo][region]['ALL'] += callable_sites_all
+            call_data[chromo][region]['POL'] += callable_sites_pol
 
-            call_data['total'][region]['all'] += callable_sites_all
-            call_data['total'][region]['pol'] += callable_sites_pol
+            call_data['ALL'][region]['ALL'] += callable_sites_all
+            call_data['ALL'][region]['POL'] += callable_sites_pol
 
     # output sites
     print(','.join(['contig', 'region', 'all_callable', 'pol_callable']))
     for seq in sorted(call_data.keys()):
         for reg in call_data[seq].keys():
-            print(','.join([seq, reg, str(call_data[seq][reg]['all']), str(call_data[seq][reg]['pol'])]))
+            print(','.join([seq, reg, str(call_data[seq][reg]['ALL']), str(call_data[seq][reg]['POL'])]))
 
 if __name__ == '__main__':
     main()
