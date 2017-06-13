@@ -120,22 +120,29 @@ def main():
         # for each region
         for region in regions:
 
+            if region == 'ALL':
+                region_flag = ''
+            elif region == 'CDS':
+                region_flag = ' -region CDS_frameshift -region CDS_non_frameshift'
+            else:
+                region_flag = ' -region ' + region
+
             all_callable = callable_sites[chromo][region.split('_')[0]]['all']
             pol_callable = callable_sites[chromo][region.split('_')[0]]['pol']
 
             if mode is 'SNP':
-                snp_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {} -region {} -mode snp -folded {}'
-                                     .format(vcf_file, chromo, region, sex_flag))
+                snp_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode snp -folded {}'
+                                     .format(vcf_file, chromo, region_flag, sex_flag))
 
                 sfs_list = [([float(x) for x in snp_sfs], 'snp', all_callable)]
 
             else:
-                del_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {} -region {} -mode del {}'
-                                     .format(vcf_file, chromo, region, sex_flag))
-                ins_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {} -region {} -mode ins {}'
-                                     .format(vcf_file, chromo, region, sex_flag))
-                indel_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {} -region {} -mode indel -folded {}'
-                                       .format(vcf_file, chromo, region, sex_flag))
+                del_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode del {}'
+                                     .format(vcf_file, chromo, region_flag, sex_flag))
+                ins_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {}{} -mode ins {}'
+                                     .format(vcf_file, chromo, region_flag, sex_flag))
+                indel_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {}{} -mode indel -folded {}'
+                                       .format(vcf_file, chromo, region_flag, sex_flag))
 
                 sfs_list = [([float(x) for x in del_sfs], 'del', pol_callable),
                             ([float(x) for x in ins_sfs], 'ins', pol_callable),
