@@ -127,7 +127,7 @@ def main():
                 snp_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {} -region {} -mode snp -folded {}'
                                      .format(vcf_file, chromo, region, sex_flag))
 
-                sfs_list = [(snp_sfs, 'snp', all_callable)]
+                sfs_list = [(snp_sfs, 'snp', [float(x) for x in all_callable])]
 
             else:
                 del_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {} -region {} -mode del {}'
@@ -137,9 +137,9 @@ def main():
                 indel_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {} -region {} -mode indel -folded {}'
                                        .format(vcf_file, chromo, region, sex_flag))
 
-                sfs_list = [(del_sfs, 'del', pol_callable),
-                            (ins_sfs, 'ins', pol_callable),
-                            (indel_sfs, 'indel', all_callable)]
+                sfs_list = [(del_sfs, 'del', [float(x) for x in pol_callable]),
+                            (ins_sfs, 'ins', [float(x) for x in pol_callable]),
+                            (indel_sfs, 'indel', [float(x) for x in all_callable])]
 
             # process all mute type sfs
             for mute_sfs in sfs_list:
