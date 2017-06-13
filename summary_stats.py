@@ -144,13 +144,16 @@ def main():
             # process all mute type sfs
             for mute_sfs in sfs_list:
 
-                tw = theta_w(n, len(mute_sfs[0])) / mute_sfs[2]
-                pi_val = pi(n, mute_sfs[0]) / mute_sfs[2]
-                tajd = tajimas_d(n, mute_sfs[0])
+                try:
+                    tw = theta_w(n, len(mute_sfs[0])) / mute_sfs[2]
+                    pi_val = pi(n, mute_sfs[0]) / mute_sfs[2]
+                    tajd = tajimas_d(n, mute_sfs[0])
+                except ZeroDivisionError:
+                    tw, pi_val, tajd = 0.0, 0.0, 0.0
 
                 # bootstrapping
 
-                if bootstrap == 0:
+                if bootstrap == 0 or mute_sfs[2] == 0.0:
 
                     # set cis for output if no bootsrapping
                     ci_tw = [0, 0]
