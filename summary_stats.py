@@ -51,7 +51,10 @@ def read_callable_csv(csv):
         if not line.startswith('contig'):
             info = line.rstrip().split(',')
             contig, reg, all_call, pol_call = info
-            call_sites[contig] = {reg: {'all': float(all_call), 'pol': float(pol_call)}}
+            if contig not in call_sites.keys():
+                call_sites[contig] = {reg: {'all': float(all_call), 'pol': float(pol_call)}}
+            else:
+                call_sites[contig][reg] = {'all': float(all_call), 'pol': float(pol_call)}
     return call_sites
 
 
