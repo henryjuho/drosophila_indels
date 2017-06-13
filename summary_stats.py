@@ -75,6 +75,8 @@ def main():
     parser.add_argument('-bootstrap', help='If specified will perform the requested number of rounds of bootstrapping',
                         default=0)
     parser.add_argument('-no_sex', help='If specified will skip sex chromosomes', default=False, action='store_true')
+    parser.add_argument('-per_chromo', help='If specified will print per chromosome stats as well as genome wide',
+                        default=False, action='store_true')
     parser.add_argument('-md', help='If specified will output in markdown table format', default=False,
                         action='store_true')
     args = parser.parse_args()
@@ -92,7 +94,11 @@ def main():
         sex_flag = ''
     n = int(popen_grab('zgrep ^#CHROM {} | wc -w'.format(vcf_file))[0]) - 9  # 9 columns before sample IDs in VCF
 
-    chromo_list = popen_grab('zgrep -v ^# {} | cut -f 1 | uniq'.format(vcf_file))
+    if args.per_chromo:
+        chromo_list = popen_grab('zgrep -v ^# {} | cut -f 1 | uniq'.format(vcf_file))
+    else:
+        chromo_list = []
+
     sex_chromos = {'chrZ', 'Z', 'chrW', 'W', 'X', 'XHet', 'Y', 'YHet'}
 
     if mode is 'SNP':
