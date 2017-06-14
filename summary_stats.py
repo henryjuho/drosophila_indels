@@ -6,6 +6,7 @@ from qsub import *
 import math
 import random
 import numpy
+import sys
 
 
 def popen_grab(cmd):
@@ -79,7 +80,14 @@ def main():
                         default=False, action='store_true')
     parser.add_argument('-md', help='If specified will output in markdown table format', default=False,
                         action='store_true')
+    parser.add_argument('-sub', help='If specified will submit script to cluster', action='store_true', default=False)
     args = parser.parse_args()
+
+    # submission loop
+    if args.sub is True:
+        command_line = [' '.join([x for x in sys.argv if x != '-sub'])]
+        q_sub(command_line, out=args.vcf.replace('.vcf.qz', '.summary'))
+        sys.exit()
 
     # variables
     vcf_file = args.vcf
