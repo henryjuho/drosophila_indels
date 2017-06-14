@@ -141,6 +141,8 @@ def main():
                 region_flag = ''
             elif region == 'CDS':
                 region_flag = ' -region CDS_frameshift -region CDS_non_frameshift'
+            elif region == 'AR':
+                region_flag = ' -region intergenic_ar -region intron_ar'
             else:
                 region_flag = ' -region ' + region
 
