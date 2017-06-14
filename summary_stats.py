@@ -81,12 +81,15 @@ def main():
     parser.add_argument('-md', help='If specified will output in markdown table format', default=False,
                         action='store_true')
     parser.add_argument('-sub', help='If specified will submit script to cluster', action='store_true', default=False)
+    parser.add_argument('-out', help='Output file if submitted')
     args = parser.parse_args()
 
     # submission loop
     if args.sub is True:
-        command_line = [' '.join([x for x in sys.argv if x != '-sub'])]
-        q_sub(command_line, out=args.vcf.replace('.vcf.qz', '.summary'))
+        if args.out is None:
+            sys.exit('-out must be specified in conjunction with -sub')
+        command_line = [' '.join([x for x in sys.argv if x != '-sub']) + ' > ' + args.out]
+        q_sub(command_line, out=args.out)
         sys.exit()
 
     # variables
