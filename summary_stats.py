@@ -115,7 +115,8 @@ def main():
     if mode is 'SNP':
         regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR']
     else:
-        regions = ['ALL', 'CDS', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'AR']
+        regions = ['ALL', 'CDS', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'AR',
+                   'intron_ar', 'intergenic_ar']
 
     # write header
     if markdown is True:
