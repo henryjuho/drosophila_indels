@@ -1,6 +1,8 @@
 import sys
 
 for line in sys.stdin:
+    if line.startswith('##FASTA'):
+        break
     split_line = line.split('\t')
     try:
         start, end = int(split_line[3]), int(split_line[4])
