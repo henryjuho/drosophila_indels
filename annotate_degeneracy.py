@@ -25,7 +25,7 @@ evolgen = args.evolgen
 # get chromosome list
 grep_cmd = 'grep -v ^# ' + vcf + ' | cut -f 1 | uniq'
 chromo_list = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split('\n')[:-1]
-#chromo_list = [x for x in chromo_list if x.startswith('chr')]
+# chromo_list = [x for x in chromo_list if x.startswith('chr')]
 
 # loop through chromo list and submit annotation job for each
 vcf_outs = []
@@ -36,7 +36,7 @@ for chromo in chromo_list:
     out_vcf = out_dir + vcf[vcf.rfind('/')+1:].replace('.vcf', '.degen.' + chromo + '.vcf')
 
     # command to annotate chromosomal vcf
-    annotate_degen_cmd = ('./annotate_degen_chr_2.py '
+    annotate_degen_cmd = ('annotate_degen_chr_2.py '
                           '-gff ' + gff + ' '
                           '-vcf ' + vcf + ' '
                           '-ref ' + ref + ' '
@@ -52,7 +52,7 @@ for chromo in chromo_list:
           evolgen=evolgen)
 
 # submit concat job
-cat_cmd = ('./catVCFs.py '
+cat_cmd = ('catVCFs.py '
            '-out_vcf ' + out_dir + vcf[vcf.rfind('/')+1:].replace('.vcf', '.degen.vcf'))
 for out_vcf in vcf_outs:
     cat_cmd += ' -vcf ' + out_vcf
