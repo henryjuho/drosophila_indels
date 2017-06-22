@@ -25,7 +25,7 @@ evolgen = args.evolgen
 # get chromosome list
 grep_cmd = 'grep -v ^# ' + vcf + ' | cut -f 1 | uniq'
 chromo_list = subprocess.Popen(grep_cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split('\n')[:-1]
-chromo_list = [x for x in chromo_list if x.startswith('chr')]
+#chromo_list = [x for x in chromo_list if x.startswith('chr')]
 
 # loop through chromo list and submit annotation job for each
 vcf_outs = []
