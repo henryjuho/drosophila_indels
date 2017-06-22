@@ -8,6 +8,7 @@ import subprocess
 def snp_cds(gff, chromo, snp_position):
     grep = 'tabix {} {}:{}-{} | grep CDS'.format(gff, chromo, snp_position, snp_position+1)
     cds_record = subprocess.Popen(grep, shell=True, stdout=subprocess.PIPE).communicate()[0].split('\n')[:-1]
+    cds_record = [x for x in cds_record if x.split('\t')[2] == 'CDS']
     if len(cds_record) == 0:
         return False
     else:
