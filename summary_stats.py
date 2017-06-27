@@ -81,6 +81,7 @@ def main():
     parser.add_argument('-md', help='If specified will output in markdown table format', default=False,
                         action='store_true')
     parser.add_argument('-sub', help='If specified will submit script to cluster', action='store_true', default=False)
+    parser.add_argument('-evolgen', help='If specified will submit to lab queue', default=False, action='store_true')
     parser.add_argument('-out', help='Output file if submitted')
     args = parser.parse_args()
 
@@ -88,8 +89,12 @@ def main():
     if args.sub is True:
         if args.out is None:
             sys.exit('-out must be specified in conjunction with -sub')
-        command_line = [' '.join([x for x in sys.argv if x != '-sub']) + ' > ' + args.out]
-        q_sub(command_line, out=args.out)
+        command_line = [' '.join([x for x in sys.argv if x != '-sub' and x != '-evolgen']) + ' > ' + args.out]
+        if args.bootstrap != 0:
+            t = 48
+        else:
+            t = 8
+        q_sub(command_line, out=args.out, evolgen=args.evolgen, t=t)
         sys.exit()
 
     # variables
