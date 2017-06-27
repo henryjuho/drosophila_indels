@@ -60,13 +60,26 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 
 
 # Data preparation pipeline
-## Reference preparation
+## Reference and annotation preparation
 
 Reference chromosome order files were generate for correct position sorting for GATK as follows:
 
 ```
 $ grep ^'>' dmel-all-chromosome-r5.34.fa | cut -d ' ' -f 1 | cut -d '>' -f 2 > dmel_chr_order.txt
+$ cat dmel_chr_order.txt | grep -v X | grep -v Y > dmel_autosomes.txt
+
 $ grep ^'>' dsimV2-Mar2012.fa | cut -d ' ' -f 1 | cut -d '>' -f 2 > dsim_chr_order.txt
+$ cat dsim_chr_order.txt | grep -v X | grep -v Y | grep -v NODE > dsim_autosomes.txt
+```
+
+GFF files were sorted, compressed with bgzip and indexed with tabix:
+
+```
+$ zcat dmel_ref/dmel-all-r5.34.gff.gz | python ~/drosophila_indels/trim_neg_coords.py | bgzip -c > dmel_ref/dmel-all-r5.34.no_neg.gff.gz
+$ tabix -pgff dmel_ref/dmel-all-r5.34.no_neg.gff.gz
+
+$ gunzip -c dsim_ref/dsimV2-clean.gff.gz | sort -k1,1 -k4,4n | bgzip -c > dsim_ref/dsimV2-clean.sorted.gff.gz
+$ tabix -pgff dsim_ref/dsimV2-clean.sorted.gff.gz 
 ```
 ## Preparing BAM files
 
@@ -353,6 +366,15 @@ $ bcftools_new view -O v -a -c 1 -S MD_IDs.txt  ../post_vqsr/dsim_42flys.gatk.ra
 $ bcftools_new view -O v -a -c 1 -S MD_IDs.txt ../post_vqsr/dsim_42flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf > dsim_21flys_MD.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf
 ```
 
+## Annotating SNP degeneracy 
+
+The degeneracy of coding SNPs was annotated as follows.
+
+```
+$ annotate_degeneracy.py -gff /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-r5.34.no_neg.gff.gz -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -out /fastdata/bop15hjb/drosophila_data/dmel/snp_degen/ -evolgen
+$ annotate_degeneracy.py -gff /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-clean.sorted.gff.gz -vcf /fastdata/bop15hjb/drosophila_data/dsim/subsetted/dsim_21flys_MD.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf -ref /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-Mar2012.fa -out /fastdata/bop15hjb/drosophila_data/dsim/snp_degen/ -evolgen
+```
+
 ## Generating callable sites fastas
 
 Fasta files of callable sites were created and summarised for both species using the following codes:
@@ -371,11 +393,35 @@ $ mkdir /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites
 $ bgzip /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf
 $ tabix -pvcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf.gz
 $ callable_sites_from_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf.gz -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.out.bed -ar_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel_ancestral_repeats.wga.bed.gz  -mean_depth 20 -N 17  -out /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable -pol /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -sub -evolgen
-$ callable_sites_summary.py -gff /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-r5.34.gff.gz -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -chr_list /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_chr_order.txt > /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv
+$ callable_sites_summary.py -gff /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-r5.34.gff.gz -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -chr_list /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_autosomes.txt > /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv
 
 $ mkdir /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites
 $ bgzip /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf
 $ tabix -pvcf /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf.gz 
 $ callable_sites_from_vcf.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/gatk_calling/allsites/dsim_42flys.gatk.allsites.vcf.gz -bed /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.out.bed -ar_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim_ancestral_repeats.wga.bed.gz -mean_depth 46 -N 42 -out /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites/dsim.callable -pol /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dsim.dmel.dyak.wga.bed.gz -sub -evolgen
-$ callable_sites_summary.py -gff /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-clean.gff.gz -call_fa /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites/dsim.callable.ALL.fa -chr_list /fastdata/bop15hjb/drosophila_data/dsim_ref/dsim_chr_list.txt > /fastdata/bop15hjb/drosophila_data/dsim_ref/dsim.callablesites.summary.csv
+$ callable_sites_summary.py -gff /fastdata/bop15hjb/drosophila_data/dsim_ref/dsimV2-clean.gff.gz -call_fa /fastdata/bop15hjb/drosophila_data/dsim_ref/callable_sites/dsim.callable.ALL.fa -chr_list /fastdata/bop15hjb/drosophila_data/dsim_ref/dsim_autosomes.txt > /fastdata/bop15hjb/drosophila_data/dsim_ref/dsim.callablesites.summary.csv
+```
+
+## Indexing
+
+Analysis ready files were compressed with bgzip and indexed with tabix:
+
+```
+$ bgzip /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf
+$ tabix -pvcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz
+
+$ bgzip /fastdata/bop15hjb/drosophila_data/dsim/subsetted/dsim_21flys_MD.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf
+$ tabix -pvcf /fastdata/bop15hjb/drosophila_data/dsim/subsetted/dsim_21flys_MD.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz 
+```
+
+# Analysis
+
+## Summary statistics: theta, pi and Tajima's D
+
+```
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_no_bs_split_ar.txt
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_1000bs.txt -evolgen -bootstrap 1000
+
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/subsetted/dsim_21flys_MD.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dsim_ref/dsim.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dsim/summary_stats/dsim_21flys_indel_summary_no_bs_split_ar.txt
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dsim/subsetted/dsim_21flys_MD.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dsim_ref/dsim.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dsim/summary_stats/dsim_21flys_indel_summary_1000bs.txt -bootstrap 1000 -evolgen
 ```
