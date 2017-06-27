@@ -214,14 +214,15 @@ def main():
                 if markdown is True:
                     sep = '|'
                     pad = '|'
+                    dp = 5
                 else:
                     sep = '\t'
                     pad = ''
-
+                    dp = 10
                 print(pad + sep.join([chromo, region, mute_sfs[1], str(len(mute_sfs[0])), str(mute_sfs[2]),
-                      str(round(tw, 5)), str(round(ci_tw[0], 5)), str(round(ci_tw[1], 5)),
-                      str(round(pi_val, 5)), str(round(ci_pi[0], 5)), str(round(ci_pi[1], 5)),
-                      str(round(tajd, 3)), str(round(ci_tajd[0], 5)), str(round(ci_tajd[1], 5))]) + pad)
+                      str(round(tw, dp)), str(round(ci_tw[0], dp)), str(round(ci_tw[1], dp)),
+                      str(round(pi_val, dp)), str(round(ci_pi[0], dp)), str(round(ci_pi[1], dp)),
+                      str(round(tajd, dp)), str(round(ci_tajd[0], dp)), str(round(ci_tajd[1], dp))]) + pad)
 
 if __name__ == '__main__':
     main()
