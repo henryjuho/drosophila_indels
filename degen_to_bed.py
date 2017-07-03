@@ -159,7 +159,7 @@ def main():
             positions = degen_cat[0]
             for position in list(positions):
                 if pos_unique(position, degen_data[contig], other_degen_cats):
-                    print(contig, str(int(position)-1), position, sep='\t')
+                    print(contig.replace(' ', ''), str(int(position)-1), position, sep='\t')
 
 if __name__ == '__main__':
     main()
