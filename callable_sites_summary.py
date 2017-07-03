@@ -34,6 +34,17 @@ def gff_regions(gff_file, chromo):
     return region_dict
 
 
+def bed_regions(bed_file, chromo):
+    open_bed = pysam.TabixFile(bed_file)
+    coords = []
+    for line in open_bed.fetch(chromo, parser=pysam.asTuple()):
+        start = int(line[1])
+        end = int(line[2])
+        coords += range(start, end)
+
+    return coords
+
+
 def main():
 
     # arguments
@@ -41,14 +52,18 @@ def main():
     parser.add_argument('-gff', help='Gff file to get genomic region coords from', required=True)
     parser.add_argument('-call_fa', help='Callable fasta file', required=True)
     parser.add_argument('-chr_list', help='File of chromosomes to calc callable sites for', required=True)
+    parser.add_argument('-opt_bed', help='Optional bed file of regions to count callables sites, with associated label'
+                                         'i.e. /path/to/file.bed.gz,my_sub_region', action='append')
     args = parser.parse_args()
 
     # variables
     gff = args.gff
     fa = pysam.FastaFile(args.call_fa)
+    bed_files = {x.split(',')[1]: x.split(',')[0] for x in args.opt_bed}
     chr_list = [x.rstrip() for x in open(args.chr_list)]
-    regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR']
+    regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR'] + bed_files.keys()
     call_data = {x: {y: {'ALL': 0, 'POL': 0} for y in regions} for x in ['ALL'] + chr_list}
+
     # {chromo: {all: 0, CDS: 0, intron: 0 ...}}
 
     # get call sites for all chr and regions
@@ -74,6 +89,14 @@ def main():
 
                 callable_sites_all = ''.join([fasta_string[x] for x in intergenic_coords]).upper().count('K')
                 callable_sites_pol = ''.join([fasta_string[x] for x in intergenic_coords]).count('K')
+
+            # handle optional bed files
+            elif region in bed_files.keys():
+                degen_bed = bed_files[region]
+                degen_coords = bed_regions(degen_bed, chromo)
+
+                callable_sites_all = ''.join([fasta_string[x] for x in degen_coords]).upper().count('K')
+                callable_sites_pol = ''.join([fasta_string[x] for x in degen_coords]).count('K')
 
             else:
                 coords = list(region_coords[region])
