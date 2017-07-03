@@ -117,7 +117,7 @@ def main():
 
     sex_chromos = {'chrZ', 'Z', 'chrW', 'W', 'X', 'XHet', 'Y', 'YHet'}
 
-    if mode is 'SNP':
+    if mode == 'SNP':
         regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR', 'zerofold', 'fourfold']
     else:
         regions = ['ALL', 'CDS', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'AR']
@@ -158,7 +158,7 @@ def main():
             all_callable = callable_sites[chromo][region.split('_')[0]]['all']
             pol_callable = callable_sites[chromo][region.split('_')[0]]['pol']
 
-            if mode is 'SNP':
+            if mode == 'SNP':
                 snp_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode snp -folded {}'
                                      .format(vcf_file, chromo, region_flag, sex_flag))
 
