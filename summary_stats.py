@@ -118,10 +118,9 @@ def main():
     sex_chromos = {'chrZ', 'Z', 'chrW', 'W', 'X', 'XHet', 'Y', 'YHet'}
 
     if mode is 'SNP':
-        regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR']
+        regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR', 'zerofold', 'fourfold']
     else:
-        regions = ['ALL', 'CDS', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'AR',
-                   'intron_ar', 'intergenic_ar']
+        regions = ['ALL', 'CDS', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'AR']
 
     # write header
     if markdown is True:
@@ -149,6 +148,10 @@ def main():
                 region_flag = ' -region CDS_frameshift -region CDS_non_frameshift'
             elif region == 'AR':
                 region_flag = ' -region intergenic_ar -region intron_ar'
+            elif region == 'zerofold':
+                region_flag = ' -degen 0'
+            elif region == 'fourfold':
+                region_flag = ' -degen 4'
             else:
                 region_flag = ' -region ' + region
 
