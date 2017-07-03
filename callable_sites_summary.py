@@ -93,10 +93,14 @@ def main():
             # handle optional bed files
             elif region in bed_files.keys():
                 degen_bed = bed_files[region]
-                degen_coords = bed_regions(degen_bed, chromo)
+                try:
+                    degen_coords = bed_regions(degen_bed, chromo)
 
-                callable_sites_all = ''.join([fasta_string[x] for x in degen_coords]).upper().count('K')
-                callable_sites_pol = ''.join([fasta_string[x] for x in degen_coords]).count('K')
+                    callable_sites_all = ''.join([fasta_string[x] for x in degen_coords]).upper().count('K')
+                    callable_sites_pol = ''.join([fasta_string[x] for x in degen_coords]).count('K')
+                except ValueError:
+                    callable_sites_all = 0
+                    callable_sites_pol = 0
 
             else:
                 coords = list(region_coords[region])
