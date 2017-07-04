@@ -159,17 +159,18 @@ def main():
             pol_callable = callable_sites[chromo][region.split('_')[0]]['pol']
 
             if mode == 'SNP':
-                snp_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode snp -folded {}'
+                snp_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode snp -skip_hetero -folded {}'
                                      .format(vcf_file, chromo, region_flag, sex_flag))
 
                 sfs_list = [([float(x) for x in snp_sfs], 'snp', all_callable)]
 
             else:
-                del_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode del {}'
+                del_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode del -skip_hetero {}'
                                      .format(vcf_file, chromo, region_flag, sex_flag))
-                ins_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {}{} -mode ins {}'
+                ins_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {}{} -mode ins -skip_hetero {}'
                                      .format(vcf_file, chromo, region_flag, sex_flag))
-                indel_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {}{} -mode indel -folded {}'
+                indel_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py  -vcf {} -chr {}{} -mode indel '
+                                       '-skip_hetero -folded {}'
                                        .format(vcf_file, chromo, region_flag, sex_flag))
 
                 sfs_list = [([float(x) for x in del_sfs], 'del', pol_callable),
