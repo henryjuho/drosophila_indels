@@ -68,6 +68,27 @@ def pos_unique(pos, chr_degen_dict, other_degens):
     return True
 
 
+def start_stop_ok(fa_seq):
+
+    codon_list = [fa_seq[i:i+3] for i in range(0, len(fa_seq), 3)]
+    stops = {'TAG', 'TGA', 'TAA'}
+    # check if has start codon
+    if codon_list[0] != 'ATG':
+        return False
+
+    # check if seq ends in stop codon
+    elif codon_list[-1] not in stops:
+        return False
+
+    # check for premature stop
+    else:
+        for c in codon_list[1:-1]:
+            if c in stops:
+                return False
+
+        return True
+
+
 def main():
     # arguments
     parser = argparse.ArgumentParser(description='Script that outputs the position of '
@@ -82,7 +103,7 @@ def main():
     out_degens = set(args.degen)
     degen_data = {}
 
-    # loop through gff and make database / dict / sumit
+    # loop through fasta
     sequence, chromo, coords, skip = '', '', [], False
     for line in gzip.open(fa):
 
@@ -100,7 +121,7 @@ def main():
                 continue
 
             # process prev sequence
-            if sequence != '' and len(sequence) % 3 == 0:
+            if sequence != '' and len(sequence) % 3 == 0 and start_stop_ok(sequence):
                 for i in range(0, len(sequence), 3):
                     codon = sequence[i:i+3]
 
