@@ -131,6 +131,10 @@ def main():
                         except IndexError:
                             continue
 
+                    # if entire codon is not in alignment skip
+                    if len(codon_dict.keys()) == 0:
+                        continue
+
                     # if codon is less than 3bp ie if positions not in alignment for all spp skip
                     if len(codon_dict.values()[0]) != 3:
                         continue
