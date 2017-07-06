@@ -144,13 +144,13 @@ def main():
                 n_spp = len(align_dict.keys())
                 file_name = '{}{}.{}.{}'.format(out_dir, trans_name, seq_len, 'phy')
                 with open(file_name, 'w') as phy:
-                    print('\t{}\t{}'.format(n_spp, seq_len), file_name=phy)
+                    print('\t{}\t{}'.format(n_spp, seq_len), file=phy)
                     for spp_seq in align_dict.keys():
                         out_seq = align_dict[spp_seq]
                         line_wrap = 60
-                        print(spp_seq, file_name=phy)
+                        print(spp_seq, file=phy)
                         for i in range(0, len(out_seq), line_wrap):
-                            print(out_seq[i: i + line_wrap], file_name=phy)
+                            print(out_seq[i: i + line_wrap], file=phy)
 
             # reset holders and store details of next sequence
             sequence = ''
