@@ -34,6 +34,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py | single_cov.py               |
 | roast.py                   | polarise_vcf.py            | annotate_regions_all_chr.py    | vcf_region_annotater.py     |
 | catVCFs.py                 | annotate_anc_reps.py       | callable_sites_from_vcf.py     | callable_sites_summary.py   |
+| wgaBed2genes.py            |  |  |  |
 
 ## Reference and annotation files required for analysis
 
@@ -241,6 +242,14 @@ $ zcat dmel.dsim.dyak.2LHet.wga.bed.gz dmel.dsim.dyak.2L.wga.bed.gz dmel.dsim.dy
 $ tabix -pbed dmel.dsim.dyak.wga.bed.gz
 ```
 
+Gene alignments in phylip format were generate from the multispecies alignment with the following script:
+
+```
+$ wgaBed2genes.py -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -cds_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/cds_fasta/dmel-all-CDS-r5.34.fasta.gz -out_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/phylip_files/ -sub -evolgen
+```
+
+The script only outputs alignments for transcripts that are in frame, start with a start codon, end with a stop codon and without any premature stop codons. Additionally any codons containing N's or bases not present in the alignment are dropped.
+
 ## Polarisation
 
 Variants were polarised using the whole genome alignment and a parsimony approach, where either the alternate or the reference allele had to be supported by all outgroups in the the alignment to be considered ancestral.
@@ -317,6 +326,11 @@ These were then used to annotate the degeneracy of coding SNPs as follows.
 $ annotate_degeneracy.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf -zerofold /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-0fold.bed.gz -fourfold /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-4fold.bed.gz
 ```
 
+|Category          | Number SNPs     |
+|:-----------------|:---------------:|
+|zerofold          |75549            |
+|fourfold          |150441           |
+
 ## Generating callable sites fastas
 
 Fasta files of callable sites were created and summarised for both species using the following codes:
@@ -358,7 +372,6 @@ $ tabix -pvcf dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.p
 ```
 $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_no_bs_split_ar.txt
 $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_1000bs.txt -evolgen -bootstrap 1000
-$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_no_bs.txt -evolgen
-$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_bs1000.txt -evolgen -bootstrap 1000
-
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_no_bs.txt -evolgen
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_bs1000.txt -evolgen -bootstrap 1000
 ```
