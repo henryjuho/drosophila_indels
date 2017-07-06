@@ -118,14 +118,22 @@ def main():
                         align_pos = list(wga.fetch(chromo, pos - 1, pos, parser=pysam.asTuple()))
 
                         # get align data in form [('dmel', 'T'), ('dsim', '?'), ('dyak', 'T')]
-                        spp_bases = zip(align_pos[0][4].split(','), align_pos[0][7].split(','))
-                        for spp in spp_bases:
-                            if spp[0] not in codon_dict.keys():
-                                codon_dict[spp[0]] = ''
-                            if len(align_pos) == 0:
-                                codon_dict[spp[0]] += 'N'
-                            else:
-                                codon_dict[spp[0]] += spp[1][0]
+
+                        try:
+                            spp_bases = zip(align_pos[0][4].split(','), align_pos[0][7].split(','))
+                            for spp in spp_bases:
+                                if spp[0] not in codon_dict.keys():
+                                    codon_dict[spp[0]] = ''
+                                if len(align_pos) == 0:
+                                    codon_dict[spp[0]] += 'N'
+                                else:
+                                    codon_dict[spp[0]] += spp[1][0]
+                        except IndexError:
+                            continue
+
+                    # if codon is less than 3bp ie if positions not in alignment for all spp skip
+                    if len(codon_dict.values()[0]) != 3:
+                        continue
 
                     # check codons and add to sequence string
                     codon_base_content = ''.join(codon_dict.values())
