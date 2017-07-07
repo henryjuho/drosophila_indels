@@ -151,6 +151,10 @@ def main():
                 if method == 'complement':
                     align_dict = {x: get_complement(align_dict[x]) for x in align_dict.keys()}
 
+                # skip if whole gene missing from alignment
+                if len(align_dict.values()) == 0:
+                    continue
+
                 # output seq file
                 seq_len = len(align_dict.values()[0])
                 n_spp = len(align_dict.keys())
