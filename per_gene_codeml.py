@@ -150,8 +150,11 @@ def main():
             cmd_list += ['', 'wait', '']
 
         counter += 1
-        codeml_cmd = '/shared/evolgen1/shared_data/program_files/iceberg/codeml ' + ctrl_file + ' &'
+        codeml_cmd = '/shared/evolgen1/shared_data/program_files/iceberg/codeml ' + \
+                     ctrl_file.replace('(', '\(').replace(')', '\)') + ' &'
         cmd_list.append(codeml_cmd)
+
+    cmd_list += ['', 'wait']
 
     q_sub(cmd_list, out=args.out_dir + 'codeml_runs', t=168, tr=20, evolgen=True)
 
