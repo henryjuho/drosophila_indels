@@ -34,7 +34,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py | single_cov.py               |
 | roast.py                   | polarise_vcf.py            | annotate_regions_all_chr.py    | vcf_region_annotater.py     |
 | catVCFs.py                 | annotate_anc_reps.py       | callable_sites_from_vcf.py     | callable_sites_summary.py   |
-| wgaBed2genes.py            |  |  |  |
+| wgaBed2genes.py            | trim_stop_trim_miss.py     | per_gene_codeml.py             | extract_dn_ds.py            |
 
 ## Reference and annotation files required for analysis
 
@@ -242,10 +242,12 @@ $ zcat dmel.dsim.dyak.2LHet.wga.bed.gz dmel.dsim.dyak.2L.wga.bed.gz dmel.dsim.dy
 $ tabix -pbed dmel.dsim.dyak.wga.bed.gz
 ```
 
-Gene alignments in phylip format were generate from the multispecies alignment with the following script:
+Gene alignments in phylip format were generate from the multispecies alignment for autosomal (2, 3 and 4, all arms and heterochromatin)  genesas follows:
 
 ```
-$ wgaBed2genes.py -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -cds_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/cds_fasta/dmel-all-CDS-r5.34.fasta.gz -out_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/phylip_files/ -sub -evolgen
+$ ls /fastdata/bop15hjb/drosophila_data/dmel_ref/cds_fasta/*fasta* | grep -v all | grep -v mito | grep -v X | grep -v Y | grep -v U > /fastdata/bop15hjb/drosophila_data/dmel_ref/cds_fasta/autosome_fasta_list.txt
+$ cat /fastdata/bop15hjb/drosophila_data/dmel_ref/cds_fasta/autosome_fasta_list.txt | while read i; do wgaBed2genes.py -wga_bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -cds_fa $i -out_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/phylip_files/ -sub -evolgen; done
+$ trim_stop_trim_miss.py -phy_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/phylip_files/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/trimmed_phylip/
 ```
 
 The script only outputs alignments for transcripts that are in frame, start with a start codon, end with a stop codon and without any premature stop codons. Additionally any codons containing N's or bases not present in the alignment are dropped.
@@ -374,4 +376,13 @@ $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_1
 $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_1000bs.txt -evolgen -bootstrap 1000
 $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_no_bs.txt -evolgen
 $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_bs1000.txt -evolgen -bootstrap 1000
+```
+
+## Gene by gene analysis
+
+dn and ds values were calculated using codeml, with a one ratio model, on the genes extracted from the multispecies alignment as follows:
+
+```
+$ per_gene_codeml.py -phy_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/trimmed_phylip/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/codeml_data/
+$ extract_dn_ds.py -dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/codeml_data/ > /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.dn_ds_values.longest_trans.txt
 ```
