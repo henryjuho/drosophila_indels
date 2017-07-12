@@ -145,7 +145,7 @@ def main():
         control_file(longest_phylip, codeml_out, tr_file, ctrl_file)
 
         # designed for parallel on evolgen
-        if counter == 40:
+        if counter == 30:
             counter = 0
             cmd_list += ['', 'wait', '']
 
@@ -153,7 +153,7 @@ def main():
         codeml_cmd = '/shared/evolgen1/shared_data/program_files/iceberg/codeml ' + ctrl_file + ' &'
         cmd_list.append(codeml_cmd)
 
-    q_print(cmd_list, out=args.out_dir + 'codeml_runs', t=168, tr=40)
+    q_sub(cmd_list, out=args.out_dir + 'codeml_runs', t=168, tr=30)
 
 
 if __name__ == '__main__':
