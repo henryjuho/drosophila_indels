@@ -89,8 +89,8 @@ def control_file(seq_file, out_file, tree_file_in, ctl_file):
 def tree_file(tree_file_name):
 
     with open(tree_file_name, 'w') as tree:
-        tree_str = ('\t3\t1\n'
-                    '((dmel, dsim), dyak)')
+        tree_str = ('\t3\t1\n\n'
+                    '((dmel, dsim), dyak);')
         print(tree_str, file=tree)
 
 
