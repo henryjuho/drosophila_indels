@@ -153,7 +153,7 @@ def main():
         codeml_cmd = '/shared/evolgen1/shared_data/program_files/iceberg/codeml ' + ctrl_file + ' &'
         cmd_list.append(codeml_cmd)
 
-    q_sub(cmd_list, out=args.out_dir + 'codeml_runs', t=168, tr=30)
+    q_sub(cmd_list, out=args.out_dir + 'codeml_runs', t=168, tr=30, evolgen=True)
 
 
 if __name__ == '__main__':
