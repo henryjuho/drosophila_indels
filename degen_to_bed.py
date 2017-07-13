@@ -134,9 +134,9 @@ def main():
                         degen = degeneracy([codon, pos])
                         site_pos = base_pos[pos]
                         if chromo not in degen_data.keys():
-                            degen_data[chromo] = {trans_name: {}}
+                            degen_data[chromo] = {}
                         if trans_name not in degen_data[chromo].keys():
-                            degen_data[chromo][trans_name] = {degen: set()}
+                            degen_data[chromo][trans_name] = {}
                         if degen not in degen_data[chromo][trans_name].keys():
                             degen_data[chromo][trans_name][degen] = set()
                         degen_data[chromo][trans_name][degen] |= {site_pos}
@@ -171,9 +171,11 @@ def main():
             site_pos = base_pos[pos]
             if chromo not in degen_data.keys():
                 degen_data[chromo] = {}
-            if degen not in degen_data[chromo].keys():
-                degen_data[chromo][degen] = set()
-            degen_data[chromo][degen] |= {site_pos}
+            if trans_name not in degen_data[chromo].keys():
+                degen_data[chromo][trans_name] = {}
+            if degen not in degen_data[chromo][trans_name].keys():
+                degen_data[chromo][trans_name][degen] = set()
+            degen_data[chromo][trans_name][degen] |= {site_pos}
 
     # output sites
     for contig in sorted(degen_data.keys()):
