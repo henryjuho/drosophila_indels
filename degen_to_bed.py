@@ -104,7 +104,7 @@ def main():
     degen_data = {}
 
     # loop through fasta
-    sequence, chromo, coords, skip = '', '', [], False
+    sequence, chromo, coords, skip, trans_name = '', '', [], False, ''
     for line in gzip.open(fa):
 
         # skip sequence line following skipped header
@@ -134,15 +134,18 @@ def main():
                         degen = degeneracy([codon, pos])
                         site_pos = base_pos[pos]
                         if chromo not in degen_data.keys():
-                            degen_data[chromo] = {}
-                        if degen not in degen_data[chromo].keys():
-                            degen_data[chromo][degen] = set()
-                        degen_data[chromo][degen] |= {site_pos}
+                            degen_data[chromo] = {trans_name: {}}
+                        if trans_name not in degen_data[chromo].keys():
+                            degen_data[chromo][trans_name] = {degen: set()}
+                        if degen not in degen_data[chromo][trans_name].keys():
+                            degen_data[chromo][trans_name][degen] = set()
+                        degen_data[chromo][trans_name][degen] |= {site_pos}
 
             # reset holders and store details of next sequence
             sequence = ''
             header_info = line.split(';')[1]
             chromo = header_info.split(':')[0].replace('loc=', '')
+            trans_name = line.split(' ')[0].strip('>')
             if '(' in header_info:
                 method = header_info.split('(')[0].split(':')[1]
                 coords = cds_coord_to_codon_coords(header_info.split('(')[1].rstrip(')'), method)
@@ -174,13 +177,14 @@ def main():
 
     # output sites
     for contig in sorted(degen_data.keys()):
-        for degen_cat in [(degen_data[contig][x], x) for x in out_degens]:
-            other_degen_cats = [0, 2, 3, 4]
-            other_degen_cats.remove(degen_cat[1])
-            positions = degen_cat[0]
-            for position in list(positions):
-                if pos_unique(position, degen_data[contig], other_degen_cats):
-                    print(contig.replace(' ', ''), str(int(position)-1), position, sep='\t')
+        for trans in degen_data[contig].keys():
+            for degen_cat in [(degen_data[contig][trans][x], x) for x in out_degens]:
+                other_degen_cats = [0, 2, 3, 4]
+                other_degen_cats.remove(degen_cat[1])
+                positions = degen_cat[0]
+                for position in list(positions):
+                    if pos_unique(position, degen_data[contig][trans], other_degen_cats):
+                        print(contig.replace(' ', ''), str(int(position)-1), position, trans, sep='\t')
 
 if __name__ == '__main__':
     main()
