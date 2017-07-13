@@ -63,8 +63,14 @@ def cds_coord_to_codon_coords(fa_coord, direction):
 
 def pos_unique(pos, chr_degen_dict, other_degens):
     for z in other_degens:
-        if pos in chr_degen_dict[z]:
-            return False
+        try:
+            if pos in chr_degen_dict[z]:
+                return False
+
+        # some genes don't have all types of degen, particularly 3fold
+        except KeyError:
+            continue
+
     return True
 
 
