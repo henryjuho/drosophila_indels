@@ -316,9 +316,11 @@ Bed files were created with coordinates for all fourfold and zerofold sites in t
  
 ```
 $ cd /fastdata/bop15hjb/drosophila_data/dmel_ref/
-$ degen_to_bed.py -cds_fa cds_fasta/dmel-all-CDS-r5.34.fasta.gz -degen 0 | sort -k1,1 -k2,2n | bedtools merge | bgzip -c > dmel-all-0fold.bed.gz
+$ qsuber -cmd "cd /fastdata/bop15hjb/drosophila_data/dmel_ref/" -cmd "degen_to_bed.py -cds_fa cds_fasta/dmel-all-CDS-r5.34.fasta.gz -degen 0 | sort -k1,1 -k2,2n | bedtools merge -c 4 -o distinct | bgzip -c > dmel-all-0fold.bed.gz" -rmem 15 -mem 15 -evolgen -o /fastdata/bop15hjb/drosophila_data/dmel_ref/zerofold_gene_pos -t 48 -OM q
 $ tabix -pbed dmel-all-0fold.bed.gz 
-$ degen_to_bed.py -cds_fa cds_fasta/dmel-all-CDS-r5.34.fasta.gz -degen 4 | sort -k1,1 -k2,2n | bgzip -c > dmel-all-4fold.bed.gz
+
+# todo add merge to 4fold file
+$ qsuber -cmd "cd /fastdata/bop15hjb/drosophila_data/dmel_ref/" -cmd "degen_to_bed.py -cds_fa cds_fasta/dmel-all-CDS-r5.34.fasta.gz -degen 4 | sort -k1,1 -k2,2n | bgzip -c > dmel-all-4fold.bed.gz" -rmem 15 -mem 15 -evolgen -o /fastdata/bop15hjb/drosophila_data/dmel_ref/fourfold_gene_pos -t 48 -OM q
 $ tabix -pbed dmel-all-4fold.bed.gz
 ```
 
@@ -385,4 +387,10 @@ dn and ds values were calculated using codeml, with a one ratio model, on the ge
 ```
 $ per_gene_codeml.py -phy_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/trimmed_phylip/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/codeml_data/
 $ extract_dn_ds.py -dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/codeml_data/ > /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.dn_ds_values.longest_trans.txt
+```
+
+pi0 and pi4 values were calculated for all transcripts of all genes in the dmel CDS fasta alignments file:
+
+```
+$ summarise_genes.py -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -zbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-0fold.bed.gz -fbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-4fold.bed.gz -out /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi0_pi4_values.all_trans.txt -sub -evolgen
 ```
