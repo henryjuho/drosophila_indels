@@ -3,8 +3,6 @@
 from __future__ import print_function
 import argparse
 import gzip
-from qsub import *
-import sys
 
 
 def degeneracy(codon):
@@ -104,24 +102,7 @@ def main():
     parser.add_argument('-cds_fa', help='Fasta file with CDS sequences in', required=True)
     parser.add_argument('-degen', help='Degeneracy of sites to extract positions for', required=True,
                         action='append', choices=[0, 2, 3, 4], type=int)
-    parser.add_argument('-out_bed',
-                        help='Required with sub',
-                        required=True)
-    parser.add_argument('-sub',
-                        help='If specified will submit script to cluster',
-                        action='store_true',
-                        default=False)
-    parser.add_argument('-evolgen',
-                        help='If specified will submit script to lab queue',
-                        default=False,
-                        action='store_true')
     args = parser.parse_args()
-
-    # submission loop
-    if args.sub is True:
-        command_line = [' '.join([x for x in sys.argv if x != '-sub' and x != '-evolgen']) + ' > ' + args.out_bed]
-        q_sub(command_line, out=args.out_bed.replace('.bed.gz', ''), evolgen=args.evolgen, t=48)
-        sys.exit()
 
     # variables
     fa = args.cds_fa
