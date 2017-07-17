@@ -186,13 +186,17 @@ def main():
     # output sites
     for contig in sorted(degen_data.keys()):
         for trans in degen_data[contig].keys():
-            for degen_cat in [(degen_data[contig][trans][x], x) for x in out_degens]:
-                other_degen_cats = [0, 2, 3, 4]
-                other_degen_cats.remove(degen_cat[1])
-                positions = degen_cat[0]
-                for position in list(positions):
-                    if pos_unique(position, degen_data[contig][trans], other_degen_cats):
-                        print(contig.replace(' ', ''), str(int(position)-1), position, trans, sep='\t')
+            try:
+                for degen_cat in [(degen_data[contig][trans][x], x) for x in out_degens]:
+                    other_degen_cats = [0, 2, 3, 4]
+                    other_degen_cats.remove(degen_cat[1])
+                    positions = degen_cat[0]
+                    for position in list(positions):
+                        if pos_unique(position, degen_data[contig][trans], other_degen_cats):
+                            print(contig.replace(' ', ''), str(int(position)-1), position, trans, sep='\t')
+            # catch degens not found in gene, mainly 3 fold
+            except KeyError:
+                continue
 
 if __name__ == '__main__':
     main()
