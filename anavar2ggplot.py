@@ -18,27 +18,38 @@ def reformat_line(line, header):
         else:
             data_to_sort[current_col] = current_val
 
-    # detrimine if class 1 or 2 is largest by ins gamma
-    ga = data_to_sort['ins_gamma_1']
-    gb = data_to_sort['ins_gamma_2']
+    # detrimine if ins class 1 or 2 is largest by ins gamma
+    iga = data_to_sort['ins_gamma_1']
+    igb = data_to_sort['ins_gamma_2']
 
-    if float(ga) > float(gb):
-        c1 = '1'
-        c2 = '2'
+    if float(iga) > float(igb):
+        ic1 = '1'
+        ic2 = '2'
     else:
-        c1 = '2'
-        c2 = '1'
+        ic1 = '2'
+        ic2 = '1'
+
+    # detrimine if del class 1 or 2 is largest by del gamma
+    dga = data_to_sort['del_gamma_1']
+    dgb = data_to_sort['del_gamma_2']
+
+    if float(dga) > float(dgb):
+        dc1 = '1'
+        dc2 = '2'
+    else:
+        dc1 = '2'
+        dc2 = '1'
 
     # write multiple rows in long form
-    for var_type in ['ins', 'del']:
-        for site_class in [(c1, '1'), (c2, '2')]:
-            out_data['theta'] = data_to_sort['{}_theta_{}'.format(var_type, site_class[0])]
-            out_data['gamma'] = data_to_sort['{}_gamma_{}'.format(var_type, site_class[0])]
-            out_data['e'] = data_to_sort['{}_e_{}'.format(var_type, site_class[0])]
-            out_data['var_type'] = var_type
-            out_data['site_class'] = site_class[1]
+    for site_class in [('ins', ic1, '1'), ('ins', ic2, '2'), ('del', dc1, '1'), ('del', dc2, '2')]:
+        var_type = site_class[0]
+        out_data['theta'] = data_to_sort['{}_theta_{}'.format(var_type, site_class[1])]
+        out_data['gamma'] = data_to_sort['{}_gamma_{}'.format(var_type, site_class[1])]
+        out_data['e'] = data_to_sort['{}_e_{}'.format(var_type, site_class[1])]
+        out_data['var_type'] = var_type
+        out_data['site_class'] = site_class[2]
 
-            out_lines.append('\t'.join([out_data[y] for y in new_header]))
+        out_lines.append('\t'.join([out_data[y] for y in new_header]))
 
     return '\t'.join(new_header), out_lines
 
