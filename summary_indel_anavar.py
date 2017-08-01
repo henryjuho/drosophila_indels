@@ -106,7 +106,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-vcf', help='VCF file to extract site frequencies from', required=True)
     parser.add_argument('-n', help='Sample size', required=True)
-    parser.add_argument('-c', help='Number of classes to run model with', required=True)
+    parser.add_argument('-c', help='Number of classes to run model with', required=True, type=int)
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
     parser.add_argument('-bootstrap', help='Number of bootstrap replicates', default=0, type=int)
     parser.add_argument('-out_pre', help='File path and prefix for output', required=True)
