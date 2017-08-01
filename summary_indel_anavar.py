@@ -50,7 +50,7 @@ def sfs2counts(freq_list, n):
 
 
 def indel_anavar(arg_tuple):
-    ins_sfs, ins_m, del_sfs, del_m, bootstrap, n, region, out_stem = arg_tuple
+    ins_sfs, ins_m, del_sfs, del_m, bootstrap, n, region, c, out_stem = arg_tuple
 
     anavar_path = '/shared/evolgen1/shared_data/program_files/iceberg/'
 
@@ -80,7 +80,7 @@ def indel_anavar(arg_tuple):
         # construct control file
         sfs_m = {'INS': (sfs_i, ins_m), 'DEL': (sfs_d, del_m)}
         ctl = an.Indel1ControlFile()
-        ctl.set_data(sfs_m, n, dfe='discrete', c=2)
+        ctl.set_data(sfs_m, n, dfe='discrete', c=c)
         ctl_contents = ctl.construct()
         with open(ctl_name, 'w') as control:
             control.write(ctl_contents)
@@ -106,6 +106,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-vcf', help='VCF file to extract site frequencies from', required=True)
     parser.add_argument('-n', help='Sample size', required=True)
+    parser.add_argument('-c', help='Number of classes to run model with', required=True)
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
     parser.add_argument('-bootstrap', help='Number of bootstrap replicates', default=0, type=int)
     parser.add_argument('-out_pre', help='File path and prefix for output', required=True)
@@ -158,7 +159,7 @@ def main():
         ins_m = call_site_dict['ALL'][region]['pol']
 
         # construct process
-        anavar_args = (ins_sfs, ins_m, del_sfs, del_m, args.bootstrap, args.n, region, file_stem)
+        anavar_args = (ins_sfs, ins_m, del_sfs, del_m, args.bootstrap, args.n, region, args.c, file_stem)
         processes_args.append(anavar_args)
 
     # initiate pool and run processes
