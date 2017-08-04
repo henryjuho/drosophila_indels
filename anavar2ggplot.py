@@ -84,10 +84,43 @@ def reformat_line_1class(line, header):
     return '\t'.join(new_header), out_lines
 
 
+def reformat_line_selindel_1class(line, header):
+
+    out_lines = []
+    new_header = ['run', 'imp', 'exit_code', 'theta', 'gamma', 'e',
+                  'var_type', 'site_class', 'sel_type', 'lnL', 'rep', 'region']
+    header = header.split()
+    out_data = {x: '' for x in new_header}
+    data_to_sort = {}
+    for i in range(0, len(header)):
+        current_col = header[i]
+        current_val = line.split()[i]
+        if 'ins' not in current_col and 'del' not in current_col:
+            out_data[current_col] = current_val
+        else:
+            data_to_sort[current_col] = current_val
+
+    # write multiple rows in long form
+    for sel_type in ['sel', 'neu']:
+        for site_class in [('ins', '1', '1'), ('del', '1', '1')]:
+            var_type = site_class[0]
+            out_data['theta'] = data_to_sort['{}_{}_theta_{}'.format(sel_type, var_type, site_class[1])]
+            out_data['gamma'] = data_to_sort['{}_{}_gamma_{}'.format(sel_type, var_type, site_class[1])]
+            out_data['e'] = data_to_sort['{}_{}_e_{}'.format(sel_type, var_type, site_class[1])]
+            out_data['var_type'] = var_type
+            out_data['site_class'] = site_class[2]
+            out_data['sel_type'] = sel_type
+
+            out_lines.append('\t'.join([out_data[y] for y in new_header]))
+
+    return '\t'.join(new_header), out_lines
+
+
 def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', help='number of classes', default=2, type=int)
+    parser.add_argument('-m', help='model run', choices=['INDEL_1', 'SEL_INDEL'], required=True)
     args = parser.parse_args()
 
     header_line = ''
@@ -97,10 +130,13 @@ def main():
             header_line = line
         else:
             data_line += 1
-            if args.c == 2:
-                new_lines = reformat_line(line, header_line)
+            if args.m == 'INDEL_1':
+                if args.c == 2:
+                    new_lines = reformat_line(line, header_line)
+                else:
+                    new_lines = reformat_line_1class(line, header_line)
             else:
-                new_lines = reformat_line_1class(line, header_line)
+                new_lines = reformat_line_selindel_1class(line, header_line)
 
             if data_line == 1:
                 print new_lines[0]
