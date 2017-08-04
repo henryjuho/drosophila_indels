@@ -174,22 +174,15 @@ def main():
 
     # main out
     with open(out_pre + '.allreps.results.txt', 'w') as main_out:
-        # write results
-        counter = 0
-        for reg in region_results:
 
-            counter += 1
+        # print header
+        print(region_results[0], file=main_out)
 
-            # printers header once
-            if counter == 1:
-                print(reg[0], file=main_out)
+        # trims off header
+        reg_data = region_results[1:]
 
-            # trims off header
-            reg_data = reg[1:]
-
-            for line in reg_data:
-                print(line, file=main_out)
-
+        for line in reg_data:
+            print(line, file=main_out)
 
 if __name__ == '__main__':
     main()
