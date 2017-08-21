@@ -116,6 +116,39 @@ def reformat_line_selindel_1class(line, header):
     return '\t'.join(new_header), out_lines
 
 
+def reformat_line_selindel_continuous(line, header):
+
+    out_lines = []
+    new_header = ['run', 'imp', 'exit_code', 'theta', 'scale', 'shape', 'e',
+                  'var_type', 'site_class', 'sel_type', 'lnL', 'rep', 'region']
+    header = header.split()
+    out_data = {x: '' for x in new_header}
+    data_to_sort = {}
+    for i in range(0, len(header)):
+        current_col = header[i]
+        current_val = line.split()[i]
+        if 'ins' not in current_col and 'del' not in current_col:
+            out_data[current_col] = current_val
+        else:
+            data_to_sort[current_col] = current_val
+
+    # write multiple rows in long form
+    for sel_type in ['sel']:
+        for site_class in [('ins', '1', '1'), ('del', '1', '1')]:
+            var_type = site_class[0]
+            out_data['theta'] = data_to_sort['{}_{}_theta'.format(sel_type, var_type)]
+            out_data['scale'] = data_to_sort['{}_{}_scale'.format(sel_type, var_type)]
+            out_data['shape'] = data_to_sort['{}_{}_shape'.format(sel_type, var_type)]
+            out_data['e'] = data_to_sort['{}_{}_e'.format(sel_type, var_type)]
+            out_data['var_type'] = var_type
+            out_data['site_class'] = site_class[2]
+            out_data['sel_type'] = sel_type
+
+            out_lines.append('\t'.join([out_data[y] for y in new_header]))
+
+    return '\t'.join(new_header), out_lines
+
+
 def main():
 
     parser = argparse.ArgumentParser()
@@ -136,7 +169,10 @@ def main():
                 else:
                     new_lines = reformat_line_1class(line, header_line)
             else:
-                new_lines = reformat_line_selindel_1class(line, header_line)
+                if args.c == 0:
+                    new_lines = reformat_line_selindel_continuous(line, header_line)
+                else:
+                    new_lines = reformat_line_selindel_1class(line, header_line)
 
             if data_line == 1:
                 print new_lines[0]
