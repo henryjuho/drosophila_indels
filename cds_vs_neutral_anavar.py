@@ -48,8 +48,8 @@ def sfs2counts(freq_list, n):
     return counts
 
 
-def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_sfs, n_d_m, bootstrap, n,
-                           c, dfe, out_stem):
+def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_sfs, n_d_m, constraint,
+                           bootstrap, n, c, dfe, out_stem):
 
     anavar_path = '/shared/evolgen1/shared_data/program_files/iceberg/'
 
@@ -87,6 +87,7 @@ def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_s
                  'neutral_INS': (sfs_ni, n_i_m), 'neutral_DEL': (sfs_nd, n_d_m)}
         ctl = an.IndelNeuSelControlFile()
         ctl.set_data(sfs_m, n, dfe=dfe, c=c)
+        ctl.set_constraint(constraint)
         ctl_contents = ctl.construct()
         with open(ctl_name, 'w') as control:
             control.write(ctl_contents)
@@ -115,6 +116,8 @@ def main():
     parser.add_argument('-c', help='Number of classes to run model with', required=True, type=int)
     parser.add_argument('-dfe', help='type of dfe to fit, discrete or continuous', default='discrete',
                         choices=['discrete', 'continuous'])
+    parser.add_argument('-constraint', help='Constraint for model', choices=['none', 'equal_muatation_rate'],
+                        default='none')
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
     parser.add_argument('-bootstrap', help='Number of bootstrap replicates', default=0, type=int)
     parser.add_argument('-out_pre', help='File path and prefix for output', required=True)
@@ -172,6 +175,7 @@ def main():
                                             del_sfs=del_sfs, del_m=del_m,
                                             n_i_sfs=n_i_sfs, n_i_m=neu_m,
                                             n_d_sfs=n_d_sfs, n_d_m=neu_m,
+                                            constraint=args.constraint,
                                             bootstrap=args.bootstrap,
                                             n=args.n, c=args.c, dfe=args.dfe,
                                             out_stem=out_pre)
