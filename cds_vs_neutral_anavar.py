@@ -116,7 +116,7 @@ def main():
     parser.add_argument('-c', help='Number of classes to run model with', required=True, type=int)
     parser.add_argument('-dfe', help='type of dfe to fit, discrete or continuous', default='discrete',
                         choices=['discrete', 'continuous'])
-    parser.add_argument('-constraint', help='Constraint for model', choices=['none', 'equal_muatation_rate'],
+    parser.add_argument('-constraint', help='Constraint for model', choices=['none', 'equal_mutation_rate'],
                         default='none')
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
     parser.add_argument('-bootstrap', help='Number of bootstrap replicates', default=0, type=int)
