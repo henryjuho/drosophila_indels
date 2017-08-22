@@ -19,6 +19,9 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * gffutils
   * tabix
   * bgzip
+  * qsub.py
+  * anavar version 1.2
+  * anavar_utils
 
 ## Scripts used in this pipeline
 
@@ -35,6 +38,8 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 | roast.py                   | polarise_vcf.py            | annotate_regions_all_chr.py    | vcf_region_annotater.py     |
 | catVCFs.py                 | annotate_anc_reps.py       | callable_sites_from_vcf.py     | callable_sites_summary.py   |
 | wgaBed2genes.py            | trim_stop_trim_miss.py     | per_gene_codeml.py             | extract_dn_ds.py            |
+| summarise_genes.py         | summarise_genic_indels.py  | cat_dnds_pi0pi4.py             | summary_indel_anavar.py     |
+| anavar2ggplot.py           |  |  |  |
 
 ## Reference and annotation files required for analysis
 
@@ -322,6 +327,9 @@ $ tabix -pbed dmel-all-0fold.bed.gz
 # todo add merge to 4fold file
 $ qsuber -cmd "cd /fastdata/bop15hjb/drosophila_data/dmel_ref/" -cmd "degen_to_bed.py -cds_fa cds_fasta/dmel-all-CDS-r5.34.fasta.gz -degen 4 | sort -k1,1 -k2,2n | bgzip -c > dmel-all-4fold.bed.gz" -rmem 15 -mem 15 -evolgen -o /fastdata/bop15hjb/drosophila_data/dmel_ref/fourfold_gene_pos -t 48 -OM q
 $ tabix -pbed dmel-all-4fold.bed.gz
+
+$ qsuber -cmd "cd /fastdata/bop15hjb/drosophila_data/dmel_ref/" -cmd "degen_to_bed.py -cds_fa cds_fasta/dmel-all-CDS-r5.34.fasta.gz -degen 0 -degen 2 -degen 3 -degen 4 | sort -k1,1 -k2,2n | bedtools merge -c 4 -o distinct | bgzip -c > dmel-all-degen.bed.gz" -rmem 15 -mem 15 -evolgen -o /fastdata/bop15hjb/drosophila_data/dmel_ref/all_degen_gene_pos -t 48 -OM q
+$ tabix -pbed dmel-all-degen.bed.gz 
 ```
 
 These were then used to annotate the degeneracy of coding SNPs as follows.
@@ -393,4 +401,45 @@ pi0 and pi4 values were calculated for all transcripts of all genes in the dmel 
 
 ```
 $ summarise_genes.py -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -zbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-0fold.bed.gz -fbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-4fold.bed.gz -out /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi0_pi4_values.all_trans.txt -sub -evolgen
+$ summarise_genic_indels.py -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -cds_bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-degen.bed.gz -out /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi_indel_values.all_trans.txt -sub -evolgen
+```
+
+Genes with dn ds estimates then had pi0 pi4 estimates added from the above step with the following script:
+
+```
+$ cat_dnds_pi0pi4.py -p /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi0_pi4_values.all_trans.txt -pI /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi_indel_values.all_trans.txt -d /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.dn_ds_values.longest_trans.txt > /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.dndn.pi0pi4.pi_indel.longest_trans.txt
+```
+
+Genes with dS greater than 5 were filtered out, the remaining results (8355 genes) were binned into 20 equal occupancy bins according to dN and plotted as max dN per bin against mean pi per bin for zerofold, fourfold and INDEL sites.
+
+```
+$ Rscript plot_dnds_pi0pi4.R
+```
+
+## anavar analyses
+
+Anavar was run on the coding INDEL data with intergenic and intronic variants as neutral reference. Three models were run, a continuous gamma distribution model, a discrete gamma model with 2 classes and a discrete gamma model with 1 class. The commands are as follows:
+
+```
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_continuous -dfe continuous -sub -evolgen
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_2class -sub -evolgen
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref
+
+$ cd /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu
+$ cat dmel_cds_with_neu_ref_continuous.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_INDEL > dmel_cds_with_neu_ref_continuous.allreps.results.ggplot.txt
+$ cat dmel_cds_with_neu_ref.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_INDEL > dmel_cds_with_neu_ref.allreps.results.ggplot.txt
+$ cat dmel_cds_with_neu_ref_2class.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_INDEL > dmel_cds_with_neu_ref_2class.allreps.results.ggplot.txt 
+```
+
+These results are consolidated in the following file: [dmel_sel_v_neu_anavar_1run_results.csv](dmel_sel_v_neu_anavar_1run_results.csv)
+
+In addition reduced models were run with 'equal_mutation_rate':
+
+```
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_2class_equal_t -sub -evolgen
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_1class_equal_t -sub -evolgen
+
+$ cd /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu
+$ cat dmel_cds_with_neu_ref_1class_equal_t.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_INDEL > dmel_cds_with_neu_ref_1class_equal_t.allreps.results.ggplot.txt
+$ cat dmel_cds_with_neu_ref_2class_equal_t.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_INDEL > dmel_cds_with_neu_ref_2class_equal_t.allreps.results.ggplot.txt 
 ```
