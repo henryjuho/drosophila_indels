@@ -128,7 +128,7 @@ def main():
     # submission loop
     if args.sub is True:
         command_line = [' '.join([x for x in sys.argv if x != '-sub' and x != '-evolgen'])]
-        q_sub(command_line, args.out_pre, evolgen=args.evolgen)
+        q_sub(command_line, args.out_pre, evolgen=args.evolgen, t=12)
         sys.exit(0)
 
     # variables
