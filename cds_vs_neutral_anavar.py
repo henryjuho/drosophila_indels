@@ -86,7 +86,7 @@ def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_s
         sfs_m = {'selected_INS': (sfs_i, ins_m), 'selected_DEL': (sfs_d, del_m),
                  'neutral_INS': (sfs_ni, n_i_m), 'neutral_DEL': (sfs_nd, n_d_m)}
         ctl = an.IndelNeuSelControlFile()
-        ctl.set_data(sfs_m, n, dfe=dfe, c=c)
+        ctl.set_data(sfs_m, n, dfe=dfe, c=c, gamma_r=(-500, 10))
         ctl.set_constraint(constraint)
         ctl_contents = ctl.construct()
         with open(ctl_name, 'w') as control:
