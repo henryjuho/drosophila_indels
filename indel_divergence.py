@@ -30,7 +30,7 @@ def main():
         for x in chromo_list:
 
             cmd = ' '.join(sys.argv) + ' -chromo {}'.format(x)
-            outs = args.out[:args.out.rfind('/')+1] + 'divergence_{}'.format(x)
+            outs = args.out.replace('.txt', '') + '_{}'.format(x)
 
             q_sub([cmd], out=outs, evolgen=True)
 
