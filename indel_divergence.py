@@ -39,6 +39,9 @@ def main():
     else:
         callable_cmd = 'zgrep ^{} {} | bedtools intersect -a stdin -b {} | wga_bed_summary.py -callable'.format(
             args.chromo, args.wga, args.bed)
+
+        print(callable_cmd, file=sys.stdout)
+
         call_sites = popen_grab(callable_cmd)[0].split('\t')
 
         n_sites = int(call_sites[1])
@@ -47,10 +50,17 @@ def main():
                      'wga_bed_indels.py -min_coverage 3 -max_length 50 -ref_specific | wc -l').format(
             args.chromo, args.wga, args.bed)
 
+        print(indel_cmd, file=sys.stdout)
+
         n_indels = int(popen_grab(indel_cmd)[0])
 
+        if n_sites == 0:
+            div = 0.0
+        else:
+            div = float(n_indels)/float(n_sites)
+
         with open(args.out, 'a') as out_file:
-            print(args.chromo, n_indels, n_sites, float(n_indels)/float(n_sites), file=out_file)
+            print(args.chromo, n_indels, n_sites, div, file=out_file)
 
 
 if __name__ == '__main__':
