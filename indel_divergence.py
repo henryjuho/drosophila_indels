@@ -60,7 +60,7 @@ def main():
             div = float(n_indels)/float(n_sites)
 
         with open(args.out, 'a') as out_file:
-            print(args.chromo, n_indels, n_sites, div, file=out_file)
+            print(args.chromo, n_indels, n_sites, div, file=out_file, sep='\t')
 
 
 if __name__ == '__main__':
