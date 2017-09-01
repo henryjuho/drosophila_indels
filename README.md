@@ -79,6 +79,17 @@ GFF files were sorted, compressed with bgzip and indexed with tabix:
 $ zcat dmel_ref/dmel-all-r5.34.gff.gz | python ~/drosophila_indels/trim_neg_coords.py | bgzip -c > dmel_ref/dmel-all-r5.34.no_neg.gff.gz
 $ tabix -pgff dmel_ref/dmel-all-r5.34.no_neg.gff.gz
 ```
+
+Then region coordinates were output to bed files as follows:
+
+```
+$ zgrep chromosome_arm dmel-all-r5.34.no_neg.gff.gz | gff2bed.py > dmel_chromosomes.bed
+$ zcat dmel-all-r5.34.no_neg.gff.gz | cut -f 1-5 | grep intron | gff2bed.py | sort -k1,1 -k2,2n | bedtools merge > dmel_introns.bed
+$ zcat dmel-all-r5.34.no_neg.gff.gz | cut -f 1-5 | grep CDS | grep -v match | gff2bed.py | sort -k1,1 -k2,2n | bedtools merge > dmel_cds.bed
+$ zcat dmel-all-r5.34.no_neg.gff.gz | cut -f 1-5 | grep FlyBase | grep gene | grep -v pseudo | gff2bed.py | sort -k1,1 -k2,2n | bedtools merge > dmel_genes.bed
+$ bedtools subtract -a dmel_chromosomes.bed -b dmel_genes.bed > dmel_intergenic.bed
+$ cat dmel_introns.bed dmel_intergenic.bed | sort -k1,1 -k2,2n | bedtools merge > dmel_noncoding.bed
+```
 ## Preparing BAM files
 
 Multi-sample chromosomal BAM files were converted to single sample whole genome BAM files as follows:
@@ -345,7 +356,7 @@ $ annotate_degeneracy.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/
 
 ## Generating callable sites fastas
 
-Fasta files of callable sites were created and summarised for both species using the following codes:
+Fasta files of callable sites were created and summarised using the following codes:
 
 | Case            | code  |
 |:----------------|:-----:|
@@ -416,6 +427,17 @@ Genes with dS greater than 5 were filtered out, the remaining results (8355 gene
 $ Rscript plot_dnds_pi0pi4.R
 ```
 
+## INDEL divergence
+
+```
+$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_cds.bed -out /fastdata/bop15hjb/drosophila_data/dmel/indel_divergence/dmel_cds_indel_divergence.txt
+$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_noncoding.bed -out /fastdata/bop15hjb/drosophila_data/dmel/indel_divergence/dmel_noncoding_indel_divergence.txt
+
+$ Rscript collate_indel_divergence.R 
+```
+
+Plot of results [here](indel_divergence.pdf).
+
 ## anavar analyses
 
 Anavar was run on the coding INDEL data with intergenic and intronic variants as neutral reference. Three models were run, a continuous gamma distribution model, a discrete gamma model with 2 classes and a discrete gamma model with 1 class. The commands are as follows:
@@ -436,10 +458,13 @@ These results are consolidated in the following file: [dmel_sel_v_neu_anavar_1ru
 In addition reduced models were run with 'equal_mutation_rate':
 
 ```
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -dfe continuous -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_continuous_equal_t -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_2class_equal_t -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_1class_equal_t -sub -evolgen
 
 $ cd /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu
+
+$ cat dmel_cds_with_neu_ref_continuous_equal_t.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_INDEL > dmel_cds_with_neu_ref_continuous_equal_t.allreps.results.ggplot.txt
 $ cat dmel_cds_with_neu_ref_1class_equal_t.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_INDEL > dmel_cds_with_neu_ref_1class_equal_t.allreps.results.ggplot.txt
 $ cat dmel_cds_with_neu_ref_2class_equal_t.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_INDEL > dmel_cds_with_neu_ref_2class_equal_t.allreps.results.ggplot.txt 
 ```
