@@ -468,3 +468,11 @@ $ cat dmel_cds_with_neu_ref_continuous_equal_t.allreps.results.txt | anavar2ggpl
 $ cat dmel_cds_with_neu_ref_1class_equal_t.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_INDEL > dmel_cds_with_neu_ref_1class_equal_t.allreps.results.ggplot.txt
 $ cat dmel_cds_with_neu_ref_2class_equal_t.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_INDEL > dmel_cds_with_neu_ref_2class_equal_t.allreps.results.ggplot.txt 
 ```
+
+The Akaike information criterion (AIC) was calculated for each model as follows:
+
+```
+$ cat dmel_sel_v_neu_anavar_1run_results.csv | ./calcAIC.py > dmel_sel_v_neu_anavar_1run_results.aic.csv
+```
+
+Results [here](dmel_sel_v_neu_anavar_1run_results.aic.csv).
