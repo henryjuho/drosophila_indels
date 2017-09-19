@@ -51,9 +51,9 @@ def sfs2counts(freq_list, n):
 def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_sfs, n_d_m, constraint,
                            bootstrap, n, c, dfe, out_stem):
 
-    anavar_path = '/shared/evolgen1/shared_data/program_files/iceberg/'
+    anavar_path = '/shared/evolgen1/shared_data/program_files/sharc/'
 
-    anavar_cmd = '{path}anavar1.2 {ctl} {rslts} {log}'
+    anavar_cmd = '{path}anavar1.21 {ctl} {rslts} {log}'
 
     results = []
 
