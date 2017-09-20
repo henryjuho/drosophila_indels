@@ -285,7 +285,7 @@ def reformat_line_selsnp_continuous(line, header):
     for i in range(0, len(header)):
         current_col = header[i]
         current_val = line.split()[i]
-        if 'theta' not in current_col and 'shape' not in current_col and 'scale' not in current_col and 'e_' not in \
+        if 'theta' not in current_col and 'shape' not in current_col and 'scale' not in current_col and '_e' not in \
                 current_col:
             out_data[current_col] = current_val
         else:
