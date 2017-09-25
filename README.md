@@ -440,39 +440,58 @@ Plot of results [here](indel_divergence.pdf).
 
 ## anavar analyses
 
-Anavar was run on the coding INDEL data with intergenic and intronic variants as neutral reference. Three models were run, a continuous gamma distribution model, a discrete gamma model with 2 classes and a discrete gamma model with 1 class. The commands are as follows:
+Anavar was run on the coding INDEL data with intergenic and intronic variants as neutral reference. Three models were run, a continuous gamma distribution model, a discrete gamma model with 2 classes and a discrete gamma model with 1 class. For each model a reduced model was also run with equal mutation rates. The commands are as follows:
 
 ```
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_continuous -dfe continuous -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_2class -sub -evolgen
-$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_1class -sub -evolgen
 
-$ cd /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu
-$ cat dmel_cds_with_neu_ref_continuous.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_INDEL > dmel_cds_with_neu_ref_continuous.allreps.results.ggplot.txt
-$ cat dmel_cds_with_neu_ref.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_INDEL > dmel_cds_with_neu_ref.allreps.results.ggplot.txt
-$ cat dmel_cds_with_neu_ref_2class.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_INDEL > dmel_cds_with_neu_ref_2class.allreps.results.ggplot.txt 
-```
-
-These results are consolidated in the following file: [dmel_sel_v_neu_anavar_1run_results.csv](dmel_sel_v_neu_anavar_1run_results.csv)
-
-In addition reduced models were run with 'equal_mutation_rate':
-
-```
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -dfe continuous -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_continuous_equal_t -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_2class_equal_t -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_1class_equal_t -sub -evolgen
 
 $ cd /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu
 
+$ cat dmel_cds_with_neu_ref_continuous.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_INDEL > dmel_cds_with_neu_ref_continuous.allreps.results.ggplot.txt
+$ cat dmel_cds_with_neu_ref_1class.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_INDEL > dmel_cds_with_neu_ref_1class.allreps.results.ggplot.txt
+$ cat dmel_cds_with_neu_ref_2class.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_INDEL > dmel_cds_with_neu_ref_2class.allreps.results.ggplot.txt 
+
 $ cat dmel_cds_with_neu_ref_continuous_equal_t.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_INDEL > dmel_cds_with_neu_ref_continuous_equal_t.allreps.results.ggplot.txt
 $ cat dmel_cds_with_neu_ref_1class_equal_t.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_INDEL > dmel_cds_with_neu_ref_1class_equal_t.allreps.results.ggplot.txt
 $ cat dmel_cds_with_neu_ref_2class_equal_t.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_INDEL > dmel_cds_with_neu_ref_2class_equal_t.allreps.results.ggplot.txt 
 ```
 
+These analyses were repeated for the SNP data:
+
+```
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe continuous -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/dmel_snps_cds_with_neu_ref_continuous -sub -evolgen
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 2 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/dmel_snps_cds_with_neu_ref_2class -sub -evolgen
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/dmel_snps_cds_with_neu_ref_1class -sub -evolgen
+
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe continuous -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/dmel_snps_cds_with_neu_ref_continuous_equal_t -sub -evolgen -constraint equal_mutation_rate
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 2 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/dmel_snps_cds_with_neu_ref_2class_equal_t -sub -evolgen -constraint equal_mutation_rate
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/dmel_snps_cds_with_neu_ref_1class_equal_t -sub -evolgen -constraint equal_mutation_rate
+
+$ cd /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/
+
+$ cat dmel_snps_cds_with_neu_ref_continuous.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_SNP > dmel_snps_cds_with_neu_ref_continuous.allreps.results.ggplot.txt 
+$ cat dmel_snps_cds_with_neu_ref_2class.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_SNP > dmel_snps_cds_with_neu_ref_2class.allreps.results.ggplot.txt
+$ cat dmel_snps_cds_with_neu_ref_1class.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_SNP > dmel_snps_cds_with_neu_ref_1class.allreps.results.ggplot.txt 
+
+$ cat dmel_snps_cds_with_neu_ref_continuous_equal_t.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_SNP > dmel_snps_cds_with_neu_ref_continuous_equal_t.allreps.results.ggplot.txt 
+$ cat dmel_snps_cds_with_neu_ref_2class_equal_t.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_SNP > dmel_snps_cds_with_neu_ref_2class_equal_t.allreps.results.ggplot.txt 
+$ cat dmel_snps_cds_with_neu_ref_1class_equal_t.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_SNP > dmel_snps_cds_with_neu_ref_1class_equal_t.allreps.results.ggplot.txt 
+```
+
+The results are consolidated in the following files, INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.csv](dmel_sel_v_neu_anavar_1run_results_indels.csv), SNPs: [dmel_sel_v_neu_anavar_1run_results_snps.csv](dmel_sel_v_neu_anavar_1run_results_snps.csv) 
+
+
 The Akaike information criterion (AIC) was calculated for each model as follows:
 
 ```
-$ cat dmel_sel_v_neu_anavar_1run_results.csv | ./calcAIC.py > dmel_sel_v_neu_anavar_1run_results.aic.csv
+$ cat dmel_sel_v_neu_anavar_1run_results_indels.csv | ./calcAIC.py > dmel_sel_v_neu_anavar_1run_results_indels.aic.csv 
+$ cat dmel_sel_v_neu_anavar_1run_results_snps.csv | ./calcAIC.py > dmel_sel_v_neu_anavar_1run_results_snps.aic.csv 
 ```
 
 Results [here](dmel_sel_v_neu_anavar_1run_results.aic.csv).
