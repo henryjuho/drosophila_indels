@@ -494,4 +494,5 @@ $ cat dmel_sel_v_neu_anavar_1run_results_indels.csv | ./calcAIC.py > dmel_sel_v_
 $ cat dmel_sel_v_neu_anavar_1run_results_snps.csv | ./calcAIC.py > dmel_sel_v_neu_anavar_1run_results_snps.aic.csv 
 ```
 
-Results [here](dmel_sel_v_neu_anavar_1run_results.aic.csv).
+Results for INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.aic.csv](dmel_sel_v_neu_anavar_1run_results_indels.aic.csv) and SNPs: [dmel_sel_v_neu_anavar_1run_results_snps.aic.csv](dmel_sel_v_neu_anavar_1run_results_snps.aic.csv) 
+
