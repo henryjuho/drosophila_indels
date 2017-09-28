@@ -399,6 +399,14 @@ $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_d
 $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_bs1000.txt -evolgen -bootstrap 1000
 ```
 
+## Length summary
+
+The distribution of INDEL lengths was summarised with the following scripts:
+
+```
+$ ./indel_lengths.py -vcf ~/sharc_fastdata/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region 'CDS' -region 'non-coding' -auto_only > dmel_indel_lengths.txt
+```
+
 ## Gene by gene analysis
 
 dn and ds values were calculated using codeml, with a one ratio model, on the genes extracted from the multispecies alignment as follows:
