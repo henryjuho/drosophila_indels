@@ -405,7 +405,10 @@ The distribution of INDEL lengths was summarised with the following scripts:
 
 ```
 $ ./indel_lengths.py -vcf ~/sharc_fastdata/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region 'CDS' -region 'non-coding' -auto_only > dmel_indel_lengths.txt
+$ Rscript length_distribution.R 
 ```
+
+Plot can be seen [here](dmel_lengths.pdf)
 
 ## Gene by gene analysis
 
