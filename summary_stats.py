@@ -118,9 +118,9 @@ def main():
     sex_chromos = {'chrZ', 'Z', 'chrW', 'W', 'X', 'XHet', 'Y', 'YHet'}
 
     if mode == 'SNP':
-        regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR', 'zerofold', 'fourfold']
+        regions = ['ALL', 'CDS', 'intron', 'intergenic', 'non-coding', 'AR', 'zerofold', 'fourfold']
     else:
-        regions = ['ALL', 'CDS', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'AR']
+        regions = ['ALL', 'CDS', 'CDS_frameshift', 'CDS_non_frameshift', 'intron', 'intergenic', 'non-coding', 'AR']
 
     # write header
     if markdown is True:
@@ -148,6 +148,8 @@ def main():
                 region_flag = ' -region CDS_frameshift -region CDS_non_frameshift'
             elif region == 'AR':
                 region_flag = ' -region intergenic_ar -region intron_ar'
+            elif region == 'non-coding':
+                region_flag = ' -region intergenic -region intron'
             elif region == 'zerofold':
                 region_flag = ' -degen 0'
             elif region == 'fourfold':
@@ -157,6 +159,10 @@ def main():
 
             all_callable = callable_sites[chromo][region.split('_')[0]]['all']
             pol_callable = callable_sites[chromo][region.split('_')[0]]['pol']
+
+            if region == 'non-coding':
+                all_callable = callable_sites[chromo]['intergenic']['all'] + callable_sites[chromo]['intron']['all']
+                pol_callable = callable_sites[chromo]['intergenic']['pol'] + callable_sites[chromo]['intron']['pol']
 
             if mode == 'SNP':
                 snp_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode snp -skip_hetero -folded {}'
