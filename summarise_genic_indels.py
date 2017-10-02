@@ -94,9 +94,14 @@ def main():
             n_callable = call_sites.upper().count('K')
 
             # calc pi
-            pie = pi(number_samples, allele_freqs)
-            theta = theta_w(number_samples, len(allele_freqs))
-            tajd = tajimas_d(number_samples, allele_freqs)
+            if len(allele_freqs) == 0:
+                pie = 0
+                theta = 0
+                tajd = 0
+            else:
+                pie = pi(number_samples, allele_freqs)
+                theta = theta_w(number_samples, len(allele_freqs))
+                tajd = tajimas_d(number_samples, allele_freqs)
 
             if n_callable != 0:
                 pie_per_site = pie / float(n_callable)
