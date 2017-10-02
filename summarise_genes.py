@@ -6,7 +6,7 @@ from qsub import *
 import sys
 import gzip
 import pysam
-from summary_stats import pi
+from summary_stats import pi, theta_w, tajimas_d
 
 
 def bed_to_dict(zero_bed, four_bed):
@@ -76,12 +76,14 @@ def main():
     out = open(args.out, 'w')
 
     # gene by gene calcs
-    print('trans_id', 'pi0', 'pi4', sep='\t', file=out)
+    print('trans_id', 'pi0', 'pi4', 'theta0', 'theta4', 'tajd0', 'tajd4', sep='\t', file=out)
 
     for chromosome in gene_coords.keys():
         chr_string = call_fa.fetch(chromosome)
         for trans in gene_coords[chromosome].keys():
             pies = {0: 0, 4: 0}
+            thetas = {0: 0, 4: 0}
+            tajs = {0: 0, 4: 0}
             for degen in gene_coords[chromosome][trans].keys():
                 call_sites = ''
                 allele_freqs = []
@@ -102,14 +104,21 @@ def main():
 
                 # calc pi
                 pie = pi(number_samples, allele_freqs)
+                theta = theta_w(number_samples, len(allele_freqs))
+                tajd = tajimas_d(number_samples, allele_freqs)
+
                 if n_callable != 0:
                     pie_per_site = pie / float(n_callable)
+                    theta_per_site = theta / float(n_callable)
+                    taj_per_site = tajd / float(n_callable)
                 else:
-                    pie_per_site = 0.0
+                    pie_per_site, theta_per_site, taj_per_site = 0.0, 0.0, 0.0
 
                 pies[degen] = pie_per_site
+                thetas[degen] = theta_per_site
+                tajs[degen] = taj_per_site
 
-            print(trans, pies[0], pies[4], sep='\t', file=out)
+            print(trans, pies[0], pies[4], thetas[0], thetas[4], tajs[0], tajs[4], sep='\t', file=out)
 
     out.close()
 
