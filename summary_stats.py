@@ -157,12 +157,12 @@ def main():
             else:
                 region_flag = ' -region ' + region
 
-            all_callable = callable_sites[chromo][region.split('_')[0]]['all']
-            pol_callable = callable_sites[chromo][region.split('_')[0]]['pol']
-
             if region == 'non-coding':
                 all_callable = callable_sites[chromo]['intergenic']['all'] + callable_sites[chromo]['intron']['all']
                 pol_callable = callable_sites[chromo]['intergenic']['pol'] + callable_sites[chromo]['intron']['pol']
+            else:
+                all_callable = callable_sites[chromo][region.split('_')[0]]['all']
+                pol_callable = callable_sites[chromo][region.split('_')[0]]['pol']
 
             if mode == 'SNP':
                 snp_sfs = popen_grab('~/sfs_utils/vcf2raw_sfs.py -vcf {} -chr {}{} -mode snp -skip_hetero -folded {}'
