@@ -110,6 +110,8 @@ def main():
     parser.add_argument('-c', help='Number of classes to run model with', required=True, type=int)
     parser.add_argument('-dfe', help='type of dfe to fit, discrete or continuous', default='discrete',
                         choices=['discrete', 'continuous'])
+    parser.add_argument('-neu_type', help='Neutral refernce type',
+                        choices=['non-coding', '4fold'], default='non-coding')
     parser.add_argument('-constraint', help='Constraint for model', choices=['none', 'equal_mutation_rate'],
                         default='none')
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
@@ -136,11 +138,19 @@ def main():
                '-region CDS_frameshift -region CDS_non_frameshift'
                ).format(vcf=args.vcf)
 
-    n_sfs_cmd = ('/home/bop15hjb/sfs_utils/vcf2raw_sfs.py '
-                 '-vcf {vcf} '
-                 '-mode snp -auto_only -skip_hetero '
-                 '-region intergenic -region intron'
-                 ).format(vcf=args.vcf)
+    if args.neu_type == 'non-coding':
+        n_sfs_cmd = ('/home/bop15hjb/sfs_utils/vcf2raw_sfs.py '
+                     '-vcf {vcf} '
+                     '-mode snp -auto_only -skip_hetero '
+                     '-region intergenic -region intron'
+                     ).format(vcf=args.vcf)
+
+    else:
+        n_sfs_cmd = ('/home/bop15hjb/sfs_utils/vcf2raw_sfs.py '
+                     '-vcf {vcf} '
+                     '-mode snp -auto_only -skip_hetero '
+                     '-degen 4'
+                     ).format(vcf=args.vcf)
 
     pol = 'pol'
 
@@ -154,7 +164,11 @@ def main():
 
     # get callable sites
     m = call_site_dict['ALL']['CDS'][pol]
-    neu_m = call_site_dict['ALL']['intergenic'][pol] + call_site_dict['ALL']['intron'][pol]
+
+    if args.neu_type == 'non-coding':
+        neu_m = call_site_dict['ALL']['intergenic'][pol] + call_site_dict['ALL']['intron'][pol]
+    else:
+        neu_m = call_site_dict['ALL']['fourfold'][pol]
 
     # construct process
     region_results = snp_sel_v_neu_anavar(snp_sfs=sfs, snp_m=m,
