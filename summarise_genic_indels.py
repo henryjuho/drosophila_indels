@@ -106,11 +106,10 @@ def main():
             if n_callable != 0:
                 pie_per_site = pie / float(n_callable)
                 theta_per_site = theta / float(n_callable)
-                tajd_per_site = tajd / float(n_callable)
             else:
-                pie_per_site, theta_per_site, tajd_per_site = 0.0, 0.0, 0.0
+                pie_per_site, theta_per_site = 0.0, 0.0
 
-            print(trans, pie_per_site, theta_per_site, tajd_per_site, sep='\t', file=out)
+            print(trans, pie_per_site, theta_per_site, tajd, sep='\t', file=out)
 
     out.close()
 

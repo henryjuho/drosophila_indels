@@ -115,13 +115,12 @@ def main():
                 if n_callable != 0:
                     pie_per_site = pie / float(n_callable)
                     theta_per_site = theta / float(n_callable)
-                    taj_per_site = tajd / float(n_callable)
                 else:
-                    pie_per_site, theta_per_site, taj_per_site = 0.0, 0.0, 0.0
+                    pie_per_site, theta_per_site = 0.0, 0.0
 
                 pies[degen] = pie_per_site
                 thetas[degen] = theta_per_site
-                tajs[degen] = taj_per_site
+                tajs[degen] = tajd
 
             print(trans, pies[0], pies[4], thetas[0], thetas[4], tajs[0], tajs[4], sep='\t', file=out)
 
