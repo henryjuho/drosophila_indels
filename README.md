@@ -393,10 +393,10 @@ $ tabix -pvcf dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.p
 ## Summary statistics: theta, pi and Tajima's D
 
 ```
-$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_no_bs_split_ar.txt
-$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_1000bs.txt -evolgen -bootstrap 1000
-$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_no_bs.txt -evolgen
-$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_bs1000.txt -evolgen -bootstrap 1000
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_no_bs_split_ar_nc.txt -evolgen
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/post_vqsr/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary.csv -mode INDEL -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_indel_summary_1000bs_nc.txt -evolgen -bootstrap 1000
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_no_bs_nc.txt -evolgen
+$ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_bs1000_nc.txt -evolgen -bootstrap 1000
 ```
 
 ## Length summary
@@ -422,14 +422,15 @@ $ extract_dn_ds.py -dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/co
 pi0 and pi4 values were calculated for all transcripts of all genes in the dmel CDS fasta alignments file:
 
 ```
-$ summarise_genes.py -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -zbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-0fold.bed.gz -fbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-4fold.bed.gz -out /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi0_pi4_values.all_trans.txt -sub -evolgen
-$ summarise_genic_indels.py -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -cds_bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-degen.bed.gz -out /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi_indel_values.all_trans.txt -sub -evolgen
+$ summarise_genes.py -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -zbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-0fold.bed.gz -fbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-4fold.bed.gz -out /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi0_pi4_theta_tajd_values.all_trans.txt -sub -evolgen
+$ summarise_genic_indels.py -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -cds_bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-degen.bed.gz -out /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi_theta_tajd_indel_values.all_trans.txt -sub -evolgen
 ```
 
 Genes with dn ds estimates then had pi0 pi4 estimates added from the above step with the following script:
 
 ```
-$ cat_dnds_pi0pi4.py -p /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi0_pi4_values.all_trans.txt -pI /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi_indel_values.all_trans.txt -d /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.dn_ds_values.longest_trans.txt > /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.dndn.pi0pi4.pi_indel.longest_trans.txt
+$ cd /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/
+$ cat_dnds_pi0pi4.py -d dmel.dn_ds_values.longest_trans.txt -p dmel.pi0_pi4_theta_tajd_values.all_trans.txt -pI dmel.pi_theta_tajd_indel_values.all_trans.txt > dmel.gene_summarystats.longest_trans.txt
 ```
 
 Genes with dS greater than 5 were filtered out, the remaining results (8355 genes) were binned into 20 equal occupancy bins according to dN and plotted as max dN per bin against mean pi per bin for zerofold, fourfold and INDEL sites.
@@ -496,7 +497,7 @@ $ cat dmel_snps_cds_with_neu_ref_1class_equal_t.allreps.results.txt | anavar2ggp
 ```
 
 The results are consolidated in the following files, INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.csv](dmel_sel_v_neu_anavar_1run_results_indels.csv), SNPs: [dmel_sel_v_neu_anavar_1run_results_snps.csv](dmel_sel_v_neu_anavar_1run_results_snps.csv) 
-
+Additionally the control files used can be found [here](anavar_control_files/)
 
 The Akaike information criterion (AIC) was calculated for each model as follows:
 
