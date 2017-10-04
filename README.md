@@ -510,9 +510,19 @@ $ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/ana
 $ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe continuous -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_continuous_equal_t -sub -constraint equal_mutation_rate -neu_type 4fold
 $ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 2 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_2class_equal_t -sub -evolgen -constraint equal_mutation_rate -neu_type 4fold
 $ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_1class_equal_t -sub -constraint equal_mutation_rate -neu_type 4fold
+
+$ cd /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold
+
+$ cat dmel_snps_cds_with_4fold_ref_continuous.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_SNP > dmel_snps_cds_with_4fold_ref_continuous.allreps.results.ggplot.txt
+$ cat dmel_snps_cds_with_4fold_ref_2class.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_SNP > dmel_snps_cds_with_4fold_ref_2class.allreps.results.ggplot.txt
+$ cat dmel_snps_cds_with_4fold_ref_1class.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_SNP > dmel_snps_cds_with_4fold_ref_1class.allreps.results.ggplot.txt 
+
+$ cat dmel_snps_cds_with_4fold_ref_continuous_equal_t.allreps.results.txt | anavar2ggplot.py -c 0 -m SEL_SNP > dmel_snps_cds_with_4fold_ref_continuous_equal_t.allreps.results.ggplot.txt 
+$ cat dmel_snps_cds_with_4fold_ref_2class_equal_t.allreps.results.txt | anavar2ggplot.py -c 2 -m SEL_SNP > dmel_snps_cds_with_4fold_ref_2class_equal_t.allreps.results.ggplot.txt 
+$ cat dmel_snps_cds_with_4fold_ref_1class_equal_t.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_SNP > dmel_snps_cds_with_4fold_ref_1class_equal_t.allreps.results.ggplot.txt 
 ```
 
-The results are consolidated in the following files, INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.csv](dmel_sel_v_neu_anavar_1run_results_indels.csv), SNPs: [dmel_sel_v_neu_anavar_1run_results_snps.csv](dmel_sel_v_neu_anavar_1run_results_snps.csv) 
+The results are consolidated in the following files, INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.csv](dmel_sel_v_neu_anavar_1run_results_indels.csv), SNPs with non-coding ref: [dmel_sel_v_neu_anavar_1run_results_snps.csv](dmel_sel_v_neu_anavar_1run_results_snps.csv), SNPs with 4fold ref: [dmel_sel_v_4fold_anavar_1run_results_snps.csv](dmel_sel_v_4fold_anavar_1run_results_snps.csv).
 Additionally the control files used can be found [here](anavar_control_files/).
 
 The Akaike information criterion (AIC) was calculated for each model as follows:
@@ -520,7 +530,8 @@ The Akaike information criterion (AIC) was calculated for each model as follows:
 ```
 $ cat dmel_sel_v_neu_anavar_1run_results_indels.csv | ./calcAIC.py > dmel_sel_v_neu_anavar_1run_results_indels.aic.csv 
 $ cat dmel_sel_v_neu_anavar_1run_results_snps.csv | ./calcAIC.py > dmel_sel_v_neu_anavar_1run_results_snps.aic.csv 
+$ cat dmel_sel_v_4fold_anavar_1run_results_snps.csv | ./calcAIC.py > dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv 
 ```
 
-Results for INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.aic.csv](dmel_sel_v_neu_anavar_1run_results_indels.aic.csv) and SNPs: [dmel_sel_v_neu_anavar_1run_results_snps.aic.csv](dmel_sel_v_neu_anavar_1run_results_snps.aic.csv) 
+Results for INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.aic.csv](dmel_sel_v_neu_anavar_1run_results_indels.aic.csv), SNPs with non-coding reference: [dmel_sel_v_neu_anavar_1run_results_snps.aic.csv](dmel_sel_v_neu_anavar_1run_results_snps.aic.csv) and SNPs with 4fold reference: [dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv](dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv).
 
