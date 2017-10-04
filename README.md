@@ -419,7 +419,7 @@ $ per_gene_codeml.py -phy_dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analy
 $ extract_dn_ds.py -dir /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/codeml_data/ > /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.dn_ds_values.longest_trans.txt
 ```
 
-pi0 and pi4 values were calculated for all transcripts of all genes in the dmel CDS fasta alignments file:
+pi, theta and Tajima's D values for zerofold SNPs, fourfold SNPs and INDELs were calculated for all transcripts of all genes in the dmel CDS fasta alignments file:
 
 ```
 $ summarise_genes.py -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -zbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-0fold.bed.gz -fbed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-4fold.bed.gz -out /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/dmel.pi0_pi4_theta_tajd_values.all_trans.txt -sub -evolgen
@@ -433,11 +433,13 @@ $ cd /fastdata/bop15hjb/drosophila_data/dmel/gene_analysis/
 $ cat_dnds_pi0pi4.py -d dmel.dn_ds_values.longest_trans.txt -p dmel.pi0_pi4_theta_tajd_values.all_trans.txt -pI dmel.pi_theta_tajd_indel_values.all_trans.txt > dmel.gene_summarystats.longest_trans.txt
 ```
 
-Genes with dS greater than 5 were filtered out, the remaining results (8355 genes) were binned into 20 equal occupancy bins according to dN and plotted as max dN per bin against mean pi per bin for zerofold, fourfold and INDEL sites.
+Genes with dS greater than 5 were filtered out, the remaining results (8355 genes) were binned into 20 equal occupancy bins according to dN and plotted as max dN per bin against mean pi per bin (A) and mean Tajima's D per bin for zerofold, fourfold and INDEL sites.
 
 ```
 $ Rscript plot_dnds_pi0pi4.R
 ```
+
+The results can be seen [here](dmel.pi_tajd_dn.pdf)
 
 ## INDEL divergence
 
@@ -476,6 +478,8 @@ $ cat dmel_cds_with_neu_ref_2class_equal_t.allreps.results.txt | anavar2ggplot.p
 
 These analyses were repeated for the SNP data:
 
+With non-coding reference:
+
 ```
 $ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe continuous -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/dmel_snps_cds_with_neu_ref_continuous -sub -evolgen
 $ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 2 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_neu/dmel_snps_cds_with_neu_ref_2class -sub -evolgen
@@ -496,8 +500,20 @@ $ cat dmel_snps_cds_with_neu_ref_2class_equal_t.allreps.results.txt | anavar2ggp
 $ cat dmel_snps_cds_with_neu_ref_1class_equal_t.allreps.results.txt | anavar2ggplot.py -c 1 -m SEL_SNP > dmel_snps_cds_with_neu_ref_1class_equal_t.allreps.results.ggplot.txt 
 ```
 
+With fourfold reference:
+
+```
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe continuous -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_continuous -sub -evolgen -neu_type 4fold
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 2 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_2class -sub -neu_type 4fold
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_1class -sub -evolgen -neu_type 4fold
+
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe continuous -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_continuous_equal_t -sub -constraint equal_mutation_rate -neu_type 4fold
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 2 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_2class_equal_t -sub -evolgen -constraint equal_mutation_rate -neu_type 4fold
+$ cds_vs_neutral_anavar_snps.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe discrete -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/dmel_snps_cds_with_4fold_ref_1class_equal_t -sub -constraint equal_mutation_rate -neu_type 4fold
+```
+
 The results are consolidated in the following files, INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.csv](dmel_sel_v_neu_anavar_1run_results_indels.csv), SNPs: [dmel_sel_v_neu_anavar_1run_results_snps.csv](dmel_sel_v_neu_anavar_1run_results_snps.csv) 
-Additionally the control files used can be found [here](anavar_control_files/)
+Additionally the control files used can be found [here](anavar_control_files/).
 
 The Akaike information criterion (AIC) was calculated for each model as follows:
 
