@@ -21,4 +21,4 @@ for degree in [25, 50, 75, 100, 150, 200, 300]:
            '-out_pre {} -degree {}'
            '').format(vcf, callsites, out, degree)
 
-    q_sub([cmd], out=out, evolgen=True, t=48)
+    q_sub([cmd], out=out, t=48)
