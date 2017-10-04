@@ -48,7 +48,7 @@ def sfs2counts(freq_list, n):
     return counts
 
 
-def snp_sel_v_neu_anavar(snp_sfs, snp_m, n_sfs, n_m, constraint, bootstrap, n, c, dfe, out_stem, fold):
+def snp_sel_v_neu_anavar(snp_sfs, snp_m, n_sfs, n_m, constraint, bootstrap, n, c, dfe, out_stem, fold, degree):
 
     anavar_path = '/shared/evolgen1/shared_data/program_files/sharc/'
 
@@ -80,6 +80,7 @@ def snp_sel_v_neu_anavar(snp_sfs, snp_m, n_sfs, n_m, constraint, bootstrap, n, c
                  'neutral_SNP': (sfs_n, n_m)}
         ctl = an.SNPNeuSelControlFile()
         ctl.set_data(sfs_m, n, dfe=dfe, c=c, gamma_r=(-500, 10), snp_fold=fold)
+        ctl.set_dfe_optional_opts(degree=degree)
         ctl.set_constraint(constraint)
         ctl_contents = ctl.construct()
         with open(ctl_name, 'w') as control:
@@ -117,6 +118,7 @@ def main():
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
     parser.add_argument('-bootstrap', help='Number of bootstrap replicates', default=0, type=int)
     parser.add_argument('-out_pre', help='File path and prefix for output', required=True)
+    parser.add_argument('-degree', help='changes degree setting in anavar', default=50, type=int)
     parser.add_argument('-sub', help='If specified will submit script to cluster', action='store_true', default=False)
     parser.add_argument('-evolgen', help='If specified will run on evolgen', default=False, action='store_true')
     args = parser.parse_args()
@@ -177,7 +179,8 @@ def main():
                                           constraint=args.constraint,
                                           bootstrap=args.bootstrap,
                                           n=args.n, c=args.c, dfe=args.dfe,
-                                          out_stem=out_pre)
+                                          out_stem=out_pre,
+                                          degree=args.degree)
 
     # main out
     with open(out_pre + '.allreps.results.txt', 'w') as main_out:
