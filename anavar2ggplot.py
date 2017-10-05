@@ -179,7 +179,11 @@ def reformat_line_selindel_3class(line, header):
     data_to_sort = {}
     for i in range(0, len(header)):
         current_col = header[i]
-        current_val = line.split()[i]
+        try:
+            current_val = line.split()[i]
+        except IndexError:
+            current_val = 'None'
+
         if 'ins' not in current_col and 'del' not in current_col:
             out_data[current_col] = current_val
         else:
