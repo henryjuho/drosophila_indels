@@ -3,7 +3,7 @@
 from __future__ import print_function
 import os
 
-directory = '/fastdata/bop15hjb/drosophila_data/dmel/anavar/degree_variation'
+directory = '/fastdata/bop15hjb/drosophila_data/dmel/anavar/degree_variation/'
 
 no = 0
 for x in [directory + f for f in os.listdir(directory) if f.endswith('.allreps.results.txt')]:
