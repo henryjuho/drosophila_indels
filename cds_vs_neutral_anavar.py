@@ -7,78 +7,78 @@ from qsub import *
 import sys
 import random
 from collections import Counter
-import gzip
-import pysam
-from vcf2raw_sfs import vcf2sfs
+# import gzip
+# import pysam
+# from vcf2raw_sfs import vcf2sfs
 
 
-def cds_coords(cds_bed, auto_only):
-
-    """
-    takes a bed file of cds coords in the format chromo\tstart\tstop\ttrans1,trans2,trans3\n
-    :param cds_bed: str
-    :param auto_only: bool
-    :return: dict
-    """
-
-    gene_cds = {}
-    sex_chr = {'X', 'XHet', 'Y', 'YHet'}
-
-    for line in gzip.open(cds_bed):
-        chromo, start, stop, gene = line.split()
-        gene = gene.split(',')[0].split('-')[0]
-
-        if gene not in gene_cds:
-            # exclude sex chr if specified
-            if auto_only and chromo in sex_chr:
-                continue
-
-            gene_cds[gene] = [chromo, []]
-
-        gene_cds[gene][1].append((int(start), int(stop)))
-
-    return gene_cds
-
-
-def cds_sfs(gene_bed, call_fa, vcf, mode):
-
-    """
-
-    :param gene_bed:
-    :param call_fa:
-    :param vcf:
-    :param mode:
-    :return:
-    """
-
-    all_genes = cds_coords(gene_bed, auto_only=True)
-    for gene in all_genes.keys():
-
-        gene_data = all_genes[gene]
-        gene_chromo = gene_data[0]
-        coords = gene_data[1]
-        chromo_seq = pysam.FastaFile(call_fa).fetch(gene_chromo)
-
-        gene_freqs = []
-        gene_callable = 0
-
-        for coord in coords:
-            # get callable_sites
-            n_callable = chromo_seq[coord[0]: coord[1]].count('K')
-            gene_callable += n_callable
-
-            # get sfs
-            freqs = vcf2sfs(vcf_name=vcf,
-                            mode=mode,
-                            chromo=gene_chromo, start=coord[0], stop=coord[1],
-                            skip_hetero=True)
-            gene_freqs += list(freqs)
-
-        yield gene_freqs, gene_callable
-
-
-def neutral_sfs():
-    pass
+# def cds_coords(cds_bed, auto_only):
+#
+#     """
+#     takes a bed file of cds coords in the format chromo\tstart\tstop\ttrans1,trans2,trans3\n
+#     :param cds_bed: str
+#     :param auto_only: bool
+#     :return: dict
+#     """
+#
+#     gene_cds = {}
+#     sex_chr = {'X', 'XHet', 'Y', 'YHet'}
+#
+#     for line in gzip.open(cds_bed):
+#         chromo, start, stop, gene = line.split()
+#         gene = gene.split(',')[0].split('-')[0]
+#
+#         if gene not in gene_cds:
+#             # exclude sex chr if specified
+#             if auto_only and chromo in sex_chr:
+#                 continue
+#
+#             gene_cds[gene] = [chromo, []]
+#
+#         gene_cds[gene][1].append((int(start), int(stop)))
+#
+#     return gene_cds
+#
+#
+# def cds_sfs(gene_bed, call_fa, vcf, mode):
+#
+#     """
+#
+#     :param gene_bed:
+#     :param call_fa:
+#     :param vcf:
+#     :param mode:
+#     :return:
+#     """
+#
+#     all_genes = cds_coords(gene_bed, auto_only=True)
+#     for gene in all_genes.keys():
+#
+#         gene_data = all_genes[gene]
+#         gene_chromo = gene_data[0]
+#         coords = gene_data[1]
+#         chromo_seq = pysam.FastaFile(call_fa).fetch(gene_chromo)
+#
+#         gene_freqs = []
+#         gene_callable = 0
+#
+#         for coord in coords:
+#             # get callable_sites
+#             n_callable = chromo_seq[coord[0]: coord[1]].count('K')
+#             gene_callable += n_callable
+#
+#             # get sfs
+#             freqs = vcf2sfs(vcf_name=vcf,
+#                             mode=mode,
+#                             chromo=gene_chromo, start=coord[0], stop=coord[1],
+#                             skip_hetero=True)
+#             gene_freqs += list(freqs)
+#
+#         yield gene_freqs, gene_callable
+#
+#
+# def neutral_sfs():
+#     pass
 
 
 def read_callable_csv(csv):
