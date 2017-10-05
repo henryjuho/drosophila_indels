@@ -169,6 +169,37 @@ def reformat_line_selindel_2class(line, header):
     return '\t'.join(new_header), out_lines
 
 
+def reformat_line_selindel_3class(line, header):
+
+    out_lines = []
+    new_header = ['run', 'imp', 'exit_code', 'theta', 'gamma', 'e', 'var_type', 'site_class',
+                  'sel_type', 'lnL', 'rep', 'region']
+    header = header.split()
+    out_data = {x: '' for x in new_header}
+    data_to_sort = {}
+    for i in range(0, len(header)):
+        current_col = header[i]
+        current_val = line.split()[i]
+        if 'ins' not in current_col and 'del' not in current_col:
+            out_data[current_col] = current_val
+        else:
+            data_to_sort[current_col] = current_val
+
+    # write multiple rows in long form
+    for site_class in [('ins', '1'), ('ins', '2'), ('ins', '3'), ('del', '1'), ('del', '2'), ('del', '3')]:
+        var_type = site_class[0]
+        out_data['theta'] = data_to_sort['sel_{}_theta_{}'.format(var_type, site_class[1])]
+        out_data['gamma'] = data_to_sort['sel_{}_gamma_{}'.format(var_type, site_class[1])]
+        out_data['e'] = data_to_sort['sel_{}_e_{}'.format(var_type, site_class[1])]
+        out_data['var_type'] = var_type
+        out_data['site_class'] = site_class[1]
+        out_data['sel_type'] = 'sel'
+
+        out_lines.append('\t'.join([out_data[y] for y in new_header]))
+
+    return '\t'.join(new_header), out_lines
+
+
 def reformat_line_selindel_continuous(line, header):
 
     out_lines = []
@@ -331,8 +362,10 @@ def main():
                     new_lines = reformat_line_selindel_continuous(line, header_line)
                 elif args.c == 1:
                     new_lines = reformat_line_selindel_1class(line, header_line)
-                else:
+                elif args.c == 2:
                     new_lines = reformat_line_selindel_2class(line, header_line)
+                else:
+                    new_lines = reformat_line_selindel_3class(line, header_line)
             else:
                 if args.c == 0:
                     new_lines = reformat_line_selsnp_continuous(line, header_line)
@@ -342,9 +375,9 @@ def main():
                     new_lines = reformat_line_selsnp_2class(line, header_line)
 
             if data_line == 1:
-                print new_lines[0]
+                print(new_lines[0])
 
-            print '\n'.join(new_lines[1])
+            print('\n'.join(new_lines[1]))
 
 if __name__ == '__main__':
     main()
