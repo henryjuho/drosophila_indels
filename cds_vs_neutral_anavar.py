@@ -173,7 +173,7 @@ def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_s
             results_data = an.ResultsFile(rep_results)
             header = list(results_data.header()) + ['rep', 'region', 'bounds_hit']
             b_hits = results_data.bounds_hit(gamma_r=(-500, 10))
-            ml_est = results_data.ml_estimate(as_string=True) + '\t{}\t{}\t'.format(i, 'CDS', ','.join(b_hits))
+            ml_est = results_data.ml_estimate(as_string=True) + '\t{}\t{}\t{}'.format(i, 'CDS', ','.join(b_hits))
             if i == 0:
                 results.append('\t'.join(header))
             results.append(ml_est)
