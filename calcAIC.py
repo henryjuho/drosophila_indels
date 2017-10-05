@@ -35,9 +35,11 @@ def delta_aic(current_d, best_d):
 def main():
     # r params + neutral params + sel indel params
     no_params = {'sel_v_neu_continuous': {'snp': 15 + 2 + 4, 'ins': 15 + 4 + 8, 'del': 15 + 4 + 8},
+                 'sel_v_neu_3class': {'snp': 15 + 2 + 9, 'ins': 15 + 4 + 18, 'del': 15 + 4 + 18},
                  'sel_v_neu_2class': {'snp': 15 + 2 + 6, 'ins': 15 + 4 + 12, 'del': 15 + 4 + 12},
                  'sel_v_neu_1class': {'snp': 15 + 2 + 3, 'ins': 15 + 4 + 6, 'del': 15 + 4 + 6},
                  'sel_v_neu_continuous_equal_t': {'snp': 15 + 1 + 4, 'ins': 15 + 2 + 8, 'del': 15 + 2 + 8},
+                 'sel_v_neu_3class_equal_t': {'snp': 15 + 1 + 9, 'ins': 15 + 2 + 18, 'del': 15 + 2 + 18},
                  'sel_v_neu_2class_equal_t': {'snp': 15 + 1 + 6, 'ins': 15 + 2 + 12, 'del': 15 + 2 + 12},
                  'sel_v_neu_1class_equal_t': {'snp': 15 + 1 + 3, 'ins': 15 + 2 + 6, 'del': 15 + 2 + 6}}
 
