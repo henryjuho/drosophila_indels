@@ -80,7 +80,7 @@ def snp_sel_v_neu_anavar(snp_sfs, snp_m, n_sfs, n_m, constraint, bootstrap, n, c
                  'neutral_SNP': (sfs_n, n_m)}
         ctl = an.SNPNeuSelControlFile()
         ctl.set_data(sfs_m, n, dfe=dfe, c=c, gamma_r=(-500, 10), snp_fold=fold)
-        ctl.set_dfe_optional_opts(degree=degree)
+        ctl.set_dfe_optional_opts(degree=degree, optional=True)
         ctl.set_constraint(constraint)
         ctl_contents = ctl.construct()
         with open(ctl_name, 'w') as control:
