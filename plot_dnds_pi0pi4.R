@@ -62,3 +62,6 @@ tajd_plot = arrangeGrob(tajd_plot, top = textGrob("(B)", x = unit(0, "npc"),
 combined = grid.arrange(pi_plot, tajd_plot, ncol=2)
 
 ggsave('dmel.pi_tajd_dn.pdf', width=6, height=3, plot=combined)
+
+# spearmans rank cor
+# cor.test(summary_data_tajd0$taj_mean, summary_data_tajdI$taj_mean, method='spearman')
