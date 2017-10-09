@@ -121,7 +121,7 @@ def sfs2counts(freq_list, n):
 
 
 def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_sfs, n_d_m, constraint,
-                           bootstrap, n, c, dfe, out_stem):
+                           bootstrap, n, c, dfe, out_stem, search):
 
     anavar_path = '/shared/evolgen1/shared_data/program_files/sharc/'
 
@@ -158,7 +158,8 @@ def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_s
         sfs_m = {'selected_INS': (sfs_i, ins_m), 'selected_DEL': (sfs_d, del_m),
                  'neutral_INS': (sfs_ni, n_i_m), 'neutral_DEL': (sfs_nd, n_d_m)}
         ctl = an.IndelNeuSelControlFile()
-        ctl.set_data(sfs_m, n, dfe=dfe, c=c, gamma_r=(-1e5, 1e3),theta_r=(1e-10, 0.1))
+        ctl.set_alg_opts(search=search)
+        ctl.set_data(sfs_m, n, dfe=dfe, c=c, gamma_r=(-1e5, 1e3), theta_r=(1e-10, 0.1))
         ctl.set_constraint(constraint)
         ctl_contents = ctl.construct()
         with open(ctl_name, 'w') as control:
@@ -191,6 +192,7 @@ def main():
                         choices=['discrete', 'continuous'])
     parser.add_argument('-constraint', help='Constraint for model', choices=['none', 'equal_mutation_rate'],
                         default='none')
+    parser.add_argument('-n_search', help='Number of searches to conduct', default=500, type=int)
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
     parser.add_argument('-bootstrap', help='Number of bootstrap replicates', default=0, type=int)
     parser.add_argument('-out_pre', help='File path and prefix for output', required=True)
@@ -251,7 +253,8 @@ def main():
                                             constraint=args.constraint,
                                             bootstrap=args.bootstrap,
                                             n=args.n, c=args.c, dfe=args.dfe,
-                                            out_stem=out_pre)
+                                            out_stem=out_pre,
+                                            search=args.n_search)
 
     # main out
     with open(out_pre + '.allreps.results.txt', 'w') as main_out:
