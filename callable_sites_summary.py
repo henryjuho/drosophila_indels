@@ -59,7 +59,11 @@ def main():
     # variables
     gff = args.gff
     fa = pysam.FastaFile(args.call_fa)
-    bed_files = {x.split(',')[1]: x.split(',')[0] for x in args.opt_bed}
+    if args.opt_bed is not None:
+        bed_files = {x.split(',')[1]: x.split(',')[0] for x in args.opt_bed}
+    else:
+        bed_files = {}
+
     chr_list = [x.rstrip() for x in open(args.chr_list)]
     regions = ['ALL', 'CDS', 'intron', 'intergenic', 'AR'] + bed_files.keys()
     call_data = {x: {y: {'ALL': 0, 'POL': 0} for y in regions} for x in ['ALL'] + chr_list}
