@@ -13,3 +13,11 @@ The jobs were generated and submitted as follows:
 ```
 $ drosophila_indels/degree_testing/anavar_degree_test.py
 ```
+
+And then the results were gathered:
+
+```
+$ ls *rep0.results.txt | process_anavar_results.py -file_pattern degree,_degree\(\\d+\)\\. > ~/drosophila_indels/degree_testing/dmel_cds_v_4fold_degree.csv
+```
+
+Results [here](dmel_cds_v_4fold_degree.csv).
