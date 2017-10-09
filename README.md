@@ -452,6 +452,16 @@ $ Rscript collate_indel_divergence.R
 
 Plot of results [here](indel_divergence.pdf).
 
+## INDEL alpha
+
+Alpha was calculated (see Equation 1 Eyre-walker 2006) for INDELs:
+
+```
+$ Rscript alpha.R 
+```
+
+This yields an alpha estimate of **0.4290748**.
+
 ## anavar analyses
 
 Anavar was run on the coding INDEL data with intergenic and intronic variants as neutral reference. Three models were run, a continuous gamma distribution model, a discrete gamma model with 2 classes and a discrete gamma model with 1 class. For each model a reduced model was also run with equal mutation rates. The commands are as follows:
@@ -460,12 +470,12 @@ Anavar was run on the coding INDEL data with intergenic and intronic variants as
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_continuous -dfe continuous -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_2class -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_1class -sub -evolgen
-$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 3 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_3class -sub -evolgen
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 3 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_3class -sub -n_search 1000
 
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -dfe continuous -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_continuous_equal_t -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_2class_equal_t -sub -evolgen
 $ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -constraint equal_mutation_rate -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_1class_equal_t -sub -evolgen
-$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 3 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_3class_equal_t -sub -evolgen -constraint equal_mutation_rate
+$ cds_vs_neutral_anavar.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 3 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/dmel_cds_with_neu_ref_3class_equal_t -sub -n_search 1000 -constraint equal_mutation_rate
 ```
 
 These analyses were repeated for the SNP data:
