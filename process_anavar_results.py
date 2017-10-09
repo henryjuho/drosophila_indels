@@ -3,6 +3,8 @@
 from __future__ import print_function
 import anavar_utils as an
 import sys
+import argparse
+import re
 
 
 def aic(n_param, max_lnl):
@@ -33,7 +35,8 @@ def delta_aic(current_d, best_d):
     return best_d - current_d
 
 
-def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe):
+def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe, n_search,
+                 custom_col=None, custom_val=None):
 
     """
     converts mle estimate line from anavar results file to multiple lines in long form
@@ -45,6 +48,9 @@ def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe):
     :param model: str
     :param p: int
     :param dfe: str
+    :param n_search: int
+    :param custom_col: str
+    :param custom_val: str
     :return: list
     """
 
@@ -59,11 +65,17 @@ def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe):
     new_header = ['run', 'imp', 'exit_code',
                   'theta', 'scale', 'shape', 'gamma', 'e',
                   'var_type', 'site_class', 'sel_type', 'lnL',
-                  'boundaries_hit', 'converged', 'model', 'params', 'AIC']
+                  'boundaries_hit', 'searches', 'converged', 'model', 'params']
 
     non_variable_vals = {'run': line['run'], 'imp': line['imp'], 'exit_code': line['exit_code'],
                          'lnL': line['lnL'], 'boundaries_hit': '|'.join(b_hit), 'converged': converged,
-                         'model': model, 'params': p, 'AIC': aic(p, line['lnL'])}
+                         'model': model, 'params': p, 'AIC': aic(p, line['lnL']), 'searches': n_search}
+
+    if custom_col is not None:
+        new_header.append(custom_col)
+        non_variable_vals[custom_col] = custom_val
+
+    new_header.append('AIC')
 
     # process neutral variants then selected variants
     for sel in ['neu_', 'sel_']:
@@ -124,10 +136,26 @@ def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe):
 
 def main():
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-file_pattern', help='takes a regular expression in order to extract a custom ID from a file'
+                                              'name, along with a column name eg) degree,_degree(\d+)\.')
+    args = parser.parse_args()
     counter = 0
+
+    if args.file_pattern is not None:
+        spec_col = args.file_pattern.split(',')[0]
+        spec_pattern = args.file_pattern.split(',')[1]
+    else:
+        spec_col, spec_pattern = None, None
 
     all_res = []
     for res in sys.stdin:
+
+        # sort custom col contents
+        if spec_col is not None:
+            spec_val = re.search(spec_pattern, res).group(1)
+        else:
+            spec_val = None
 
         res = res.rstrip()
 
@@ -147,7 +175,8 @@ def main():
 
         reformed = reformat_mle(mle, n_class, variant, results.converged(),
                                 results.bounds_hit(gamma_r=(-1e5, 1e3), theta_r=(1e-10, 0.1)),
-                                mod_name, free_params, dfe)
+                                mod_name, free_params, dfe, results.num_runs(),
+                                custom_col=spec_col, custom_val=spec_val)
 
         if counter == 0:
             all_res.append(reformed[0])
