@@ -87,7 +87,7 @@ def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe, n_s
         else:
             n_class = n_classes
 
-        for site_class in range(0+1, n_class+1):
+        for site_class in range(1, n_class+1):
 
             # ie for ins and del of just snp
             for variant in variants:
@@ -118,7 +118,7 @@ def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe, n_s
                         if dfe == 'continuous' and sel == 'sel_':
                             class_str = ''
                         else:
-                            class_str = '_' + str(n_class)
+                            class_str = '_' + str(site_class)
 
                         key_str = '{}{}{}{}'.format(sel, variant, col, class_str)
 
