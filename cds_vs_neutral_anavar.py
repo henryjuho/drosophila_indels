@@ -125,9 +125,7 @@ def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_s
 
     anavar_path = '/shared/evolgen1/shared_data/program_files/sharc/'
 
-    anavar_cmd = '{path}anavar1.21 {ctl} {rslts} {log}'
-
-    results = []
+    anavar_cmd = '{path}anavar1.22 {ctl} {rslts} {log}'
 
     for i in [0] + range(1, bootstrap+1):
 
@@ -158,8 +156,8 @@ def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_s
         sfs_m = {'selected_INS': (sfs_i, ins_m), 'selected_DEL': (sfs_d, del_m),
                  'neutral_INS': (sfs_ni, n_i_m), 'neutral_DEL': (sfs_nd, n_d_m)}
         ctl = an.IndelNeuSelControlFile()
-        ctl.set_alg_opts(search=search)
-        ctl.set_data(sfs_m, n, dfe=dfe, c=c, gamma_r=(-1e5, 1e3), theta_r=(1e-10, 0.1))
+        ctl.set_alg_opts(search=search, alg='NLOPT_LD_SLSQP')
+        ctl.set_data(sfs_m, n, dfe=dfe, c=c, gamma_r=(-5e5, 1e3), theta_r=(1e-10, 0.1), r_r=(0.01, 100))
         ctl.set_constraint(constraint)
         ctl_contents = ctl.construct()
         with open(ctl_name, 'w') as control:
@@ -168,18 +166,6 @@ def indel_sel_v_neu_anavar(ins_sfs, ins_m, del_sfs, del_m, n_i_sfs, n_i_m, n_d_s
         # call anavar
         rep_cmd = anavar_cmd.format(path=anavar_path, ctl=ctl_name, rslts=result_name, log=log_name)
         subprocess.call(rep_cmd, shell=True)
-
-        # process results
-        with open(result_name) as rep_results:
-            results_data = an.ResultsFile(rep_results)
-            header = list(results_data.header()) + ['rep', 'region', 'bounds_hit']
-            b_hits = results_data.bounds_hit(gamma_r=(-1e5, 1e3), theta_r=(1e-10, 0.1))
-            ml_est = results_data.ml_estimate(as_string=True) + '\t{}\t{}\t{}'.format(i, 'CDS', ','.join(b_hits))
-            if i == 0:
-                results.append('\t'.join(header))
-            results.append(ml_est)
-
-    return results
 
 
 def main():
@@ -203,7 +189,7 @@ def main():
     # submission loop
     if args.sub is True:
         command_line = [' '.join([x for x in sys.argv if x != '-sub' and x != '-evolgen'])]
-        q_sub(command_line, args.out_pre, evolgen=args.evolgen, t=12)
+        q_sub(command_line, args.out_pre, evolgen=args.evolgen, t=48)
         sys.exit(0)
 
     # variables
@@ -246,27 +232,15 @@ def main():
     neu_m = call_site_dict['ALL']['intergenic']['pol'] + call_site_dict['ALL']['intron']['pol']
 
     # construct process
-    region_results = indel_sel_v_neu_anavar(ins_sfs=ins_sfs, ins_m=ins_m,
-                                            del_sfs=del_sfs, del_m=del_m,
-                                            n_i_sfs=n_i_sfs, n_i_m=neu_m,
-                                            n_d_sfs=n_d_sfs, n_d_m=neu_m,
-                                            constraint=args.constraint,
-                                            bootstrap=args.bootstrap,
-                                            n=args.n, c=args.c, dfe=args.dfe,
-                                            out_stem=out_pre,
-                                            search=args.n_search)
-
-    # main out
-    with open(out_pre + '.allreps.results.txt', 'w') as main_out:
-
-        # print header
-        print(region_results[0], file=main_out)
-
-        # trims off header
-        reg_data = region_results[1:]
-
-        for line in reg_data:
-            print(line, file=main_out)
+    indel_sel_v_neu_anavar(ins_sfs=ins_sfs, ins_m=ins_m,
+                           del_sfs=del_sfs, del_m=del_m,
+                           n_i_sfs=n_i_sfs, n_i_m=neu_m,
+                           n_d_sfs=n_d_sfs, n_d_m=neu_m,
+                           constraint=args.constraint,
+                           bootstrap=args.bootstrap,
+                           n=args.n, c=args.c, dfe=args.dfe,
+                           out_stem=out_pre,
+                           search=args.n_search)
 
 if __name__ == '__main__':
     main()
