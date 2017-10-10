@@ -34,6 +34,8 @@ pi_plot = ggplot(rbind(summary_data_pi0, summary_data_piI), aes(x=as.factor(dN_m
         legend.position = c(0.25, 0.85),
         legend.background=element_blank())
 
+ggsave('dmel.pi.dn.pdf', width=3, height=2.8, plot=pi_plot)
+
 pi_plot = arrangeGrob(pi_plot, top = textGrob("(A)", x = unit(0, "npc"),
           y = unit(0, "npc"), just=c("left","top"),
           gp=gpar(col="black", fontsize=11)))
