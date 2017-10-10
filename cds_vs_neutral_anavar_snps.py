@@ -48,13 +48,11 @@ def sfs2counts(freq_list, n):
     return counts
 
 
-def snp_sel_v_neu_anavar(snp_sfs, snp_m, n_sfs, n_m, constraint, bootstrap, n, c, dfe, out_stem, fold, degree):
+def snp_sel_v_neu_anavar(snp_sfs, snp_m, n_sfs, n_m, constraint, bootstrap, n, c, dfe, out_stem, fold, degree, search):
 
     anavar_path = '/shared/evolgen1/shared_data/program_files/sharc/'
 
-    anavar_cmd = '{path}anavar1.21 {ctl} {rslts} {log}'
-
-    results = []
+    anavar_cmd = '{path}anavar1.22 {ctl} {rslts} {log}'
 
     for i in [0] + range(1, bootstrap+1):
 
@@ -79,8 +77,12 @@ def snp_sel_v_neu_anavar(snp_sfs, snp_m, n_sfs, n_m, constraint, bootstrap, n, c
         sfs_m = {'selected_SNP': (sfs, snp_m),
                  'neutral_SNP': (sfs_n, n_m)}
         ctl = an.SNPNeuSelControlFile()
-        ctl.set_data(sfs_m, n, dfe=dfe, c=c, gamma_r=(-500, 10), snp_fold=fold)
-        ctl.set_dfe_optional_opts(degree=degree, optional=True)
+        ctl.set_alg_opts(search=search, alg='NLOPT_LD_SLSQP')
+        ctl.set_data(sfs_m, n, dfe=dfe, c=c,
+                     gamma_r=(-5e5, 1e3), theta_r=(1e-10, 0.1), r_r=(0.01, 100),
+                     snp_fold=fold)
+        if degree != 50:
+            ctl.set_dfe_optional_opts(degree=degree, optional=True)
         ctl.set_constraint(constraint)
         ctl_contents = ctl.construct()
         with open(ctl_name, 'w') as control:
@@ -89,17 +91,6 @@ def snp_sel_v_neu_anavar(snp_sfs, snp_m, n_sfs, n_m, constraint, bootstrap, n, c
         # call anavar
         rep_cmd = anavar_cmd.format(path=anavar_path, ctl=ctl_name, rslts=result_name, log=log_name)
         subprocess.call(rep_cmd, shell=True)
-
-        # process results
-        with open(result_name) as rep_results:
-            results_data = an.ResultsFile(rep_results)
-            header = list(results_data.header()) + ['rep', 'region']
-            ml_est = results_data.ml_estimate(as_string=True) + '\t{}\t{}'.format(i, 'CDS')
-            if i == 0:
-                results.append('\t'.join(header))
-            results.append(ml_est)
-
-    return results
 
 
 def main():
@@ -118,6 +109,7 @@ def main():
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
     parser.add_argument('-bootstrap', help='Number of bootstrap replicates', default=0, type=int)
     parser.add_argument('-out_pre', help='File path and prefix for output', required=True)
+    parser.add_argument('-n_search', help='Number of searches to conduct', default=500, type=int)
     parser.add_argument('-degree', help='changes degree setting in anavar', default=50, type=int)
     parser.add_argument('-sub', help='If specified will submit script to cluster', action='store_true', default=False)
     parser.add_argument('-evolgen', help='If specified will run on evolgen', default=False, action='store_true')
@@ -126,7 +118,7 @@ def main():
     # submission loop
     if args.sub is True:
         command_line = [' '.join([x for x in sys.argv if x != '-sub' and x != '-evolgen'])]
-        q_sub(command_line, args.out_pre, evolgen=args.evolgen, t=12)
+        q_sub(command_line, args.out_pre, evolgen=args.evolgen, t=48)
         sys.exit(0)
 
     # variables
@@ -173,26 +165,16 @@ def main():
         neu_m = call_site_dict['ALL']['fourfold'][pol]
 
     # construct process
-    region_results = snp_sel_v_neu_anavar(snp_sfs=sfs, snp_m=m,
-                                          n_sfs=n_sfs, n_m=neu_m,
-                                          fold=args.fold,
-                                          constraint=args.constraint,
-                                          bootstrap=args.bootstrap,
-                                          n=args.n, c=args.c, dfe=args.dfe,
-                                          out_stem=out_pre,
-                                          degree=args.degree)
+    snp_sel_v_neu_anavar(snp_sfs=sfs, snp_m=m,
+                         n_sfs=n_sfs, n_m=neu_m,
+                         fold=args.fold,
+                         constraint=args.constraint,
+                         bootstrap=args.bootstrap,
+                         n=args.n, c=args.c, dfe=args.dfe,
+                         out_stem=out_pre,
+                         degree=args.degree,
+                         search=args.n_search)
 
-    # main out
-    with open(out_pre + '.allreps.results.txt', 'w') as main_out:
-
-        # print header
-        print(region_results[0], file=main_out)
-
-        # trims off header
-        reg_data = region_results[1:]
-
-        for line in reg_data:
-            print(line, file=main_out)
 
 if __name__ == '__main__':
     main()
