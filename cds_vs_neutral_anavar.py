@@ -226,7 +226,7 @@ def sel_v_neu_anavar(mode, vcf, call, constraint, n, c, dfe, out_stem, search, d
             # call anavar
             rep_cmd = anavar_cmd.format(path=anavar_path, ctl=ctl_name, rslts=result_name, log=log_name, seed=i)
 
-            q_sub([rep_cmd], out=split_stem, jid=split_stem + '.sh', t=8, evolgen=evolgen)
+            q_sub([rep_cmd], out=split_stem, jid=split_stem.split('/')[-1] + '.sh', t=8, evolgen=evolgen)
             hjids.append(split_stem + '.sh')
 
     # hold job to merge outputs
