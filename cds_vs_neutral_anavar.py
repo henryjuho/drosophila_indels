@@ -2,10 +2,11 @@
 
 from __future__ import print_function
 import anavar_utils as an
+import argparse
 from qsub import q_sub
 import random
 from collections import Counter
-from vcf2raw_sfs import *
+from vcf2raw_sfs import vcf2sfs
 
 # import gzip
 # import pysam
