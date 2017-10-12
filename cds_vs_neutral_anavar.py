@@ -10,7 +10,6 @@ from vcf2raw_sfs import vcf2sfs
 
 # import gzip
 # import pysam
-# from vcf2raw_sfs import vcf2sfs
 
 
 # def cds_coords(cds_bed, auto_only):
@@ -83,6 +82,13 @@ from vcf2raw_sfs import vcf2sfs
 
 
 def read_callable_csv(csv):
+
+    """
+    reads in a callable sites summary file
+    :param csv: str
+    :return: dict
+    """
+
     call_sites = {}
     for line in open(csv):
         if not line.startswith('contig'):
@@ -96,6 +102,13 @@ def read_callable_csv(csv):
 
 
 def resample_replace(site_freqs):
+
+    """
+    resamples sfs with replacement
+    :param site_freqs: list
+    :return: list
+    """
+
     resamp_sfs = []
     for i in range(0, len(site_freqs)):
         random_no = random.randint(0, len(site_freqs) - 1)
@@ -104,6 +117,14 @@ def resample_replace(site_freqs):
 
 
 def sfs2counts(freq_list, n):
+
+    """
+    converts list of sfs to a condensed sfs that can be plotted or passed to anavar etc
+    :param freq_list: list
+    :param n: int
+    :return: list
+    """
+
     pos_biallelic_freqs = [round(i / float(n), 3) for i in range(1, int(n))]
 
     counted_sorted_sfs = sorted(Counter([str(x) for x in freq_list]).most_common(), key=lambda z: z[0])
@@ -122,6 +143,14 @@ def sfs2counts(freq_list, n):
 
 
 def prepare_indel_sfs(vcf, call, n):
+
+    """
+    gets sfs from vcf and prepares as anavar input
+    :param vcf: str
+    :param call: dict
+    :param n: int
+    :return: dict
+    """
 
     # extract site frequencies
     del_sfs = vcf2sfs(vcf_name=vcf, mode='del',
@@ -159,6 +188,14 @@ def prepare_indel_sfs(vcf, call, n):
 
 def prepare_snp_sfs(vcf, call, n):
 
+    """
+    gets sfs from vcf and prepares as anavar input
+    :param vcf: str
+    :param call: dict
+    :param n: int
+    :return: dict
+    """
+
     # extract site frequencies
     sel_sfs = vcf2sfs(vcf_name=vcf, mode='snp',
                       auto_only=True, skip_hetero=True,
@@ -183,6 +220,23 @@ def prepare_snp_sfs(vcf, call, n):
 
 
 def sel_v_neu_anavar(mode, vcf, call, constraint, n, c, dfe, out_stem, search, degree, spread, evolgen):
+
+    """
+    submits anavar jobs to cluster after writing required files etc
+    :param mode: str
+    :param vcf: str
+    :param call: dict
+    :param constraint: str
+    :param n: int
+    :param c: int
+    :param dfe: str
+    :param out_stem: str
+    :param search: int
+    :param degree: int
+    :param spread: int
+    :param evolgen: bool
+    :return: None
+    """
 
     anavar_path = '/shared/evolgen1/shared_data/program_files/sharc/'
 
