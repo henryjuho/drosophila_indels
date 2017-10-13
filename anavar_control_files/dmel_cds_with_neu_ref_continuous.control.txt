@@ -1,8 +1,8 @@
 [algorithm_commands]
 search_algorithm: NLOPT_LD_SLSQP
 maxeval: 100000
-maxtime: 600
-num_searches: 100
+maxtime: 3600
+num_searches: 50
 nnoimp: 1
 maximp: 3
 optional: true
