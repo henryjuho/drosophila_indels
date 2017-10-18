@@ -20,7 +20,7 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
   * tabix
   * bgzip
   * qsub.py
-  * anavar version 1.2
+  * anavar version 1.22
   * anavar_utils
 
 ## Scripts used in this pipeline
@@ -476,8 +476,8 @@ $ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/d
 $ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 3 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/dmel_cds_with_neu_ref_3class -evolgen -n_search 100 -split 50
 $ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 3 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/dmel_cds_with_neu_ref_3class_equal_t -constraint equal_mutation_rate -evolgen -n_search 100 -split 50
 
-$ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/dmel_cds_with_neu_ref_continuous -dfe continuous -degree 500 -evolgen -n_search 50 -split 100
-$ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/dmel_cds_with_neu_ref_continuous_equal_t -constraint equal_mutation_rate -dfe continuous -degree 500 -n_search 50 -split 100
+$ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/dmel_cds_with_neu_ref_continuous -dfe continuous -degree 500 -n_search 25 -split 200
+$ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/dmel_cds_with_neu_ref_continuous_equal_t -constraint equal_mutation_rate -dfe continuous -degree 500 -n_search 25 -split 200
 ```
 
 These analyses were repeated for the SNP data with fourfold reference:
@@ -500,8 +500,8 @@ The Akaike information criterion (AIC) was calculated for each model as follows:
 
 ```
 $ cd ~/drosophila_indels/
-$ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/indel_sel_v_neu/*rep0.results.txt | ./process_anavar_results.py > dmel_sel_v_neu_anavar_1run_results_indels.aic.csv 
-$ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/snp_sel_v_4fold/*rep0.results.txt | process_anavar_results.py > dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv 
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/*merged* | ./process_anavar_results.py > dmel_sel_v_neu_anavar_1run_results_indels.aic.csv
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/snp/dmel_snps_cds_with_4fold_ref_*merged.results.txt | process_anavar_results.py > dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv 
 ```
 
 Results for INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.aic.csv](dmel_sel_v_neu_anavar_1run_results_indels.aic.csv) and SNPs: [dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv](dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv).
