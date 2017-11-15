@@ -462,6 +462,26 @@ $ Rscript alpha.R
 
 This yields an alpha estimate of **0.4290748**.
 
+Additionally alpha was calculated using the online calculator ```asymptoticMK``` available here: <http://benhaller.com/messerlab/asymptoticMK.html>.
+
+The input data was prepared as follows:
+
+```
+$ cd ~/drosophila_indels
+$ ~/sfs_utils/vcf2raw_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region CDS_frameshift -region CDS_non_frameshift -mode ins -auto_only -skip_hetero | sort | uniq -c > cds_ins_alpha_dat.txt
+$ ~/sfs_utils/vcf2raw_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region intron -region intergenic -mode ins -auto_only -skip_hetero | sort | uniq -c > noncoding_ins_alpha_dat.txt
+$ ~/sfs_utils/vcf2raw_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region CDS_frameshift -region CDS_non_frameshift -mode del -auto_only -skip_hetero | sort | uniq -c > cds_del_alpha_dat.txt
+$ ~/sfs_utils/vcf2raw_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region intron -region intergenic -mode del -auto_only -skip_hetero | sort | uniq -c > noncoding_del_alpha_dat.txt
+$ python make_alpha_table.py cds_ins_alpha_dat.txt noncoding_ins_alpha_dat.txt > alpha_ins_online.txt 
+$ python make_alpha_table.py cds_del_alpha_dat.txt noncoding_del_alpha_dat.txt > alpha_del_online.txt
+$ python merge_alpha.py alpha_del_online.txt alpha_ins_online.txt > alpha_indel_online.txt
+```
+
+| original alpha | asymptotic alpha | lwr CI  | upr CI  |
+|:--------------:|:----------------:|:-------:|:-------:|
+| 0.39837        | 0.43309          | 0.27818 | 0.58801 |
+
+
 ## anavar analyses
 
 Anavar was run on the coding INDEL data with intergenic and intronic variants as neutral reference. Four models were run, a continuous gamma distribution model, a discrete gamma model with 3 classes, a discrete gamma model with 2 classes and a discrete gamma model with 1 class. For each model a reduced model was also run with equal mutation rates. The commands are as follows:
