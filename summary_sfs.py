@@ -32,6 +32,7 @@ for m in mode_dict[mode]:
                    '-vcf {} '
                    '-mode {} '
                    '-auto_only '
+                   '-skip_hetero '
                    '-region {} '
                    '| sort | uniq -c | while read i; do echo " "$i; done | tr -s " " '
                    '> {}').format(vcf, m, r, new_out)
