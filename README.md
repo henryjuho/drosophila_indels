@@ -399,6 +399,18 @@ $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_d
 $ summary_stats.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -mode SNP -sub -out /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/dmel_17flys_snp_summary_codon_checks_bs1000_nc.txt -evolgen -bootstrap 1000
 ```
 
+## Site frequency spectra
+
+Site frequency spectra were extracted and plotted as follows:
+
+```
+$ summary_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -mode INDEL -out indel_sfs/ -spp dmel -evolgen
+$ Rscript sfs_plots.R
+```
+
+Genome-wide plot [here](gwide_indel_sfs.pdf) and regional plot [here](regional_indel_sfs.pdf).
+
+
 ## Length summary
 
 The distribution of INDEL lengths was summarised with the following scripts:
