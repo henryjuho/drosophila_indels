@@ -315,8 +315,8 @@ def main():
     parser.add_argument('-n_search', help='Number of searches to conduct per job', default=500, type=int)
     parser.add_argument('-alg', help='Algorithm to use', default='NLOPT_LD_SLSQP',
                         choices=['NLOPT_LD_SLSQP', 'NLOPT_LD_LBFGS', 'NLOPT_LN_NELDERMEAD'])
-    parser.add_argument('-nnoimp', help='nnoimp value', default=1)
-    parser.add_argument('-maximp', help='maximp value', default=3)
+    parser.add_argument('-nnoimp', help='nnoimp value', default=1, type=int)
+    parser.add_argument('-maximp', help='maximp value', default=3, type=int)
     parser.add_argument('-split', help='Number of jobs to split runs across, each job will run the control file once'
                                        'with a different seed given to anavar', default=1, type=int)
     parser.add_argument('-degree', help='changes degree setting in anavar', default=50, type=int)
