@@ -512,11 +512,14 @@ $ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/d
 $ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/dmel_cds_with_neu_ref_continuous_equal_t -constraint equal_mutation_rate -dfe continuous -degree 500 -n_search 25 -split 200
 ```
 
-Non-convergent runs were also run with LBFGS
+Non-convergent runs were also run with LBFGS and NELDERMEAD
 
 ```
 $ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lbfgs/dmel_cds_with_neu_ref_2class_equal_t -constraint equal_mutation_rate -n_search 100 -split 100 -alg NLOPT_LD_LBFGS
 $ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 3 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lbfgs/dmel_cds_with_neu_ref_3class_equal_t -constraint equal_mutation_rate -n_search 100 -split 100 -alg NLOPT_LD_LBFGS
+
+$ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 2 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_neldermead/dmel_cds_with_neu_ref_2class_equal_t -constraint equal_mutation_rate -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000
+$ cds_vs_neutral_anavar.py -mode indel -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -n 17 -c 3 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_neldermead/dmel_cds_with_neu_ref_3class_equal_t -constraint equal_mutation_rate -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000
 ```
 These analyses were repeated for the SNP data with fourfold reference:
 
