@@ -219,7 +219,7 @@ def prepare_snp_sfs(vcf, call, n):
     return sfs_m
 
 
-def sel_v_neu_anavar(mode, vcf, call, constraint, n, c, dfe, out_stem, search, degree, spread, evolgen):
+def sel_v_neu_anavar(mode, vcf, call, constraint, n, c, dfe, alg, out_stem, search, degree, spread, evolgen):
 
     """
     submits anavar jobs to cluster after writing required files etc
@@ -230,6 +230,7 @@ def sel_v_neu_anavar(mode, vcf, call, constraint, n, c, dfe, out_stem, search, d
     :param n: int
     :param c: int
     :param dfe: str
+    :param alg: str
     :param out_stem: str
     :param search: int
     :param degree: int
@@ -254,7 +255,7 @@ def sel_v_neu_anavar(mode, vcf, call, constraint, n, c, dfe, out_stem, search, d
         sfs_data = prepare_indel_sfs(vcf, call, n)
         ctl = an.IndelNeuSelControlFile()
 
-    ctl.set_alg_opts(search=search, alg='NLOPT_LD_SLSQP', key=3,
+    ctl.set_alg_opts(search=search, alg=alg, key=3,
                      epsabs=1e-20, epsrel=1e-9, rftol=1e-9,
                      maxtime=3600, optional=True)
 
@@ -306,6 +307,8 @@ def main():
     parser.add_argument('-constraint', help='Constraint for model', choices=['none', 'equal_mutation_rate'],
                         default='none')
     parser.add_argument('-n_search', help='Number of searches to conduct per job', default=500, type=int)
+    parser.add_argument('-alg', help='Algorithm to use', default='NLOPT_LD_SLSQP',
+                        choices=['NLOPT_LD_SLSQP', 'NLOPT_LD_LBFGS'])
     parser.add_argument('-split', help='Number of jobs to split runs across, each job will run the control file once'
                                        'with a different seed given to anavar', default=1, type=int)
     parser.add_argument('-degree', help='changes degree setting in anavar', default=50, type=int)
@@ -322,6 +325,7 @@ def main():
                      vcf=args.vcf, call=call_site_dict,
                      constraint=args.constraint,
                      n=args.n, c=args.c, dfe=args.dfe,
+                     alg=args.alg,
                      out_stem=out_pre,
                      search=args.n_search,
                      degree=args.degree,
