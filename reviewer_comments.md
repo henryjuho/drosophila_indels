@@ -3,8 +3,13 @@
 - [ ] 1. Separate INDEL analysis into insertions and deletions
 - [ ] 2. Consider DFE for different lengths
     - [ ] run model per length bin, maybe 1+2bp, 3bp, 4+5bp, 6bp? using the a class model
-- [ ] 3. run with high classes c = 10
-    - [ ] see if power analysis in Kousathanas and Keightley 2013 or Keightley and Eyre-Walker 2010
+- [x] 3. run with high classes c = 10
+    - [x] see if power analysis in Kousathanas and Keightley 2013 or Keightley and Eyre-Walker 2010
+    - [x] Keightley and Eyre-Walker 2010 table 5 
+        - as sample size increases better able to distinguish models with different numbers of classes based on likelihood
+        - best fitting model was 4 classes of sites, yet for n=16 and n=64, only 1 and 2 class models would converge
+        - n=256 3 class would converge
+        - n=1024 4 class would converge
     - [ ] if not do power analysis, simulate 2 class data with increasing pop size, see how often 1 class model is rejected at each sample size
 - [ ] 4. table 4 statistics on nonsense mutations would be a good comparison
     - [ ] pi for premature stop codons, 0fold only to life easier, ignore MNPs
