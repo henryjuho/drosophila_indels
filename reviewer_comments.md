@@ -10,8 +10,8 @@
     - [ ] pi for premature stop codons, 0fold only to life easier, ignore MNPs
 - [x] 5. Small contrast between frame shift and in frame, yet frame shift more disruptive
     - [x] frame shift occur at higher frequency and are more deleterious, in frame occur at lower frequency but persist longer, result is that estimates are closer together
-- [ ] 6. Allele frequency distribution for INDELs
-    - [ ] add AR
+- [x] 6. Allele frequency distribution for INDELs
+    - [x] add AR, see [plot](regional_indel_sfs.pdf)
 - [ ] 7. Mutation rate influence pol error rate, yet neutral ref doesn't all pol error to vary
 - [ ] 8. Discuss that insertions look neutral but dels don't and compare to Leushkin et al.
 - [ ] 9. Synonymous as neutral ref
