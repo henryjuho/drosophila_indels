@@ -263,7 +263,7 @@ def sel_v_neu_anavar(mode, vcf, call, constraint, n, c, dfe, alg, nnoimp, maximp
                      maxtime=3600, optional=True,
                      maximp=maximp, nnoimp=nnoimp)
 
-    ctl.set_data(sfs_data, n, dfe=dfe, c=c, gamma_r=(-5e4, 1e2), theta_r=(1e-10, 0.1), r_r=(0.01, 100),
+    ctl.set_data(sfs_data, n, dfe=dfe, c=c, gamma_r=(-5e4, 1e3), theta_r=(1e-10, 0.1), r_r=(0.01, 100),
                  scale_r=(0.1, 5000.0))
     if degree != 50:
         ctl.set_dfe_optional_opts(degree=degree, optional=True)
@@ -279,7 +279,8 @@ def sel_v_neu_anavar(mode, vcf, call, constraint, n, c, dfe, alg, nnoimp, maximp
         # split into requested jobs
         for i in range(1, spread+1):
 
-            seed = random.randint(1, 1e6)
+            #  seed = random.randint(1, 1e6)
+            seed = i
 
             split_stem = '{}.split{}'.format(out_stem, i)
 
