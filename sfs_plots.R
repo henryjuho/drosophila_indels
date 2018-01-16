@@ -28,7 +28,7 @@ for (x in sfs_files){
 
 }
 
-regional_data = subset(sfs_data, region!='ALL' & region!='ar')
+regional_data = subset(sfs_data, region!='ALL')
 
 pdf('regional_indel_sfs.pdf', width=6, height=3)
 
@@ -37,7 +37,7 @@ ggplot(regional_data, aes(x=freq, y=prop, fill=region)) +
     theme_bw() +
     facet_wrap(~var_type, nrow=1) +
     labs(x='Derived allele frequency', y='Proportion of variants') +
-    theme(legend.title=element_blank(), legend.position=c(0.85, 0.7), axis.text=element_text(angle=45, hjust=1))
+    theme(legend.title=element_blank(), legend.position=c(0.85, 0.6), axis.text=element_text(angle=45, hjust=1))
 
 dev.off()
 
