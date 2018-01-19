@@ -22,6 +22,8 @@ def main():
 
     # per chromo jobs
     for x in [args.cds_fa_dir + y for y in os.listdir(args.cds_fa_dir)]:
+        if not x.endswith('.fasta.gz'):
+            continue
 
         chromo = x.split('-')[1]
 
