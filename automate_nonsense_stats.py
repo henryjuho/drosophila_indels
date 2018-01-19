@@ -54,7 +54,7 @@ def main():
 
     # gather outputs and calc stats
     gather_cmd = ('./nonsense_stats.py ' +
-                  ' '.join(['-infile ' + x for x in out_files]) +
+                  ' '.join(['-in_file ' + x for x in out_files]) +
                   ' -out_file ' + args.out_dir + 'dmel_nonsense_stats.txt')
 
     q_sub([gather_cmd], out=args.out_dir + 'dmel_nonsense_stats', hold=jobs, evolgen=args.evolgen)
