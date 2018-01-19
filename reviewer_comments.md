@@ -11,8 +11,10 @@
         - n=256 3 class would converge
         - n=1024 4 class would converge
     - [ ] if not do power analysis, simulate 2 class data with increasing pop size, see how often 1 class model is rejected at each sample size
-- [ ] 4. table 4 statistics on nonsense mutations would be a good comparison
-    - [ ] pi for premature stop codons, 0fold only to life easier, ignore MNPs
+- [x] 4. table 4 statistics on nonsense mutations would be a good comparison
+    - nonsense pi: = 5.83e-6, theta = 9.13e-6, Tajima's D = -1.5
+    - del cds  pi: = 2.74e-5, theta = 4.17e-5, Tajima's D = -1.48
+    - ins cds  pi: = 1.47e-5, theta = 1.88e-5, Tajima's D = -0.94
 - [x] 5. Small contrast between frame shift and in frame, yet frame shift more disruptive
     - [x] frame shift occur at higher frequency and are more deleterious, in frame occur at lower frequency but persist longer, result is that estimates are closer together
 - [x] 6. Allele frequency distribution for INDELs
