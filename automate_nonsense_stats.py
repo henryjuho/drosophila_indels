@@ -9,7 +9,7 @@ import os
 def main():
     # argument parser
     parser = argparse.ArgumentParser()
-    parser.add_argument('-cda_fa_dir', help='cds fasta directory', required=True)
+    parser.add_argument('-cds_fa_dir', help='cds fasta directory', required=True)
     parser.add_argument('-out_dir', help='output directory', required=True)
     parser.add_argument('-vcf', help='SNP vcf path', required=True)
     parser.add_argument('-call_fa', help='Callable sites fasta file', required=True)
