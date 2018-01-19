@@ -58,8 +58,8 @@ def main():
             minor_freq += [float(x) for x in freqs]
 
     # stats
-    pi_value = pi(17, minor_freq)
-    tw = theta_w(17, len(minor_freq))
+    pi_value = pi(17, minor_freq) / float(call)
+    tw = theta_w(17, len(minor_freq)) / float(call)
     tajd = tajimas_d(17, minor_freq)
 
     with open(args.out_file, 'w') as out:
