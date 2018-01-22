@@ -544,3 +544,12 @@ $ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/snp/dmel_snp
 
 Results for INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.aic.csv](dmel_sel_v_neu_anavar_1run_results_indels.aic.csv) and SNPs: [dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv](dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv).
 Additionally the control files used can be found [here](anavar_control_files/).
+
+## anavar analysis by length
+
+To investigate if there differences in the DFE for different lengths of INDEL, we ran the 1 class model on the following 
+length categories of INDELS: 1bp, 2bp, 3bp, >= 4bp frame-shifting and >= 6bp in-frame.
+
+```
+$ ./length_anavar.py -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -dfe discrete -constraint equal_mutation_rate -c 1 -n 17 -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t -evolgen
+```
