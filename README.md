@@ -552,4 +552,10 @@ length categories of INDELS: 1bp, 2bp, 3bp, >= 4bp frame-shifting and >= 6bp in-
 
 ```
 $ ./length_anavar.py -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -dfe discrete -constraint equal_mutation_rate -c 1 -n 17 -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t -evolgen
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/*merged* | ./process_anavar_results.py -file_pattern length,_len\(\\dbp\) | cut -f 1-18 -d ',' > dmel_sel_v_neu_anavar_1class_equal_t_lengths.csv
+$ grep sel /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/*control* | grep sfs | python n_from_control.py > length_analysis_segsite_numbers.txt 
 ```
+
+Length results table can be seen [here](dmel_sel_v_neu_anavar_1class_equal_t_lengths.csv) or a plot below.
+
+![](length_anavar.png)
