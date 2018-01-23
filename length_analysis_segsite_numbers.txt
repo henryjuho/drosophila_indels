@@ -1,10 +1,11 @@
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len1bp.control.txt:sel_ins_sfs: 51, 9, 1, 7, 6, 3, 3, 2, 1, 1, 1, 0, 0, 0, 1, 0
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len1bp.control.txt:sel_del_sfs: 103, 22, 8, 8, 3, 4, 4, 1, 1, 0, 2, 1, 1, 2, 2, 0
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len2bp.control.txt:sel_ins_sfs: 44, 11, 5, 3, 8, 5, 1, 1, 2, 2, 2, 5, 0, 0, 1, 0
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len2bp.control.txt:sel_del_sfs: 84, 20, 9, 5, 9, 4, 3, 3, 2, 0, 5, 1, 1, 2, 2, 2
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len3bp.control.txt:sel_ins_sfs: 65, 27, 11, 10, 9, 5, 1, 1, 2, 3, 2, 5, 2, 4, 5, 4
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len3bp.control.txt:sel_del_sfs: 171, 38, 17, 13, 9, 7, 4, 2, 1, 1, 1, 0, 3, 3, 0, 2
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len4bp+shift.control.txt:sel_ins_sfs: 56, 13, 5, 2, 6, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len4bp+shift.control.txt:sel_del_sfs: 174, 38, 10, 4, 4, 1, 3, 1, 2, 3, 4, 0, 0, 0, 0, 0
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len6bp+inframe.control.txt:sel_ins_sfs: 62, 13, 6, 12, 1, 3, 5, 4, 0, 3, 2, 4, 4, 3, 2, 7
-/fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_1class_equal_t_len6bp+inframe.control.txt:sel_del_sfs: 295, 61, 36, 19, 13, 14, 10, 8, 4, 2, 1, 3, 2, 0, 4, 1
+length	n_segsites	var_type
+1bp	86	ins
+1bp	162	del
+2bp	90	ins
+2bp	152	del
+3bp	156	ins
+3bp	272	del
+4bp+shift	87	ins
+4bp+shift	244	del
+6bp+inframe	131	ins
+6bp+inframe	473	del
