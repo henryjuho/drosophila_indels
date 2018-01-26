@@ -559,3 +559,14 @@ $ grep sel /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_
 Length results table can be seen [here](dmel_sel_v_neu_anavar_1class_equal_t_lengths.csv) or a plot below.
 
 ![](length_anavar.png)
+
+This was repeated with a two class model.
+
+```
+$ ./length_anavar.py -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.cscf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -dfe discrete -constraint equal_mutation_rate -c 2 -n 17 -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_2class_equal_t -evolgen
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/*merged* | grep 2class | ./process_anavar_results.py -file_pattern length,_len\(\\dbp\) | cut -f 1-18 -d ',' | > dmel_sel_v_neu_anavar_2class_equal_t_lengths.csv
+```
+
+The results table can be seen [here](dmel_sel_v_neu_anavar_2class_equal_t_lengths.csv) or a plot below.
+
+![](length_anavar_2class.png)
