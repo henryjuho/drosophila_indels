@@ -1,10 +1,10 @@
 [algorithm_commands]
-search_algorithm: NLOPT_LD_SLSQP
+search_algorithm: NLOPT_LN_NELDERMEAD
 maxeval: 100000
-maxtime: 600
-num_searches: 100
-nnoimp: 1
-maximp: 3
+maxtime: 3600
+num_searches: 25
+nnoimp: 100
+maximp: 1000
 optional: true
 size: 10000
 key: 3
@@ -29,9 +29,9 @@ sel_del_sfs: 827, 179, 80, 49, 38, 30, 24, 15, 10, 6, 13, 5, 7, 7, 8, 5
 dfe: discrete
 c: 3
 ins_theta_range: 1e-10, 0.1
-ins_gamma_range: -50000.0, 100.0
+ins_gamma_range: -50000.0, 1000.0
 ins_e_range: 0.0, 0.5
 del_theta_range: 1e-10, 0.1
-del_gamma_range: -50000.0, 100.0
+del_gamma_range: -50000.0, 1000.0
 del_e_range: 0.0, 0.5
 constraint: equal_mutation_rate

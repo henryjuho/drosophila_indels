@@ -1,10 +1,10 @@
 [algorithm_commands]
-search_algorithm: NLOPT_LD_SLSQP
+search_algorithm: NLOPT_LN_NELDERMEAD
 maxeval: 100000
-maxtime: 600
-num_searches: 100
-nnoimp: 1
-maximp: 3
+maxtime: 3600
+num_searches: 25
+nnoimp: 100
+maximp: 1000
 optional: true
 size: 10000
 key: 3
