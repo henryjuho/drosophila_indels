@@ -570,3 +570,12 @@ $ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_length
 The results table can be seen [here](dmel_sel_v_neu_anavar_2class_equal_t_lengths.csv) or a plot below.
 
 ![](length_anavar_2class.png)
+
+The two models were compared for each length subset as follows:
+
+```
+$ printf '1bp\n2bp\n3bp\n4bp+shift\n6bp+inframe\n' | while read i; do ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_*$i.merged* | ./process_anavar_results.py -file_pattern length,_len\(\\dbp\); done | grep  ^run | head -n 1  > dmel_sel_v_neu_anavar_allmodels_equal_t_lengths.csv 
+$ printf '1bp\n2bp\n3bp\n4bp+shift\n6bp+inframe\n' | while read i; do ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_*$i.merged* | ./process_anavar_results.py -file_pattern length,_len\(\\dbp\); done | grep -v ^run >> dmel_sel_v_neu_anavar_allmodels_equal_t_lengths.csv 
+```
+
+AIC for each length subset can be found [here](dmel_sel_v_neu_anavar_allmodels_equal_t_lengths.csv).
