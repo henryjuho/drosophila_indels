@@ -1,4 +1,4 @@
-run,imp,exit_code,theta,scale,shape,gamma,e,var_type,site_class,sel_type,lnL,boundaries_hit,searches,converged,model,params,AIC,delta_AIC
+run,imp,exit_code,theta,scale,shape,gamma,e,var_type,site_class,sel_type,lnL,boundaries_hit,searches,converged,model,params,length,AIC,delta_AIC
 19,30,3,0.000393144909163,na,na,0,0.0568071881485,del,1,neu,329302.434694,,5000,True,indel_discrete_2class_equal_t,29,1bp,-658546.869389,0.0
 19,30,3,0.000388218006561,na,na,-1329.00569874,1.73095557248e-06,del,2,sel,329302.434694,,5000,True,indel_discrete_2class_equal_t,29,1bp,-658546.869389,0.0
 19,30,3,0.000275287192041,na,na,0,0.0176879437923,ins,1,neu,329302.434694,,5000,True,indel_discrete_2class_equal_t,29,1bp,-658546.869389,0.0
