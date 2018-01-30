@@ -1,0 +1,37 @@
+[algorithm_commands]
+search_algorithm: NLOPT_LN_NELDERMEAD
+maxeval: 100000
+maxtime: 3600
+num_searches: 25
+nnoimp: 100
+maximp: 1000
+optional: true
+size: 10000
+key: 3
+epsabs: 1e-20
+epsrel: 1e-09
+rftol: 1e-09
+
+[model_commands]
+model: neutralINDEL_vs_selectedINDEL
+n: 17
+r_range: 0.01, 100
+neu_indel_m: 31505772.0
+neu_ins_sfs: 3935, 1446, 850, 661, 468, 330, 301, 227, 200, 185, 187, 150, 153, 141, 162, 198
+neu_del_sfs: 5319, 1620, 979, 620, 480, 335, 274, 259, 207, 161, 157, 124, 92, 90, 78, 77
+neu_ins_theta_range: 1e-10, 0.1
+neu_ins_e_range: 0.0, 0.5
+neu_del_theta_range: 1e-10, 0.1
+neu_del_e_range: 0.0, 0.5
+sel_indel_m: 10654518.0
+sel_ins_sfs: 44, 11, 5, 3, 8, 5, 1, 1, 2, 2, 2, 5, 0, 0, 1, 0
+sel_del_sfs: 84, 20, 9, 5, 9, 4, 3, 3, 2, 0, 5, 1, 1, 2, 2, 2
+dfe: discrete
+c: 1
+ins_theta_range: 1e-10, 0.1
+ins_gamma_range: -50000.0, 1000.0
+ins_e_range: 0.0, 0.5
+del_theta_range: 1e-10, 0.1
+del_gamma_range: -50000.0, 1000.0
+del_e_range: 0.0, 0.5
+constraint: equal_mutation_rate
