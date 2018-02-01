@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import os
 import anavar_utils as an
 import argparse
 from qsub import q_sub
@@ -41,7 +40,7 @@ def prepare_nonsense_snp_sfs(vcf, call, n, sel_sfs, sel_m):
 
 
 def sel_v_neu_anavar_nonsense(vcf, call, constraint, n, c, dfe, alg, nnoimp, maximp,
-                              out_stem, search, degree, spread, evolgen, prem_files, hold):
+                              out_stem, search, degree, spread, evolgen, prem_files):
 
     """
     submits anavar jobs to cluster after writing required files etc
@@ -60,7 +59,6 @@ def sel_v_neu_anavar_nonsense(vcf, call, constraint, n, c, dfe, alg, nnoimp, max
     :param spread: int
     :param evolgen: bool
     :param prem_files: list
-    :param hold: list
     :return: None
     """
 
@@ -113,7 +111,7 @@ def sel_v_neu_anavar_nonsense(vcf, call, constraint, n, c, dfe, alg, nnoimp, max
             # call anavar
             rep_cmd = anavar_cmd.format(path=anavar_path, ctl=ctl_name, rslts=result_name, log=log_name, seed=seed)
 
-            q_sub([rep_cmd], out=split_stem, jid=split_stem.split('/')[-1] + '.sh', t=8, evolgen=evolgen, hold=hold)
+            q_sub([rep_cmd], out=split_stem, jid=split_stem.split('/')[-1] + '.sh', t=8, evolgen=evolgen)
             hjids.append(split_stem.split('/')[-1] + '.sh')
 
     # hold job to merge outputs
@@ -125,9 +123,8 @@ def sel_v_neu_anavar_nonsense(vcf, call, constraint, n, c, dfe, alg, nnoimp, max
 def main():
     # arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-cds_fa_dir', help='cds fasta directory', required=True)
+    parser.add_argument('-nonsense_list', help='list file of nonsense data files per chromo', required=True)
     parser.add_argument('-call_csv', help='Callable sites summary file', required=True)
-    parser.add_argument('-call_fa', help='Callable sites fasta file', required=True)
     parser.add_argument('-vcf', help='VCF file to extract site frequencies from', required=True)
     parser.add_argument('-n', help='Sample size', required=True)
     parser.add_argument('-c', help='Number of classes to run model with', required=True, type=int)
@@ -150,43 +147,7 @@ def main():
     # variables
     call_site_dict = read_callable_csv(args.call_csv)
     out_pre = args.out_pre
-    out_files = []
-    out_dir = '/'.join(out_pre.split('/')[:-1]) + '/'
-    jobs = []
-    autos = ('2R', '2RHet', '2L', '2LHet', '3R', '3RHet', '3L', '3LHet', '4')
-
-    # per chromo jobs for extracting nonsense data
-    for x in [args.cds_fa_dir + y for y in os.listdir(args.cds_fa_dir)]:
-        if not x.endswith('.fasta.gz'):
-            continue
-
-        chromo = x.split('-')[1]
-
-        if chromo not in autos:
-            continue
-
-        outstem = x.split('/')[-1].replace('.fasta.gz', '')
-        out = out_dir + outstem + '.premstops.txt'
-        job = outstem + '.sh'
-
-        out_files.append(out)
-        jobs.append(job)
-
-        extract_cmd = ('./extract_prem_stops.py '
-                       '-cds_fa {cds_fa} '
-                       '-chr {chromo} '
-                       '-vcf {vcf} '
-                       '-call_fa {c_fa} '
-                       '-n 17 '
-                       '-unfolded '
-                       '-out {output}').format(
-            cds_fa=x,
-            chromo=chromo,
-            vcf=args.vcf,
-            c_fa=args.call_fa,
-            output=out)
-
-        q_sub([extract_cmd], out=out_dir + outstem, jid=job, evolgen=args.evolgen)
+    nonsense_files = [x.rstrip() for x in open(args.nonsense_list)]
 
     # construct process
     sel_v_neu_anavar_nonsense(vcf=args.vcf, call=call_site_dict,
@@ -199,8 +160,7 @@ def main():
                               degree=args.degree,
                               spread=args.split,
                               evolgen=args.evolgen,
-                              prem_files=out_files,
-                              hold=jobs)
+                              prem_files=nonsense_files)
 
 if __name__ == '__main__':
     main()
