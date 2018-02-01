@@ -54,7 +54,7 @@ def main():
     # write list file
     list_file = out_dir + 'chromo_nonsense_list.txt'
 
-    with open(list_file) as list_out:
+    with open(list_file, 'w') as list_out:
         print(*out_files, sep='\n', file=list_out)
 
 
