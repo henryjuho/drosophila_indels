@@ -6,17 +6,41 @@ import random
 from summary_stats import tajimas_d, theta_w, pi
 
 
-def main():
-    # argument parser
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-in_file', help='chromosomal nonsense data', required=True, action='append')
-    parser.add_argument('-out_file', help='output file for summary stats', required=True)
-    args = parser.parse_args()
+def prem_freqs_call(prem_dict):
 
-    # make dataset
+    """
+    gets allele freq and callable sites form prem dict
+    :param prem_dict: dict
+    :return: list, int
+    """
+
+    call = 0
+    minor_freq = []
+
+    for long_trans in prem_dict.keys():
+
+        n_call = int(prem_dict[long_trans][3])
+        call += n_call
+        freqs = prem_dict[long_trans][4].split(',')
+        if len(freqs) == 1:
+            continue
+        else:
+            minor_freq += [float(x) for x in freqs]
+
+    return minor_freq, call
+
+
+def gather_chromo_prems(in_files):
+
+    """
+    merges multiple chromo nonsense data and retains longest trans only for each gene
+    :param in_files: list
+    :return: dict
+    """
+
     all_data = {}
 
-    for non_file in args.in_file:
+    for non_file in in_files:
 
         for line in open(non_file):
 
@@ -43,19 +67,21 @@ def main():
                     else:
                         continue
 
-    # consolidate callable and allele frequncies
-    call = 0
-    minor_freq = []
+    return all_data
 
-    for long_trans in all_data.keys():
 
-        n_call = int(all_data[long_trans][3])
-        call += n_call
-        freqs = all_data[long_trans][4].split(',')
-        if len(freqs) == 1:
-            continue
-        else:
-            minor_freq += [float(x) for x in freqs]
+def main():
+    # argument parser
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-in_file', help='chromosomal nonsense data', required=True, action='append')
+    parser.add_argument('-out_file', help='output file for summary stats', required=True)
+    args = parser.parse_args()
+
+    # make dataset
+    all_data = gather_chromo_prems(args.in_file)
+
+    # consolidate callable and allele frequencies
+    minor_freq, call = prem_freqs_call(all_data)
 
     # stats
     pi_value = pi(17, minor_freq) / float(call)
