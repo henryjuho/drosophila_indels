@@ -5,7 +5,7 @@ import argparse
 import gzip
 import subprocess
 import pysam
-from vcf2raw_sfs import get_minor_freq
+from vcf2raw_sfs import get_out_freq
 from degen_to_bed import start_stop_ok, cds_coord_to_codon_coords
 
 
@@ -132,7 +132,7 @@ def cds_snp_coords(vcf):
     return cds_snps_dict
 
 
-def process_transcript(sequence, coords, trans_name, nonsense_data, call_seq, snps, chromo, vcf_records, n):
+def process_transcript(sequence, coords, trans_name, nonsense_data, call_seq, snps, chromo, vcf_records, n, pol):
 
     """
     calculates length, call sites and nonsense snps for a transcript
@@ -145,6 +145,7 @@ def process_transcript(sequence, coords, trans_name, nonsense_data, call_seq, sn
     :param chromo: str
     :param vcf_records: pysam.VariantFile
     :param n: int
+    :param pol: bool
     :return: None
     """
 
@@ -171,7 +172,10 @@ def process_transcript(sequence, coords, trans_name, nonsense_data, call_seq, sn
                     # skip if site is not callable
                     call = call_seq[site_pos - 1]
 
-                    if call.upper() != 'K':
+                    if pol is False:
+                        call = call.upper()
+
+                    if call != 'K':
                         continue
 
                     nonsense_data[trans_name]['call'] += 1
@@ -191,7 +195,7 @@ def process_transcript(sequence, coords, trans_name, nonsense_data, call_seq, sn
                         if not snp_makes_stop(snp_record, pos, codon, base_pos):
                             continue
 
-                        frequency = get_minor_freq(snp_record, 'snp', n)
+                        frequency = get_out_freq(snp_record, pol, 'snp', n)
                         nonsense_data[trans_name]['freqs'].append(frequency)
 
                     # move on if no snp at position
@@ -211,6 +215,7 @@ def main():
     parser.add_argument('-vcf', help='SNP vcf path', required=True)
     parser.add_argument('-call_fa', help='Callable sites fasta file', required=True)
     parser.add_argument('-n', help='Sample size', required=True, type=int)
+    parser.add_argument('-unfolded', help='If specified outputs unfolded data', default=False, action='store_true')
     parser.add_argument('-out', help='output file', required=True)
     args = parser.parse_args()
 
@@ -222,6 +227,7 @@ def main():
     call_fa = pysam.FastaFile(args.call_fa)
     call_seq = call_fa.fetch(args.chr)
     n = args.n
+    pol_state = args.unfolded
 
     # loop through fasta
     sequence, chromo, coords, skip, trans_name = '', '', [], False, ''
@@ -242,7 +248,8 @@ def main():
                 continue
 
             # process prev sequence
-            process_transcript(sequence, coords, trans_name, nonsense_data, call_seq, snps, chromo, vcf_records, n)
+            process_transcript(sequence, coords, trans_name, nonsense_data,
+                               call_seq, snps, chromo, vcf_records, n, pol_state)
 
             # reset holders and store details of next sequence
             sequence = ''
@@ -261,7 +268,7 @@ def main():
             sequence += line.rstrip()
 
     # process final sequence
-    process_transcript(sequence, coords, trans_name, nonsense_data, call_seq, snps, chromo, vcf_records, n)
+    process_transcript(sequence, coords, trans_name, nonsense_data, call_seq, snps, chromo, vcf_records, n, pol_state)
 
     # output sites
     with open(args.out, 'w') as out:
