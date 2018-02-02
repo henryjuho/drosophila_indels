@@ -468,6 +468,12 @@ $ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_align
 $ Rscript collate_indel_divergence.R 
 ```
 
+Divergence was also calculated for the length categories described in the anavar analysis section.
+
+```
+$ ./indel_length_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_cds.bed -out dmel_length_divergence.txt
+```
+
 Plot of results [here](indel_divergence.pdf).
 
 ## INDEL alpha
@@ -534,15 +540,28 @@ $ cds_vs_neutral_anavar.py -mode snp -vcf /fastdata/bop15hjb/drosophila_data/dme
 $ cds_vs_neutral_anavar.py -mode snp -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/snp/dmel_snps_cds_with_4fold_ref_continuous_equal_t -constraint equal_mutation_rate -dfe continuous -degree 500 -n_search 50 -split 100
 ```
 
+Finally the analysis was run for nonsense mutations with fourfold reference:
+
+```
+$ mkdir /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp
+$ ./prep_nonsense_anavar.py -cds_fa_dir /fastdata/bop15hjb/drosophila_data/dmel_ref/cds_fasta/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp/ -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -evolgen
+$ ./nonsense_anavar.py -nonsense_list /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp/chromo_nonsense_list.txt -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 1 -dfe discrete -constraint equal_mutation_rate -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp/dmel_snps__nonsense_with_4fold_ref_1class_equal_t -evolgen
+$ ./nonsense_anavar.py -nonsense_list /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp/chromo_nonsense_list.txt -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 2 -dfe discrete -constraint equal_mutation_rate -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp/dmel_snps_nonsense_with_4fold_ref_2class_equal_t -evolgen
+```
+
 The Akaike information criterion (AIC) was calculated for each model as follows:
 
 ```
 $ cd ~/drosophila_indels/
 $ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel/*merged* | ./process_anavar_results.py > dmel_sel_v_neu_anavar_1run_results_indels.aic.csv
 $ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/snp/dmel_snps_cds_with_4fold_ref_*merged.results.txt | process_anavar_results.py > dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv 
+$ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp/*merged.results.txt | process_anavar_results.py > dmel_nonsense_v_4fold_anavar_1run_results_snps.aic.csv 
 ```
 
-Results for INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.aic.csv](dmel_sel_v_neu_anavar_1run_results_indels.aic.csv) and SNPs: [dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv](dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv).
+Results for INDELs: [dmel_sel_v_neu_anavar_1run_results_indels.aic.csv](dmel_sel_v_neu_anavar_1run_results_indels.aic.csv) 
+, SNPs: [dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv](dmel_sel_v_4fold_anavar_1run_results_snps.aic.csv) 
+and nonsense mutations: [dmel_nonsense_v_4fold_anavar_1run_results_snps.aic.csv](dmel_nonsense_v_4fold_anavar_1run_results_snps.aic.csv).
+
 Additionally the control files used can be found [here](anavar_control_files/).
 
 ## anavar analysis by length
