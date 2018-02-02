@@ -472,7 +472,10 @@ Divergence was also calculated for the length categories described in the anavar
 
 ```
 $ ./indel_length_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_cds.bed -out dmel_length_divergence.txt
+$ cat dmel_length_divergence.txt | python length_div_to_all_div.py >> dmel_length_divergence.txt 
 ```
+
+Divergence data [here](dmel_length_divergence.txt).
 
 Plot of results [here](indel_divergence.pdf).
 
