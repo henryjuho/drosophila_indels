@@ -22,7 +22,7 @@ def main():
     with open(args.out, 'w') as out_file:
         print('length\tn_variants\tcallable\tdivergence\tindel_type', file=out_file)
 
-    callable_cmd = 'bedtools intersect -a {} -b {} | wga_bed_summary.py -callable'.format(args.wga, args.bed)
+    callable_cmd = 'bedtools intersect -a {} -b {} | ~/WGAbed/wga_bed_summary.py -callable'.format(args.wga, args.bed)
 
     print(callable_cmd, file=sys.stdout)
 
