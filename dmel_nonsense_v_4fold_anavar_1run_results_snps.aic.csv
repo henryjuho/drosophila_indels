@@ -1,0 +1,6 @@
+run,imp,exit_code,theta,scale,shape,gamma,e,var_type,site_class,sel_type,lnL,boundaries_hit,searches,converged,model,params,AIC,delta_AIC
+17,4,3,0.0166843807177,na,na,0,0.0850431042326,snp,1,neu,508914.876954,sel_e_1,5000,True,snp_discrete_2class_equal_t,22,-1017785.75391,0.0
+17,4,3,0.016676675795,na,na,-19301.829016,1.51303250703e-05,snp,2,sel,508914.876954,sel_e_1,5000,True,snp_discrete_2class_equal_t,22,-1017785.75391,0.0
+17,4,3,7.70492274215e-06,na,na,-2.97460924046,0,snp,1,sel,508914.876954,sel_e_1,5000,True,snp_discrete_2class_equal_t,22,-1017785.75391,0.0
+2,12,3,0.0152414667553,na,na,0,2.96227726054e-06,snp,1,neu,508795.899132,,5000,True,snp_discrete_1class_equal_t,19,-1017553.79826,-231.955643958
+2,12,3,0.0152414667553,na,na,-4604.23568096,0.0579051888239,snp,1,sel,508795.899132,,5000,True,snp_discrete_1class_equal_t,19,-1017553.79826,-231.955643958
