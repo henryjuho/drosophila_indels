@@ -28,7 +28,8 @@ def main():
 
     print(callable_cmd, file=sys.stdout)
 
-    call_sites = [int(x.split('\t')[1]) for x in popen_grab(callable_cmd)[0]]
+    call_out = popen_grab(callable_cmd)
+    call_sites = [int(x.split('\t')[1]) for x in call_out]
 
     n_sites = sum(call_sites)
 
