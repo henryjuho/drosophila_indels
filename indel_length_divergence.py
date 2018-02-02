@@ -22,13 +22,15 @@ def main():
     with open(args.out, 'w') as out_file:
         print('length\tn_variants\tcallable\tdivergence\tindel_type', file=out_file)
 
-    callable_cmd = 'bedtools intersect -a {} -b {} | ~/WGAbed/wga_bed_summary.py -callable'.format(args.wga, args.bed)
+    callable_cmd = ('bedtools intersect -a {} -b {} | '
+                    '~/WGAbed/wga_bed_summary.py -callable | '
+                    'grep -v ^X | grep -v ^Y | grep -v ^dmel ').format(args.wga, args.bed)
 
     print(callable_cmd, file=sys.stdout)
 
-    call_sites = popen_grab(callable_cmd)[0].split('\t')
+    call_sites = [int(x.split('\t')[1]) for x in popen_grab(callable_cmd)[0]]
 
-    n_sites = int(call_sites[1])
+    n_sites = sum(call_sites)
 
     # per length per indel type
     for var_type in ['deletion', 'insertion']:
@@ -47,7 +49,7 @@ def main():
                          '-max_length 50 -min_coverage 3 '
                          '-ref_specific -lengths {} | '
                          '~/WGAbed/polarise_wga_ref_indels.py '
-                         '-indel_type {} | grep -v ^X | grep -v ^Y | wc -l').format(
+                         '-indel_type {} | grep -v ^X | grep -v ^Y | grep -v ^dmel | wc -l').format(
                 args.wga, args.bed, lens, var_type)
 
             print(indel_cmd, file=sys.stdout)
