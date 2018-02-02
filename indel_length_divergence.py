@@ -46,7 +46,7 @@ def main():
                          '~/WGAbed/wga_bed_indels.py '
                          '-max_length 50 -min_coverage 3 '
                          '-ref_specific -lengths {} | '
-                         '~WGAbed/polarise_wga_ref_indels.py '
+                         '~/WGAbed/polarise_wga_ref_indels.py '
                          '-indel_type {} | grep -v ^X | grep -v ^Y | wc -l').format(
                 args.wga, args.bed, lens, var_type)
 
