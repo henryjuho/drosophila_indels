@@ -1,0 +1,2 @@
+region	bin	type	seg_sites	callable	theta_w	t_lwr	t_upr	pi	pi_lwr	pi_upr	tajD	tajD_lwr	tajD_upr
+gwide	nonsense	snp	52	1685599	9.12512286125e-06	0	0	5.82770249626e-06	0	0	-1.51032976849	0	0
