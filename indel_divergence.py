@@ -25,7 +25,7 @@ def main():
         chromo_list = popen_grab('zcat {} | cut -f 1 | uniq'.format(args.wga))
 
         with open(args.out, 'w') as out_file:
-            print('chromo\tindels\tcallable\tdivergence', file=out_file)
+            print('chromo\tn_variants\tcallable\tdivergence\tindel_type', file=out_file)
 
         for x in chromo_list:
 
@@ -46,21 +46,35 @@ def main():
 
         n_sites = int(call_sites[1])
 
-        indel_cmd = ('zgrep -w ^{} {} | bedtools intersect -a stdin -b {} | '
-                     'wga_bed_indels.py -min_coverage 3 -max_length 50 -ref_specific | wc -l').format(
-            args.chromo, args.wga, args.bed)
+        for var_type in ['indel', 'deletion', 'insertion']:
+            if var_type == 'indel':
+                # folded data
+                indel_cmd = ('zgrep -w ^{} {} | bedtools intersect -a stdin -b {} | '
+                             '~/WGAbed/wga_bed_indels.py '
+                             '-min_coverage 3 -max_length 50 '
+                             '-ref_specific | wc -l').format(
+                    args.chromo, args.wga, args.bed)
+            else:
+                # unfolded data
+                indel_cmd = ('zgrep -w ^{} {} | bedtools intersect -a stdin -b {} | '
+                             '~/WGAbed/wga_bed_indels.py '
+                             '-max_length 50 -min_coverage 3 '
+                             '-ref_specific | '
+                             '~/WGAbed/polarise_wga_ref_indels.py '
+                             '-indel_type {} | wc -l').format(
+                    args.chromo, args.wga, args.bed, var_type)
 
-        print(indel_cmd, file=sys.stdout)
+            print(indel_cmd, file=sys.stdout)
 
-        n_indels = int(popen_grab(indel_cmd)[0])
+            n_indels = int(popen_grab(indel_cmd)[0])
 
-        if n_sites == 0:
-            div = 0.0
-        else:
-            div = float(n_indels)/float(n_sites)
+            if n_sites == 0:
+                div = 0.0
+            else:
+                div = float(n_indels)/float(n_sites)
 
-        with open(args.out, 'a') as out_file:
-            print(args.chromo, n_indels, n_sites, div, file=out_file, sep='\t')
+            with open(args.out, 'a') as out_file:
+                print(args.chromo, n_indels, n_sites, div, var_type, file=out_file, sep='\t')
 
 
 if __name__ == '__main__':
