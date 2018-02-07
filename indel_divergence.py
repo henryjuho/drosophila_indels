@@ -37,7 +37,8 @@ def main():
         sys.exit()
 
     else:
-        callable_cmd = 'zgrep -w ^{} {} | bedtools intersect -a stdin -b {} | wga_bed_summary.py -callable'.format(
+        callable_cmd = ('zgrep -w ^{} {} | bedtools intersect -a stdin -b {} | '
+                        '~/WGAbed/wga_bed_summary.py -callable').format(
             args.chromo, args.wga, args.bed)
 
         print(callable_cmd, file=sys.stdout)
