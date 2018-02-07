@@ -405,6 +405,9 @@ In response to reviewer comments we also obtained summary statistics for nonsens
 $ ./automate_nonsense_stats.py -cds_fa_dir /fastdata/bop15hjb/drosophila_data/dmel_ref/cds_fasta/ -out_dir /fastdata/bop15hjb/drosophila_data/dmel/summary_stats/ -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa -evolgen
 ```
 
+The summary stats can be found as follows. For INDELs [here](dmel_17flys_indel_summary_no_bs_split_ar_nc.txt), for SNPs 
+[here](dmel_17flys_snp_summary_codon_checks_no_bs.txt) and for nonsense mutations [here](dmel_nonsense_stats.txt).
+
 ## Site frequency spectra
 
 Site frequency spectra were extracted and plotted as follows:
@@ -462,8 +465,8 @@ The results can be seen [here](dmel.pi_tajd_dn.pdf)
 ## INDEL divergence
 
 ```
-$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_cds.bed -out /fastdata/bop15hjb/drosophila_data/dmel/indel_divergence/dmel_cds_indel_divergence.txt
-$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_noncoding.bed -out /fastdata/bop15hjb/drosophila_data/dmel/indel_divergence/dmel_noncoding_indel_divergence.txt
+$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_cds.bed -out ~/drosophila_indels/summary_stats/dmel_cds_indel_divergence.txt
+$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_noncoding.bed -out ~/drosophila_indels/summary_stats/dmel_noncoding_indel_divergence.txt
 
 $ Rscript collate_indel_divergence.R 
 ```
@@ -475,7 +478,7 @@ $ ./indel_length_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multi
 $ cat dmel_length_divergence.txt | python length_div_to_all_div.py >> dmel_length_divergence.txt 
 ```
 
-Divergence data [here](dmel_length_divergence.txt).
+Divergence data [here](indel_divergence.csv).
 
 Plot of results [here](indel_divergence.pdf).
 
@@ -582,11 +585,12 @@ Length results table can be seen [here](dmel_sel_v_neu_anavar_1class_equal_t_len
 
 ![](length_anavar.png)
 
-This was repeated with a two class model.
+This was repeated with two and three class models.
 
 ```
-$ ./length_anavar.py -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.cscf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -dfe discrete -constraint equal_mutation_rate -c 2 -n 17 -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_2class_equal_t -evolgen
+$ ./length_anavar.py -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -dfe discrete -constraint equal_mutation_rate -c 2 -n 17 -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_2class_equal_t -evolgen
 $ ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/*merged* | grep 2class | ./process_anavar_results.py -file_pattern length,_len\(\\dbp\) | cut -f 1-18 -d ',' | > dmel_sel_v_neu_anavar_2class_equal_t_lengths.csv
+$ ./length_anavar.py -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -dfe discrete -constraint equal_mutation_rate -c 3 -n 17 -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/indel_lengths/dmel_cds_with_neu_ref_3class_equal_t -evolgen
 ```
 
 The results table can be seen [here](dmel_sel_v_neu_anavar_2class_equal_t_lengths.csv) or a plot below.
