@@ -224,10 +224,16 @@ Genomes were softmasked using RepeatMasker in the following script:
 $ ls /fastdata/bop15hjb/drosophila_data/wga/genomes/*fa | while read i; do repeat_masking.py -fa $i -evolgen; done
 ```
 
-The resulting soft masked fasta file headers were editted to contain species information:
+LINE coordinates were extracted from the _D. mel_ repeat masker output file and added to the reference files.
 
 ```
 $ cd /fastdata/bop15hjb/drosophila_data/wga/genomes/
+$ zgrep LINE dmel-all-chromosome-r5.34.fa.out | cut -d '.' -f 4- | cut -d ' ' -f 3- | cut -d '(' -f 1 | awk 'BEGIN{FS=" "} {print $1 "\t" $2 -1 "\t" $3}' | bgzip -c > /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-r5.34.LINEs.bed.gz
+```
+
+The resulting soft masked fasta file headers were editted to contain species information:
+
+```
 $ fasta_add_header_prefix.py -fa dmel-all-chromosome-r5.34.fa.masked -pre 'dmel.' -truncate
 $ fasta_add_header_prefix.py -fa dsimV2-Mar2012.rename.fa.masked -pre 'dsim.' -truncate
 $ fasta_add_header_prefix.py -fa dyak-all-chromosome-r1.3.fa.masked -pre 'dyak.' -truncate
@@ -312,6 +318,8 @@ Coordinates for regions that were soft masked across all genomes in the whole ge
 ```
 $ cd /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/
 $ zcat dmel.dsim.dyak.wga.bed.gz | ancestral_repeat_extract.py | bgzip -c > dmel_ancestral_repeats.wga.bed.gz
+$ bedtools intersect -a dmel_ancestral_repeats.wga.bed.gz -b ../../dmel_ref/dmel-r5.34.LINEs.bed.gz | bgzip -c > ../../dmel_ref/dmel-r5.34.ancLINEs.bed.gz 
+$ tabix -pbed  ../../dmel_ref/dmel-r5.34.ancLINEs.bed.gz
 
 $ cd /fastdata/bop15hjb/drosophila_data/
 
@@ -468,6 +476,7 @@ The results can be seen [here](dmel.pi_tajd_dn.pdf)
 $ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_cds.bed -out ~/drosophila_indels/divergence_data/dmel_cds_indel_divergence.txt
 $ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_noncoding.bed -out ~/drosophila_indels/divergence_data/dmel_noncoding_indel_divergence.txt
 $ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel_ancestral_repeats.wga.bed.gz -out ~/drosophila_indels/divergence_data/dmel_ar_indel_divergence.txt
+$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-r5.34.ancLINEs.bed.gz -out ~/drosophila_indels/divergence_data/dmel_ar_LINEs_indel_divergence.txt
 
 $ Rscript collate_indel_divergence.R 
 ```
