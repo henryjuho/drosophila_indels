@@ -465,8 +465,9 @@ The results can be seen [here](dmel.pi_tajd_dn.pdf)
 ## INDEL divergence
 
 ```
-$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_cds.bed -out ~/drosophila_indels/summary_stats/dmel_cds_indel_divergence.txt
-$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_noncoding.bed -out ~/drosophila_indels/summary_stats/dmel_noncoding_indel_divergence.txt
+$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_cds.bed -out ~/drosophila_indels/divergence_data/dmel_cds_indel_divergence.txt
+$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel_noncoding.bed -out ~/drosophila_indels/divergence_data/dmel_noncoding_indel_divergence.txt
+$ indel_divergence.py -wga /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz -bed /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel_ancestral_repeats.wga.bed.gz -out ~/drosophila_indels/divergence_data/dmel_ar_indel_divergence.txt
 
 $ Rscript collate_indel_divergence.R 
 ```

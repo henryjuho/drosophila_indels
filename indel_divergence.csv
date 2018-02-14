@@ -5,3 +5,6 @@
 "non-coding","deletion","autosomes",49073,45650978,0.00107496054082346
 "non-coding","indel","autosomes",131360,45650978,0.00287748490295213
 "non-coding","insertion","autosomes",82287,45650978,0.00180252436212867
+"ar","deletion","autosomes",1371,940493,0.00145774609699381
+"ar","indel","autosomes",3156,940493,0.00335568685785008
+"ar","insertion","autosomes",1785,940493,0.00189794076085627
