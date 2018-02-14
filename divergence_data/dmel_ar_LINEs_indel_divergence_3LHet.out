@@ -1,0 +1,1 @@
+zgrep -w ^3LHet /fastdata/bop15hjb/drosophila_data/wga/multiple_alignment/dmel.dsim.dyak.wga.bed.gz | bedtools intersect -a stdin -b /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-r5.34.ancLINEs.bed.gz | ~/WGAbed/wga_bed_summary.py -callable
