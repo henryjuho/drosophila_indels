@@ -8,3 +8,6 @@
 "ar","deletion","autosomes",1371,940493,0.00145774609699381
 "ar","indel","autosomes",3156,940493,0.00335568685785008
 "ar","insertion","autosomes",1785,940493,0.00189794076085627
+"LINE","deletion","autosomes",127,104571,0.00121448585171797
+"LINE","indel","autosomes",258,104571,0.0024672232263247
+"LINE","insertion","autosomes",131,104571,0.00125273737460673
