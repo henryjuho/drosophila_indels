@@ -59,7 +59,7 @@ def main():
     # process gc content
     with open(gc_out, 'w') as gc_file:
         failing_trans = []
-        print('transcript\tgc\tat\tpercent_gc')
+        print('transcript\tgc\tat\tpercent_gc', file=gc_file)
         for x in gene_dict.keys():
             for transcript in gene_dict[x].keys():
                 at_cont, gc_cont, gc_percent = gene_dict[x][transcript]
