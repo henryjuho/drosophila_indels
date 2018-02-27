@@ -351,6 +351,16 @@ $ qsuber -cmd "cd /fastdata/bop15hjb/drosophila_data/dmel_ref/" -cmd "degen_to_b
 $ tabix -pbed dmel-all-degen.bed.gz 
 ```
 
+Coordinates of fourfold sites from genes with GC <= 72% were also obtained:
+
+```
+$ cd ~/drosophila_indels/
+$ ./fourfold_gc.py -fourfold /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-4fold.bed.gz -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa
+$ cd /fastdata/bop15hjb/drosophila_data/dmel_ref/
+$ bedtools merge -c 4 -o distinct -i dmel-all-4fold_maxgc72.bed.gz | bgzip -c > dmel-all-4fold_maxgc72.collapsed.bed.gz
+$ tabix -pbed dmel-all-4fold_maxgc72.collapsed.bed.gz 
+```
+
 These were then used to annotate the degeneracy of coding SNPs as follows.
 
 ```
@@ -565,6 +575,16 @@ $ ./nonsense_anavar.py -nonsense_list /fastdata/bop15hjb/drosophila_data/dmel/an
 $ ./nonsense_anavar.py -nonsense_list /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp/chromo_nonsense_list.txt -call_csv /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel.callablesites.summary_with_degen.csv -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -n 17 -c 2 -dfe discrete -constraint equal_mutation_rate -n_search 25 -split 200 -alg NLOPT_LN_NELDERMEAD -nnoimp 100 -maximp 1000 -out_pre /fastdata/bop15hjb/drosophila_data/dmel/anavar/anavar1.22_runs/nonsense_snp/dmel_snps_nonsense_with_4fold_ref_2class_equal_t -evolgen
 ```
 
+Furthermore fourfold data was also obtained for genes with less than 72% GC.
+
+```
+$ ./fourfold_model_data_gc72.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.snps.exsnpindel.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.degen.vcf.gz -fourfold /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-4fold_maxgc72.collapsed.bed.gz -call_fa /fastdata/bop15hjb/drosophila_data/dmel_ref/callable_sites/dmel.callable.ALL.fa
+callable: 1303594
+sfs: [16710, 6909, 4403, 3273, 2663, 2138, 1995, 1731, 1473, 1406, 1363, 1265, 1216, 1117, 1314, 1641]
+pi: 0.0109532141621
+theta_w: 0.0114853356203
+TajD: -0.201019627549
+```
 The Akaike information criterion (AIC) was calculated for each model as follows:
 
 ```
