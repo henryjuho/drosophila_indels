@@ -57,6 +57,8 @@ def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe, n_s
     # determine variant string
     if var_type == 'indel':
         variants = ['ins_', 'del_']
+    elif var_type == 'snp_indel':
+        variants = ['indel_ins_', 'indel_del_']
     else:
         variants = ['']
 
@@ -90,6 +92,11 @@ def reformat_mle(line, n_classes, var_type, converged, b_hit, model, p, dfe, n_s
         for site_class in range(1, n_class+1):
 
             # ie for ins and del of just snp
+            if var_type == 'snp_indel' and sel == 'neu_':
+                variants = ['snp_']
+            elif var_type == 'snp_indel' and sel == 'sel_':
+                variants = ['indel_ins_', 'indel_del_']
+
             for variant in variants:
                 if variant == '':
                     var_str = 'snp'
