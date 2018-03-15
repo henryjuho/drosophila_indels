@@ -587,6 +587,20 @@ pi: 0.0109532141621
 theta_w: 0.0114853356203
 TajD: -0.201019627549
 ```
+
+Additionally results from an INDEL model with fourfold refence were obtained:
+
+```
+$ cd /fastdata/bop15hjb/drosophila_data/dmel/anavar/kai_runs_revisions/Henry
+$ ls 4f_indel_7.1_result/*txt | python ~/drosophila_indels/merge_results.py 4f_indel_7.1_result.merged.txt
+$ ls 4f_indel_c\=1/*result/*txt | python ~/drosophila_indels/merge_results.py 4f_indel_c1_result.merged.txt
+$ ls 4f_indel_c\=2/*result/*txt | python ~/drosophila_indels/merge_results.py 4f_indel_c2_result.merged.txt
+$ ls 4f_indel_c\=3/*result/*txt | python ~/drosophila_indels/merge_results.py 4f_indel_c3_result.merged.txt
+ls /fastdata/bop15hjb/drosophila_data/dmel/anavar/kai_runs_revisions/Henry/*merged.txt | ./process_anavar_results.py > dmel_sel_v_neu_anavar_allmodels_results.snp_indel.aic.csv
+```
+
+Results [here](dmel_sel_v_neu_anavar_allmodels_results.snp_indel.aic.csv).
+
 The Akaike information criterion (AIC) was calculated for each model as follows:
 
 ```
