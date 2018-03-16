@@ -1,4 +1,5 @@
 library(ggplot2)
+library(plyr)
 
 file_dir = 'indel_sfs/'
 
@@ -28,7 +29,8 @@ for (x in sfs_files){
 
 }
 
-regional_data = subset(sfs_data, region!='ALL')
+regional_data = subset(sfs_data, region!='ALL' & region!='ar')
+regional_data$region = revalue(regional_data$region, c("CDSframeshift"="frame-shifting", "CDSnonframeshift"="in-frame"))
 
 pdf('regional_indel_sfs.pdf', width=6, height=3)
 
