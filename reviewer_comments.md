@@ -1,7 +1,7 @@
 # Reviewer Comments
  
-- [ ] 1. Separate INDEL analysis into insertions and deletions
-- [ ] 2. Consider DFE for different lengths
+- [x] 1. Separate INDEL analysis into insertions and deletions
+- [x] 2. Consider DFE for different lengths
     - [ ] run model per length bin, maybe 1+2bp, 3bp, 4+5bp, 6bp? using the a class model
 - [x] 3. run with high classes c = 10
     - [x] see if power analysis in Kousathanas and Keightley 2013 or Keightley and Eyre-Walker 2010
@@ -21,9 +21,9 @@
     - [x] add AR, see [plot](regional_indel_sfs.pdf)
 - [ ] 7. Mutation rate influence pol error rate, yet neutral ref doesn't all pol error to vary
 - [ ] 8. Discuss that insertions look neutral but dels don't and compare to Leushkin et al.
-- [ ] 9. Synonymous as neutral ref
-    - [ ] could use fourfold or ARs
+- [x] 9. Synonymous as neutral ref
+    - [x] could use fourfold or ARs
     - [ ] check length distribution of AR INDELs
-- [ ] 10. Page 2 column 2 inherit should be inherent
+- [x] 10. Page 2 column 2 inherit should be inherent
 - [ ] 11. Page 2 column 2 start of paragraph 'An additional challenge...' is poorly written
  
