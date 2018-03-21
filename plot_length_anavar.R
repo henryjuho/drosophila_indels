@@ -15,8 +15,7 @@ t_plot = ggplot(sel_data, aes(x=length, y=theta, colour=var_type)) +
 # gamma plot
 g_plot = ggplot(sel_data, aes(x=length, y=gamma, colour=var_type)) +
     geom_point(stat='identity') +
-    theme_bw() + xlab('length\n\n\n') +
-    theme(legend.title=element_blank(), legend.position='none') +
+    theme_bw() + xlab('length\n\n\n')  +
     ylab(expression(gamma))
 
 # n plot
@@ -30,6 +29,14 @@ n_plot = ggplot(n_data, aes(x=length, y=n_segsites, colour=var_type)) +
 
 png('length_anavar.png', height=3, width=9, units='in', res=320)
 
-grid.arrange(t_plot, g_plot, n_plot, nrow=1)
+grid.arrange(t_plot, g_plot + theme(legend.title=element_blank(), legend.position='none'), n_plot, nrow=1)
+
+dev.off()
+
+pdf('length_anavar_gamma.pdf', width=3, height=3)
+
+g_plot + theme(legend.title=element_blank(), legend.position=c(0.15, 0.82),
+legend.box.background = element_rect(), legend.margin=margin(.5, 5, 1, 1)) + ylim(min(sel_data$gamma), 0)
+
 
 dev.off()
