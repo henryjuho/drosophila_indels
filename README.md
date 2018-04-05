@@ -199,7 +199,7 @@ $ ls $PWD/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdat
 
 ## Whole genome alignment
 
-Whole genome alignments were performed between _D. melanogaster_, _D. simulans_ and _D. yakuba_ using MultiZ, following the UCSC pipeline (described here: ref).
+Whole genome alignments were performed between _D. melanogaster_, _D. simulans_ and _D. yakuba_ using MultiZ, following the UCSC pipeline (described [here](http://genomewiki.ucsc.edu/index.php/Whole_genome_alignment_howto)).
 
 First _D. simulans_ fasta headers were truncated to come within the required 50bp max length for RepeatMasker.
 
