@@ -2,9 +2,7 @@
 Henry Juho Barton  
 Department of Animal and Plant Sciences, The University of Sheffield  
 
-# Paper
-
-<https://academic.oup.com/mbe/advance-article/doi/10.1093/molbev/msy054/4960016>
+Paper: <https://academic.oup.com/mbe/advance-article/doi/10.1093/molbev/msy054/4960016>
 
 # Introduction
 
@@ -34,11 +32,11 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 
 ## Reference and annotation files required for analysis
 
-  * *D. melanogaster* reference genome and annotation files used can be found at <ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r5.34_FB2011_02/>.
+*D. melanogaster* reference genome and annotation files used can be found at <ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r5.34_FB2011_02/>.
 
 ## BAM files
 
-| Region                     | _Drosophila melanogaster_   |
+| Region                     | File  |
 |:---------------------------|:---------------------------:|
 | 2LHet                      | 2LHet.merged.realigned.bam  |
 | 2L                         | 2L.merged.realigned.bam     |
@@ -118,7 +116,7 @@ In order to run GATKs variant quality score recalibration (VQSR) a set of high c
 $ get_consensus_vcf.py -vcf_I /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf -vcf_II /fastdata/bop15hjb/drosophila_data/dmel/samtools_calling/dmel_17flys.samtools.allsites.vcf -ref /fastdata/bop15hjb/drosophila_data/dmel_ref/dmel-all-chromosome-r5.34.fa -out /fastdata/bop15hjb/drosophila_data/dmel/consensus/
 ```
 
-Mean depth was calculated from the GATK allsites vcf using vcftools (ref) as follows:
+Mean depth was calculated from the GATK allsites vcf using vcftools as follows:
 
 ```
 $ get_mean_depth.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/gatk_calling/allsites/dmel_17flys.gatk.allsites.vcf
@@ -201,9 +199,9 @@ $ ls $PWD/*bial.vcf | while read i; do repeat_filtering.py -vcf $i -ref /fastdat
 
 ## Whole genome alignment
 
-Whole genome alignments were performed between _D. melanogaster_, _D. simulans_ and _D. yakuba_ using MultiZ (ref), following the UCSC pipeline (described here: ref).
+Whole genome alignments were performed between _D. melanogaster_, _D. simulans_ and _D. yakuba_ using MultiZ, following the UCSC pipeline (described here: ref).
 
-First _D. simulans_ fasta headers were truncated to come within the required 50bp max length for RepeatMasker (ref).
+First _D. simulans_ fasta headers were truncated to come within the required 50bp max length for RepeatMasker.
 
 ```
 $ cat dsimV2-Mar2012.fa | rename_dsim_headers.py > dsimV2-Mar2012.rename.fa 
@@ -229,7 +227,7 @@ $ fasta_add_header_prefix.py -fa dsimV2-Mar2012.rename.fa.masked -pre 'dsim.' -t
 $ fasta_add_header_prefix.py -fa dyak-all-chromosome-r1.3.fa.masked -pre 'dyak.' -truncate
 ```
 
-The resulting files were then used to generate pairwise alignments with lastz (ref), which were then chained and netted using x and y respectively.
+The resulting files were then used to generate pairwise alignments with lastz, which were then chained and netted using x and y respectively.
 
 ```
 $ wholegenome_lastz_chain_net.py -ref_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dmel-all-chromosome-r5.34.fa.masked.rename.fa -ref_name dmel -query_fa /fastdata/bop15hjb/drosophila_data/wga/genomes/dsimV2-Mar2012.rename.fa.masked.rename.fa -query_name dsim -out /fastdata/bop15hjb/drosophila_data/wga/pairwise_alignments/
