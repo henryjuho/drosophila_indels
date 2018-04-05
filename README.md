@@ -2,9 +2,13 @@
 Henry Juho Barton  
 Department of Animal and Plant Sciences, The University of Sheffield  
 
+# Paper
+
+<https://academic.oup.com/mbe/advance-article/doi/10.1093/molbev/msy054/4960016>
+
 # Introduction
 
-This document outlines the pipeline used to generate and analyse an INDEL dataset from 17 *Drosophila melanogaster* individuals (ref). The document is subdivided by processing steps.
+This document outlines the pipeline used to generate and analyse an INDEL dataset from 17 *Drosophila melanogaster* individuals. The document is subdivided by processing steps.
 
 ## Programs and versions required
 
@@ -28,23 +32,9 @@ This document outlines the pipeline used to generate and analyse an INDEL datase
 \* Note \* that most scripts make use of the python qsub wrapper module ```qsub.py``` described here: <https://github.com/henryjuho/python_qsub_wrapper>.
 
 
-|                            |                            |                                |                             |
-|:---------------------------|:---------------------------|:-------------------------------|:----------------------------|
-| qsub.py                    | split_bams.py              | merge_chromosomal_bams.py      | haplotype_caller.py         |
-| samtools_calling.py        | genotypeGVCFs.py           | get_consensus_vcf.py           | get_mean_depth.py           |
-| depth_filter.py            | filter_length_biallelic.py | rename_dsim_headers.py         | repeat_masking.py           |
-| rm_out2bed.py              | repeat_filtering.py        | hardfilter.py                  | VQSR.py                     |
-| exclude_snp_in_indel.py    | fasta_add_header_prefix.py | wholegenome_lastz_chain_net.py | single_cov.py               |
-| roast.py                   | polarise_vcf.py            | annotate_regions_all_chr.py    | vcf_region_annotater.py     |
-| catVCFs.py                 | annotate_anc_reps.py       | callable_sites_from_vcf.py     | callable_sites_summary.py   |
-| wgaBed2genes.py            | trim_stop_trim_miss.py     | per_gene_codeml.py             | extract_dn_ds.py            |
-| summarise_genes.py         | summarise_genic_indels.py  | cat_dnds_pi0pi4.py             | summary_indel_anavar.py     |
-| anavar2ggplot.py           |  |  |  |
-
 ## Reference and annotation files required for analysis
 
-  * *D. melanogaster* reference genome: ``````
-  * *D. melanogaster* annotation: ``````
+  * *D. melanogaster* reference genome and annotation files used can be found at <ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r5.34_FB2011_02/>.
 
 ## BAM files
 
@@ -503,35 +493,6 @@ $ cat dmel_length_divergence_noncoding.txt | python length_div_to_all_div.py >> 
 Divergence data [here](indel_divergence.csv).
 
 Plot of results [here](indel_divergence.pdf).
-
-## INDEL alpha
-
-Alpha was calculated (see Equation 1 Eyre-walker 2006) for INDELs:
-
-```
-$ Rscript alpha.R 
-```
-
-This yields an alpha estimate of **0.4290748**.
-
-Additionally alpha was calculated using the online calculator ```asymptoticMK``` available here: <http://benhaller.com/messerlab/asymptoticMK.html>.
-
-The input data was prepared as follows:
-
-```
-$ cd ~/drosophila_indels
-$ ~/sfs_utils/vcf2raw_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region CDS_frameshift -region CDS_non_frameshift -mode ins -auto_only -skip_hetero | sort | uniq -c > cds_ins_alpha_dat.txt
-$ ~/sfs_utils/vcf2raw_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region intron -region intergenic -mode ins -auto_only -skip_hetero | sort | uniq -c > noncoding_ins_alpha_dat.txt
-$ ~/sfs_utils/vcf2raw_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region CDS_frameshift -region CDS_non_frameshift -mode del -auto_only -skip_hetero | sort | uniq -c > cds_del_alpha_dat.txt
-$ ~/sfs_utils/vcf2raw_sfs.py -vcf /fastdata/bop15hjb/drosophila_data/dmel/analysis_ready_data/dmel_17flys.gatk.raw.indels.recalibrated.filtered_t95.0.pass.dpfiltered.50bp_max.bial.rmarked.polarised.annotated.ar.vcf.gz -region intron -region intergenic -mode del -auto_only -skip_hetero | sort | uniq -c > noncoding_del_alpha_dat.txt
-$ python make_alpha_table.py cds_ins_alpha_dat.txt noncoding_ins_alpha_dat.txt > alpha_ins_online.txt 
-$ python make_alpha_table.py cds_del_alpha_dat.txt noncoding_del_alpha_dat.txt > alpha_del_online.txt
-$ python merge_alpha.py alpha_del_online.txt alpha_ins_online.txt > alpha_indel_online.txt
-```
-
-| original alpha | asymptotic alpha | lwr CI  | upr CI  |
-|:--------------:|:----------------:|:-------:|:-------:|
-| 0.39837        | 0.43309          | 0.27818 | 0.58801 |
 
 
 ## anavar analyses
