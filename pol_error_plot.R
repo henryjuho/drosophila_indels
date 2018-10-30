@@ -1,9 +1,10 @@
 # Title     : pol error plot
-# Objective : demonstarte problem of pol error
+# Objective : demonstrate problem of pol error
 # Created by: henryjuho
 # Created on: 07/11/2017
 
 library(ggplot2)
+library(viridis)
 
 cbPalette <- c("#E69F00", 'tomato 3', 'steel blue', "#999999", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
@@ -45,8 +46,23 @@ err_plot = ggplot(plot_data, aes(x=as.factor(freq), y=count, fill=err_type)) +
     ylab("Number of variants") +
     theme(legend.position=c(0.78, 0.9), legend.title=element_blank())
 
+err_plot2 = ggplot(plot_data, aes(x=as.factor(freq), y=count, fill=err_type)) +
+    geom_bar(stat='identity', position='dodge') +
+    facet_wrap(~var_type, nrow=1) +
+    theme_bw() + scale_fill_manual(values=viridis(3)) +
+    xlab('Derived allele frequency')  +
+    ylab("Number of variants") +
+    theme(legend.position=c(0.9, 0.78), legend.title=element_blank())
+
+
 pdf('polarisation_error_plot.pdf', width=3, height=6)
 
 err_plot
+
+dev.off()
+
+pdf('pol_error_plot_thesis.pdf', width=6, height=3)
+
+err_plot2
 
 dev.off()
